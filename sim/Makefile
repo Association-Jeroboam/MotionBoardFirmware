@@ -5,7 +5,7 @@
 
 # Compiler options here.
 ifeq ($(USE_OPT),)
-  USE_OPT = -O2 -ggdb -fomit-frame-pointer -falign-functions=16
+  USE_OPT = -O2 -ggdb -m32
 endif
 
 # C specific options here (added to USE_OPT).
@@ -30,7 +30,7 @@ endif
 
 # Enable this if you want link time optimizations (LTO).
 ifeq ($(USE_LTO),)
-  USE_LTO = yes
+  USE_LTO = no
 endif
 
 # Enable this if you want to see the full log while compiling.
@@ -52,44 +52,21 @@ endif
 # Architecture or project specific options
 #
 
-# Stack size to be allocated to the Cortex-M process stack. This stack is
-# the stack used by the main() thread.
-ifeq ($(USE_PROCESS_STACKSIZE),)
-  USE_PROCESS_STACKSIZE = 0x400
-endif
-
-# Stack size to the allocated to the Cortex-M main/exceptions stack. This
-# stack is used for processing interrupts and exceptions.
-ifeq ($(USE_EXCEPTIONS_STACKSIZE),)
-  USE_EXCEPTIONS_STACKSIZE = 0x400
-endif
-
-# Enables the use of FPU (no, softfp, hard).
-ifeq ($(USE_FPU),)
-  USE_FPU = no
-endif
-
-# FPU-related options.
-ifeq ($(USE_FPU_OPT),)
-  USE_FPU_OPT = -mfloat-abi=$(USE_FPU) -mfpu=fpv4-sp-d16
-endif
-
 #
 # Architecture or project specific options
 ##############################################################################
 
 ##############################################################################
-# Project, target, sources and paths
+# Project, sources and paths
 #
 
 # Define project name here
 PROJECT = MotionBoard
 
-# Target settings.
-MCU      = cortex-m4
-PLATFORM = STM32G4
+# Target settings
+PLATFORM = Simulator
 
-# Imported source files and paths.
+# Imported source files and paths
 CHIBIOS   := ../libs/ChibiOS
 CONFDIR   := ./cfg
 BUILDDIR  := ./build
@@ -99,51 +76,37 @@ COMMONDIR := ../common
 # Licensing files.
 include $(CHIBIOS)/os/license/license.mk
 # Startup files.
-include $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/mk/startup_stm32g4xx.mk
 # HAL-OSAL files (optional).
 include $(CHIBIOS)/os/hal/hal.mk
-include $(CHIBIOS)/os/hal/ports/STM32/STM32G4xx/platform.mk
-include $(CHIBIOS)/os/hal/boards/ST_NUCLEO64_G431RB/board.mk
+include $(CHIBIOS)/os/hal/boards/simulator/board.mk
+include $(CHIBIOS)/os/hal/ports/simulator/posix/platform.mk
 include $(CHIBIOS)/os/hal/osal/rt-nil/osal.mk
 # RTOS files (optional).
 include $(CHIBIOS)/os/rt/rt.mk
-include $(CHIBIOS)/os/common/ports/ARMv7-M/compilers/GCC/mk/port.mk
-# Auto-build files in ./source recursively.
-include $(CHIBIOS)/tools/mk/autobuild.mk
-
-# Define linker script file here
-LDSCRIPT= $(STARTUPLD)/STM32G431xB.ld
+include $(CHIBIOS)/os/common/ports/SIMIA32/compilers/GCC/port.mk
+# Other files (optional).
+include $(CHIBIOS)/os/hal/lib/streams/streams.mk
+include $(CHIBIOS)/os/various/shell/shell.mk
 
 # Project files
 include $(COMMONDIR)/common.mk
 
-# C sources that can be compiled in ARM or THUMB mode depending on the global
-# setting.
+# C sources here.
 CSRC = $(ALLCSRC) \
        $(COMMONCSRC)
 
-# C++ sources that can be compiled in ARM or THUMB mode depending on the global
-# setting.
+# C++ sources here.
 CPPSRC = $(ALLCPPSRC) \
          $(COMMONCPPSRC)
 
 # List ASM source files here.
 ASMSRC = $(ALLASMSRC)
-
-# List ASM with preprocessor source files here.
 ASMXSRC = $(ALLXASMSRC)
 
-# Inclusion directories.
 INCDIR = $(CONFDIR) $(ALLINC) $(COMMONINC)
 
-# Define C warning options here.
-CWARN = -Wall -Wextra -Wundef -Wstrict-prototypes
-
-# Define C++ warning options here.
-CPPWARN = -Wall -Wextra -Wundef
-
 #
-# Project, target, sources and paths
+# Project, sources and paths
 ##############################################################################
 
 ##############################################################################
@@ -151,7 +114,7 @@ CPPWARN = -Wall -Wextra -Wundef
 #
 
 # List all user C define here, like -D_DEBUG=1
-UDEFS =
+UDEFS = -DSIMULATOR -DTEST_CFG_SIZE_REPORT=0 -DSHELL_CONFIG_FILE
 
 # Define ASM defines here
 UADEFS =
@@ -166,25 +129,39 @@ ULIBDIR =
 ULIBS =
 
 #
-# End of user section
+# End of user defines
 ##############################################################################
 
 ##############################################################################
-# Common rules
+# Compiler settings
 #
 
-RULESPATH = $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/mk
-include $(RULESPATH)/arm-none-eabi.mk
+TRGT = 
+CC   = $(TRGT)gcc
+CPPC = $(TRGT)g++
+# Enable loading with g++ only if you need C++ runtime support.
+# NOTE: You can use C++ even without C++ support if you are careful. C++
+#       runtime support makes code size explode.
+LD   = $(TRGT)gcc
+#LD   = $(TRGT)g++
+CP   = $(TRGT)objcopy
+AS   = $(TRGT)gcc -x assembler-with-cpp
+AR   = $(TRGT)ar
+OD   = $(TRGT)objdump
+SZ   = $(TRGT)size
+HEX  = $(CP) -O ihex
+BIN  = $(CP) -O binary
+COV  = gcov
+
+# Define C warning options here
+CWARN = -Wall -Wextra -Wundef -Wstrict-prototypes
+
+# Define C++ warning options here
+CPPWARN = -Wall -Wextra -Wundef
+
+#
+# Compiler settings
+##############################################################################
+
+RULESPATH = $(CHIBIOS)/os/common/startup/SIMIA32/compilers/GCC
 include $(RULESPATH)/rules.mk
-
-#
-# Common rules
-##############################################################################
-
-##############################################################################
-# Custom rules
-#
-
-#
-# Custom rules
-##############################################################################
