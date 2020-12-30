@@ -1,0 +1,7 @@
+COMMONCSRC = 
+
+COMMONCPPSRC =
+
+COMMONINC = $(COMMONDIR)
+
+include $(COMMONDIR)/HAL/hal.mk
