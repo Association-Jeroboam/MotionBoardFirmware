@@ -1,0 +1,26 @@
+name: CI
+
+on: [push, workflow_dispatch]
+
+jobs:
+  build-target:
+    runs-on: [self-hosted, linux, cross-compiler]
+    steps:
+      - name: Checking out repository
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Compile project for target platform
+        run: make
+        working-directory: target
+
+  build-sim:
+    runs-on: [self-hosted, linux]
+    steps:
+      - name: Checking out repository
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Compile project for simulation platform
+        run: make
+        working-directory: sim
