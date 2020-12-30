@@ -1,26 +1,26 @@
-name: CI
+name: Compile & Test
 
 on: [push, workflow_dispatch]
 
 jobs:
-  build-target:
+  build:
     runs-on: [self-hosted, linux, cross-compiler]
+    strategy:
+      matrix:
+        platform: [target, sim]
+      fail-fast: false
     steps:
       - name: Checking out repository
         uses: actions/checkout@v2
         with:
           submodules: true
       - name: Compile project for target platform
-        run: make
-        working-directory: target
-
-  build-sim:
-    runs-on: [self-hosted, linux]
-    steps:
-      - name: Checking out repository
-        uses: actions/checkout@v2
+        run: scan-build-10 -o clang-report --keep-empty --keep-cc --status-bugs make
+        working-directory: ${{ matrix.platform }}
+      - name: Upload Clang-Tidy report
+        uses: actions/upload-artifact@v2
+        if: failure()
         with:
-          submodules: true
-      - name: Compile project for simulation platform
-        run: make
-        working-directory: sim
+          name: clang-report-${{ matrix.platform }}
+          path: ${{ matrix.platform }}/clang-report
+          if-no-files-found: ignore
