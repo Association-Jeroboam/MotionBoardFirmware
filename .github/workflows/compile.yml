@@ -1,0 +1,26 @@
+name: Compile & Test
+
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: [self-hosted, linux]
+    strategy:
+      matrix:
+        platform: [target, sim]
+      fail-fast: false
+    steps:
+      - name: Checking out repository
+        uses: actions/checkout@v2
+        with:
+          submodules: true
+      - name: Compile project for target platform
+        run: scan-build-10 -o clang-report --keep-empty --keep-cc --status-bugs make
+        working-directory: ${{ matrix.platform }}
+      - name: Upload Clang-Tidy report
+        uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: clang-report-${{ matrix.platform }}
+          path: ${{ matrix.platform }}/clang-report
+          if-no-files-found: ignore
