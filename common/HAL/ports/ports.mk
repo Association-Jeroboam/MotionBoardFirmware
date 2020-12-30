@@ -1,7 +1,7 @@
 ifeq ($(PLATFORM),STM32G4)
-  include $(COMMONDIR)/HAL/ports/STM32G4/port.mk
+  include $(COMMONDIR)/HAL/ports/STM32G4/platform.mk
 else ifeq ($(PLATFORM),Simulator)
-  include $(COMMONDIR)/HAL/ports/Simulator/port.mk
-  else
+  include $(COMMONDIR)/HAL/ports/Simulator/platform.mk
+else
   $(error Invalid platform: "$(PLATFORM)")
 endif

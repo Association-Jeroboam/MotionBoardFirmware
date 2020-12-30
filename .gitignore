@@ -6,3 +6,6 @@ target/.dep/
 target/build/
 sim/.dep/
 sim/build/
+
+# IDE files
+.idea

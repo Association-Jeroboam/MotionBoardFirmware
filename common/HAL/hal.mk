@@ -1,3 +1,5 @@
 COMMONCPPSRC += $(COMMONDIR)/HAL/Motor.cpp
 
-COMMONINCL += $(COMMONDIR)/HAL
+COMMONINC += $(COMMONDIR)/HAL
+
+include $(COMMONDIR)/HAL/ports/ports.mk

@@ -17,6 +17,8 @@
 #include "ch.h"
 #include "hal.h"
 
+#include "Motor.hpp"
+
 /*
  * Green LED blinker thread, times are in milliseconds.
  */
