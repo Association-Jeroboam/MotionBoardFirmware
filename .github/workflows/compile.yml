@@ -4,7 +4,7 @@ on: [push, workflow_dispatch]
 
 jobs:
   build:
-    runs-on: [self-hosted, linux, cross-compiler]
+    runs-on: [self-hosted, linux]
     strategy:
       matrix:
         platform: [target, sim]
