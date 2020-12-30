@@ -1,0 +1,12 @@
+{
+    "**/*.{c,h,cpp,hpp}": [
+        "clang-format-8 -i -style=file -fallback-style=none"
+    ],
+    "**/*.py": [
+        "black --fast --line-length 240"
+    ],
+    "**/*.{c,h,cpp,hpp,json,py,mk}": [
+        "sed -i '$a\\'",
+        "dos2unix"
+    ]
+}

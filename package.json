@@ -1,0 +1,15 @@
+{
+  "dependencies": {
+    "dos2unix-cli": "^1.0.1",
+    "husky": "^4.3.6",
+    "lint-staged": "^10.5.3"
+  },
+  "scripts": {
+    "precommit": "lint-staged"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  }
+}

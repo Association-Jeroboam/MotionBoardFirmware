@@ -1,6 +1,3 @@
-# Temporary files
-*.swp
-
 # Build folders
 target/.dep/
 target/build/
@@ -8,4 +5,8 @@ sim/.dep/
 sim/build/
 
 # IDE files
-.idea
+.idea/
+
+# Miscellaneous files
+*.swp
+node_modules/
