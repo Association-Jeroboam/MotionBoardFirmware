@@ -1,8 +1,9 @@
 #include "Logging.hpp"
 
+#include <hal.h>
+
 #include <chprintf.h>
 #include <cstdarg>
-#include <hal.h>
 
 #define LOGGING_SERIAL_DRIVER SD4
 
