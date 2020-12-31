@@ -1,0 +1,1 @@
+COMMONCPPSRC += $(COMMONDIR)/HAL/ports/STM32G4/Logging.cpp
