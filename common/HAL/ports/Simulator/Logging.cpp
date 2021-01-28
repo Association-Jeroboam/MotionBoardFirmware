@@ -3,10 +3,6 @@
 #include <cstdarg>
 #include <iostream>
 
-void Logging::init() {
-    // NOOP
-}
-
 void Logging::print(const char* fmt, ...) {
     va_list args;
     va_start(args, fmt);

@@ -9,4 +9,9 @@ namespace Board {
     namespace GPIO {
         ioline_t getLedLine();
     }
+
+    namespace Com {
+        void initDrivers();
+        SerialDriver * getLoggingDriver();
+    }
 }

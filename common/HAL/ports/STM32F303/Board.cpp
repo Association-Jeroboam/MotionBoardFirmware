@@ -7,6 +7,15 @@ __extension__ SerialConfig serialConfig{
         .cr2 = USART_CR2_STOP1_BITS,
         .cr3 = 0
 };
+
 ioline_t Board::GPIO::getLedLine() {
     return LINE_ARD_D13;
+}
+
+void Board::Com::initDrivers() {
+    sdStart(getLoggingDriver(), &serialConfig);
+}
+
+SerialDriver * Board::Com::getLoggingDriver() {
+    return &SD2;
 }

@@ -9,7 +9,8 @@ int main() {
     halInit();
     chSysInit();
 
-    Logging::init();
+    Board::Com::initDrivers();
+
     Logging::println("Starting up");
 
     while (!chThdShouldTerminateX()) {
