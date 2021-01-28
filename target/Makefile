@@ -185,7 +185,9 @@ include $(RULESPATH)/rules.mk
 ##############################################################################
 # Custom rules
 #
-
+flash:
+	make -j
+	openocd -s ./cfg/ -c "set BIN_FILE build/${PROJECT}.bin" -f flash.cfg
 #
 # Custom rules
 ##############################################################################
