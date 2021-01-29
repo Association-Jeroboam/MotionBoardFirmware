@@ -8,7 +8,7 @@ __extension__ SerialConfig serialConfig{
         .cr3 = 0
 };
 
-ioline_t Board::GPIO::getLedLine() {
+ioline_t Board::IO::getLedLine() {
     return LINE_LED;
 }
 

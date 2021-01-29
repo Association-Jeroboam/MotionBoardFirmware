@@ -15,9 +15,9 @@ int main() {
 
     while (!chThdShouldTerminateX()) {
         chThdSleepMilliseconds(500);
-        palWriteLine(Board::GPIO::getLedLine(), PAL_HIGH);
+        palWriteLine(Board::IO::getLedLine(), PAL_HIGH);
         chThdSleepMilliseconds(500);
-        palWriteLine(Board::GPIO::getLedLine(), PAL_LOW);
+        palWriteLine(Board::IO::getLedLine(), PAL_LOW);
     }
 
     Logging::println("Shutting down");

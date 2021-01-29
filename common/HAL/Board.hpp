@@ -6,7 +6,7 @@
 #include "hal_serial.h"
 
 namespace Board {
-    namespace GPIO {
+    namespace IO {
         ioline_t getLedLine();
     }
 
