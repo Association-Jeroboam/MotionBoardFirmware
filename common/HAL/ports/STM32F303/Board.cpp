@@ -7,8 +7,10 @@
 #include "BuildConf.hpp"
 #include "Logging.hpp"
 
-#define PWM_COUNTING_FREQUENCY 2000000
+#define PWM_COUNTING_FREQUENCY 20000000
 #define PWM_OUTPUT_FREQUENCY   20000
+
+#define DEADTIME_VALUE 40
 
 #define MOTOR_LEFT_P_CHAN_LINE  LINE_ARD_D1
 #define MOTOR_LEFT_N_CHAN_LINE  LINE_ARD_D3
@@ -31,7 +33,7 @@ __extension__ const PWMConfig pwmMotorConfig {
             {PWM_OUTPUT_DISABLED, NULL},
     },
     .cr2  = 0,
-    .bdtr = 0,
+    .bdtr = DEADTIME_VALUE,
     .dier = 0,
 };
 
