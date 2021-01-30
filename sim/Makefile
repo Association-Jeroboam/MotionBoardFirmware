@@ -87,6 +87,7 @@ include $(CHIBIOS)/os/common/ports/SIMIA32/compilers/GCC/port.mk
 # Other files (optional).
 include $(CHIBIOS)/os/hal/lib/streams/streams.mk
 include $(CHIBIOS)/os/various/shell/shell.mk
+include $(CHIBIOS)/os/various/cpp_wrappers/chcpp.mk
 
 # Project files
 include $(COMMONDIR)/common.mk
