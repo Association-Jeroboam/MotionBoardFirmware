@@ -21,14 +21,14 @@ void Logging::init(){
 void Logging::print(const char* fmt, ...) {
     va_list args;
     va_start(args, fmt);
-    chprintf(reinterpret_cast<BaseSequentialStream*>(&LOGGING_DRIVER), fmt, args);
+    chvprintf(reinterpret_cast<BaseSequentialStream*>(&LOGGING_DRIVER), fmt, args);
     va_end(args);
 }
 
 void Logging::println(const char* fmt, ...) {
     va_list args;
     va_start(args, fmt);
-    chprintf(reinterpret_cast<BaseSequentialStream*>(&LOGGING_DRIVER), fmt, args);
+    chvprintf(reinterpret_cast<BaseSequentialStream*>(&LOGGING_DRIVER), fmt, args);
     chprintf(reinterpret_cast<BaseSequentialStream*>(&LOGGING_DRIVER), "\n");
     va_end(args);
 }
