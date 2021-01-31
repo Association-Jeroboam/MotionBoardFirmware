@@ -66,8 +66,8 @@ void Board::IO::initDrivers() {
     palSetLineMode(MOTOR_RIGHT_P_CHAN_LINE, PAL_MODE_ALTERNATE(6));
     palSetLineMode(MOTOR_RIGHT_N_CHAN_LINE, PAL_MODE_ALTERNATE(6));
     pwmStart(&MOTOR_PWM_DRIVER, &pwmMotorConfig);
-    setMotorDutyCycle(LEFT_MOTOR,  5000);
-    setMotorDutyCycle(RIGHT_MOTOR, 5000);
+    setMotorDutyCycle(LEFT_MOTOR,  0.);
+    setMotorDutyCycle(RIGHT_MOTOR, 0.);
 
     //Encoders init
     //Left encoder
@@ -83,11 +83,13 @@ void Board::IO::initDrivers() {
     qeiEnable(&RIGHT_ENCODER_DRIVER);
 }
 
-void Board::IO::setMotorDutyCycle(enum motor motor, uint16_t duty_cycle){
-    Logging::println("Setting motor %u duty cycle: %u", motor, duty_cycle);
+void Board::IO::setMotorDutyCycle(enum motor motor, float duty_cycle){
+    if( duty_cycle > 1. || duty_cycle < -1. ) return;
+    Logging::println("Setting motor %u duty cycle: %f", motor, duty_cycle);
+    uint16_t percentage = (uint16_t)((duty_cycle*0.5 + 0.5) * 10000);
     pwmEnableChannel(&MOTOR_PWM_DRIVER,
                      motor,
-                     PWM_PERCENTAGE_TO_WIDTH(&MOTOR_PWM_DRIVER, duty_cycle));
+                     PWM_PERCENTAGE_TO_WIDTH(&MOTOR_PWM_DRIVER, percentage));
 }
 
 void Board::IO::deinitPWM(){
