@@ -96,15 +96,19 @@ void Board::IO::deinitPWM(){
     pwmDisableChannel(&MOTOR_PWM_DRIVER, RIGHT_MOTOR);
 }
 
-int16_t Board::IO::getLeftEncoderCount(){
-    int16_t encoderCount = qeiGetCount(&LEFT_ENCODER_DRIVER);
-    qeiSetCount(&LEFT_ENCODER_DRIVER, 0);
-    return encoderCount;
-}
-
-int16_t Board::IO::getRightEncoderCount(){
-    int16_t encoderCount = qeiGetCount(&RIGHT_ENCODER_DRIVER);
-    qeiSetCount(&RIGHT_ENCODER_DRIVER, 0);
+int16_t Board::IO::getEncoderCount(enum encoder encoder){
+    int16_t encoderCount;
+    
+    switch (encoder) {
+        case LEFT_ENCODER:
+            encoderCount = qeiGetCount(&LEFT_ENCODER_DRIVER);
+            qeiSetCount(&LEFT_ENCODER_DRIVER, 0);
+            break;
+        case RIGHT_ENCODER:
+            encoderCount = qeiGetCount(&RIGHT_ENCODER_DRIVER);
+            qeiSetCount(&RIGHT_ENCODER_DRIVER, 0);
+            break;
+    }
     return encoderCount;
 }
 

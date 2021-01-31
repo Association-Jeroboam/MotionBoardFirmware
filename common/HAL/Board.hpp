@@ -7,13 +7,13 @@ namespace Board {
 
     namespace IO {
 
-        enum motor : uint16_t;
+        enum motor   : uint8_t;
+        enum encoder : uint8_t;
 
         void initDrivers();
         void deinitPWM();
         void setMotorDutyCycle(enum motor motor, uint16_t duty_cycle);
-        int16_t getLeftEncoderCount();
-        int16_t getRightEncoderCount();
+        int16_t getEncoderCount(enum encoder encoder);
 
         void toggleLED();
 

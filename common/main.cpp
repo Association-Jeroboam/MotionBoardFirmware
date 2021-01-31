@@ -12,7 +12,6 @@ int main() {
     halCommunityInit();
     chSysInit();
 
-
     Logging::init();
     Logging::println("Starting up");
     Board::init();
@@ -24,9 +23,9 @@ int main() {
     while (!chThdShouldTerminateX()) {
         chThdSleepMilliseconds(500);
         Board::IO::toggleLED();
-        uint16_t leftEncoderCount = Board::IO::getLeftEncoderCount();
-        uint16_t rightEncoderCount = Board::IO::getRightEncoderCount();
-        Logging::println("left encoder cnt: %d", leftEncoderCount);
+        int16_t leftEncoderCount = Board::IO::getLeftEncoderCount();
+        int16_t rightEncoderCount = Board::IO::getLeftEncoderCount();
+        Logging::println("left encoder cnt : %d", leftEncoderCount);
         Logging::println("right encoder cnt: %d", rightEncoderCount);
 
     }

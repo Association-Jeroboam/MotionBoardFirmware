@@ -1,6 +1,7 @@
 #pragma once
 
 #include "board.h"
+#include "Board.hpp"
 
 // Communications
 #define LOGGING_DRIVER           SD2
@@ -9,8 +10,8 @@
 
 namespace Board {
     namespace IO {
-        enum motor : uint16_t{
-            LEFT_MOTOR =  1,
+        enum motor : uint8_t {
+            LEFT_MOTOR  = 1,
             RIGHT_MOTOR = 0,
         };
     }
@@ -24,6 +25,15 @@ namespace Board {
 #define MOTOR_RIGHT_N_CHAN_LINE  PAL_LINE(GPIOA, 7U)
 
 // Encoders
+
+namespace Board {
+    namespace IO {
+        enum encoder : uint8_t {
+            LEFT_ENCODER  = 0,
+            RIGHT_ENCODER = 1,
+        };
+    }
+}
 
 constexpr uint16_t ENCODER_TICK_PER_TURN = 48;
 
