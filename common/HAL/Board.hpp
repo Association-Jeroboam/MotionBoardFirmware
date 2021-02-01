@@ -1,6 +1,7 @@
 #pragma once
 
 #include "inttypes.h"
+#include "ch.hpp"
 
 namespace Board {
     void init();
@@ -21,5 +22,16 @@ namespace Board {
 
     namespace Com {
         void initDrivers();
+    }
+
+    namespace Events {
+
+        enum event {
+            RUN_MOTOR_CONTROL = 1 << 0,
+        };
+
+        void eventRegister(chibios_rt::EventListener *elp, enum event event);
+
+        void startMotorControlLoop(uint16_t frequency);
     }
 }

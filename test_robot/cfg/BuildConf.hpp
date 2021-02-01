@@ -59,6 +59,10 @@ constexpr float WHEEL_BASE         = 0.186; //[m] Theorical 0.186
 #define ENCODER_RIGHT_CHAN1_PIN_MODE  2
 #define ENCODER_RIGHT_CHAN2_PIN_MODE  2
 
+// Timers
+
+#define MOTOR_CONTROL_LOOP_TIMER      GPTD7
+
 // GPIO
 
 #define LED_LINE         LINE_ARD_D13

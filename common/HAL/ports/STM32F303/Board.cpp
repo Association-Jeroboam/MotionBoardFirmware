@@ -10,6 +10,12 @@
 
 #define DEADTIME_VALUE 40
 
+#define CONTROL_LOOP_TIMER_COUNTING_FREQUENCY 2000
+
+static void controlLoopTimerCallback(GPTDriver *gptp);
+
+static chibios_rt::EventSource eventSource;
+
 __extension__ PWMChannelConfig channelConf {
         .mode = PWM_OUTPUT_ACTIVE_HIGH | PWM_COMPLEMENTARY_OUTPUT_ACTIVE_HIGH,
         .callback = NULL,
@@ -52,6 +58,13 @@ __extension__ QEIConfig rightEncoderConf {
     .overflow_cb = NULL,
 };
 
+__extension__ GPTConfig intervalTimerConfig{
+    .frequency = CONTROL_LOOP_TIMER_COUNTING_FREQUENCY,
+    .callback  = controlLoopTimerCallback,
+    .cr2       = 0,
+    .dier      = 0,
+};
+
 void Board::init() {
     Board::Com::initDrivers();
     Board::IO::initDrivers();
@@ -81,6 +94,9 @@ void Board::IO::initDrivers() {
     palSetLineMode(ENCODER_RIGHT_CHAN2_LINE, PAL_MODE_ALTERNATE(ENCODER_RIGHT_CHAN2_PIN_MODE));
     qeiStart(&RIGHT_ENCODER_DRIVER, &rightEncoderConf);
     qeiEnable(&RIGHT_ENCODER_DRIVER);
+
+    //Event Timers
+    gptStart(&MOTOR_CONTROL_LOOP_TIMER, &intervalTimerConfig);
 }
 
 void Board::IO::setMotorDutyCycle(enum motor motor, float duty_cycle){
@@ -120,4 +136,21 @@ void Board::IO::toggleLED(){
 
 void Board::Com::initDrivers() {
     Logging::println("Com drivers init");
+}
+
+void Board::Events::startMotorControlLoop(uint16_t frequency) {
+    if (frequency > CONTROL_LOOP_TIMER_COUNTING_FREQUENCY){
+        frequency = CONTROL_LOOP_TIMER_COUNTING_FREQUENCY;
+    }
+    uint16_t interval = (uint16_t )(1.0/(float)frequency * CONTROL_LOOP_TIMER_COUNTING_FREQUENCY);
+    gptStartContinuous(&MOTOR_CONTROL_LOOP_TIMER, (gptcnt_t)interval);
+}
+
+static void controlLoopTimerCallback(GPTDriver *gptp){
+    (void)gptp;
+    eventSource.broadcastFlags(Board::Events::RUN_MOTOR_CONTROL);
+}
+
+void Board::Events::eventRegister(chibios_rt::EventListener *elp, enum event event) {
+    eventSource.registerMask(elp, event);
 }
