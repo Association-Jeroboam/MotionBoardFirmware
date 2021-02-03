@@ -1,21 +1,20 @@
+#include "ch.hpp"
+#include "hal.h"
+#include "hal_pal.h"
+#include "hal_serial.h"
+#include "hal_pwm.h"
 #include "Board.hpp"
 #include "board.h"
+#include "BuildConf.hpp"
 
-__extension__ SerialConfig serialConfig{
-        .speed = 115200,
-        .cr1 = 0,
-        .cr2 = USART_CR2_STOP1_BITS,
-        .cr3 = 0
-};
+void Board::IO::initDrivers() {}
 
-ioline_t Board::IO::getLedLine() {
-    return LINE_LED;
+void Board::IO::deinitPWM(){}
+
+void Board::IO::setMotorDutyCycle(enum motor motor, uint16_t duty_cycle){}
+
+void Board::IO::toggleLED(){
+    palToggleLine(LED_LINE);
 }
 
-void Board::Com::initDrivers() {
-    sdStart(getLoggingDriver(), &serialConfig);
-}
-
-SerialDriver * Board::Com::getLoggingDriver() {
-    return &SD4;
-}
+void Board::Com::initDrivers() {}

@@ -3,21 +3,21 @@
 
 #include <Logging.hpp>
 #include "Board.hpp"
-#include "hal_pal.h"
 
 int main() {
     halInit();
     chSysInit();
 
-    Board::Com::initDrivers();
 
+    Logging::init();
     Logging::println("Starting up");
+    Board::Com::initDrivers();
+    Board::IO::initDrivers();
 
     while (!chThdShouldTerminateX()) {
         chThdSleepMilliseconds(500);
-        palWriteLine(Board::IO::getLedLine(), PAL_HIGH);
-        chThdSleepMilliseconds(500);
-        palWriteLine(Board::IO::getLedLine(), PAL_LOW);
+        Board::IO::toggleLED();
+
     }
 
     Logging::println("Shutting down");

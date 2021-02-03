@@ -1,17 +1,24 @@
 #pragma once
 
-#include "ch.hpp"
-#include "hal.h"
-#include "hal_pal.h"
-#include "hal_serial.h"
+#include "inttypes.h"
 
 namespace Board {
     namespace IO {
-        ioline_t getLedLine();
+
+        enum motor : uint16_t {
+            LEFT_MOTOR  = 0,
+            RIGHT_MOTOR = 1,
+        };
+
+        void initDrivers();
+        void deinitPWM();
+        void setMotorDutyCycle(enum motor motor, uint16_t duty_cycle);
+
+        void toggleLED();
+
     }
 
     namespace Com {
         void initDrivers();
-        SerialDriver * getLoggingDriver();
     }
 }
