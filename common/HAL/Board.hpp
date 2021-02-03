@@ -3,6 +3,8 @@
 #include "inttypes.h"
 
 namespace Board {
+    void init();
+
     namespace IO {
 
         enum motor : uint16_t;

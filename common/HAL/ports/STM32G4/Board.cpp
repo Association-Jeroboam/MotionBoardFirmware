@@ -7,6 +7,11 @@
 #include "board.h"
 #include "BuildConf.hpp"
 
+void Board::init(){
+    Board::Com::initDrivers();
+    Board::IO::initDrivers();
+}
+
 void Board::IO::initDrivers() {}
 
 void Board::IO::deinitPWM(){}

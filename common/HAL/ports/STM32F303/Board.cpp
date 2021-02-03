@@ -52,6 +52,11 @@ __extension__ QEIConfig rightEncoderConf {
     .overflow_cb = NULL,
 };
 
+void Board::init() {
+    Board::Com::initDrivers();
+    Board::IO::initDrivers();
+}
+
 void Board::IO::initDrivers() {
     Logging::println("IO drivers init");
 

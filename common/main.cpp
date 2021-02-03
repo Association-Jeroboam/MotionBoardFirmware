@@ -15,8 +15,7 @@ int main() {
 
     Logging::init();
     Logging::println("Starting up");
-    Board::Com::initDrivers();
-    Board::IO::initDrivers();
+    Board::init();
     Board::IO::toggleLED();
 
     Board::IO::setMotorDutyCycle(Board::IO::LEFT_MOTOR, 3500);
