@@ -5,10 +5,7 @@
 namespace Board {
     namespace IO {
 
-        enum motor : uint16_t {
-            LEFT_MOTOR  = 0,
-            RIGHT_MOTOR = 1,
-        };
+        enum motor : uint16_t;
 
         void initDrivers();
         void deinitPWM();
