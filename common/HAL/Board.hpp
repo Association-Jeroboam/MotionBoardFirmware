@@ -10,6 +10,8 @@ namespace Board {
         void initDrivers();
         void deinitPWM();
         void setMotorDutyCycle(enum motor motor, uint16_t duty_cycle);
+        int16_t getLeftEncoderCount();
+        int16_t getRightEncoderCount();
 
         void toggleLED();
 

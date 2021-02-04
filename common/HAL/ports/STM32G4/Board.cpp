@@ -17,10 +17,6 @@ int16_t Board::IO::getLeftEncoderCount(){}
 
 int16_t Board::IO::getRightEncoderCount(){}
 
-void Board::IO::resetLeftEncoder(){}
-
-void Board::IO::resetRightEncoder(){}
-
 void Board::IO::toggleLED(){
     palToggleLine(LED_LINE);
 }
