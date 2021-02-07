@@ -1,3 +1,6 @@
 [submodule "libs/ChibiOS"]
 	path = libs/ChibiOS
 	url = https://github.com/ChibiOS/ChibiOS
+[submodule "libs/ChibiOS-Contrib"]
+	path = libs/ChibiOS-Contrib
+	url = git@github.com:Association-Jeroboam/ChibiOS-Contrib.git

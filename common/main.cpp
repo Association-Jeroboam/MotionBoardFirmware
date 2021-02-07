@@ -9,34 +9,25 @@
 
 int main() {
     halInit();
+    halCommunityInit();
     chSysInit();
 
 
     Logging::init();
     Logging::println("Starting up");
-    Board::Com::initDrivers();
-    Board::IO::initDrivers();
+    Board::init();
     Board::IO::toggleLED();
-    //motor test routine
-    Board::IO::setMotorDutyCycle(Board::IO::LEFT_MOTOR, 2500);
-    chThdSleepMilliseconds(500);
-    Board::IO::setMotorDutyCycle(Board::IO::LEFT_MOTOR, 5000);
-    chThdSleepMilliseconds(1000);
-    Board::IO::setMotorDutyCycle(Board::IO::LEFT_MOTOR, 7500);
-    chThdSleepMilliseconds(500);
-    Board::IO::setMotorDutyCycle(Board::IO::LEFT_MOTOR, 5000);
-    chThdSleepMilliseconds(1000);
-    Board::IO::setMotorDutyCycle(Board::IO::RIGHT_MOTOR, 2500);
-    chThdSleepMilliseconds(500);
-    Board::IO::setMotorDutyCycle(Board::IO::RIGHT_MOTOR, 5000);
-    chThdSleepMilliseconds(1000);
-    Board::IO::setMotorDutyCycle(Board::IO::RIGHT_MOTOR, 7500);
-    chThdSleepMilliseconds(500);
-    Board::IO::setMotorDutyCycle(Board::IO::RIGHT_MOTOR, 5000);
+
+    Board::IO::setMotorDutyCycle(Board::IO::LEFT_MOTOR, 3500);
+    Board::IO::setMotorDutyCycle(Board::IO::RIGHT_MOTOR, 3500);
 
     while (!chThdShouldTerminateX()) {
         chThdSleepMilliseconds(500);
         Board::IO::toggleLED();
+        uint16_t leftEncoderCount = Board::IO::getLeftEncoderCount();
+        uint16_t rightEncoderCount = Board::IO::getRightEncoderCount();
+        Logging::println("left encoder cnt: %d", leftEncoderCount);
+        Logging::println("right encoder cnt: %d", rightEncoderCount);
 
     }
 

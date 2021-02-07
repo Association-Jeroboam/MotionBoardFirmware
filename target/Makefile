@@ -91,6 +91,7 @@ PLATFORM = STM32G4
 
 # Imported source files and paths.
 CHIBIOS   := ../libs/ChibiOS
+CHIBIOS_CONTRIB = $(CHIBIOS)/../ChibiOS-Contrib
 CONFDIR   := ./cfg
 BUILDDIR  := ./build
 DEPDIR    := ./.dep
@@ -101,8 +102,8 @@ include $(CHIBIOS)/os/license/license.mk
 # Startup files.
 include $(CHIBIOS)/os/common/startup/ARMCMx/compilers/GCC/mk/startup_stm32g4xx.mk
 # HAL-OSAL files (optional).
-include $(CHIBIOS)/os/hal/hal.mk
-include $(CHIBIOS)/os/hal/ports/STM32/STM32G4xx/platform.mk
+include $(CHIBIOS_CONTRIB)/os/hal/hal.mk
+include $(CHIBIOS_CONTRIB)/os/hal/ports/STM32/STM32G4xx/platform.mk
 include $(CHIBIOS)/os/hal/boards/ST_NUCLEO64_G431RB/board.mk
 include $(CHIBIOS)/os/hal/osal/rt-nil/osal.mk
 # RTOS files (optional).
