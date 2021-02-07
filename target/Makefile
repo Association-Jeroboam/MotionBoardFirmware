@@ -111,6 +111,7 @@ include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/port_v7m.mk
 # Auto-build files in ./source recursively.
 include $(CHIBIOS)/tools/mk/autobuild.mk
 include $(CHIBIOS)/os/hal/lib/streams/streams.mk
+include $(CHIBIOS)/os/various/cpp_wrappers/chcpp.mk
 
 # Define linker script file here
 LDSCRIPT= $(STARTUPLD)/STM32G431xB.ld
@@ -135,7 +136,7 @@ ASMSRC = $(ALLASMSRC)
 ASMXSRC = $(ALLXASMSRC)
 
 # Inclusion directories.
-INCDIR = $(CONFDIR) $(ALLINC) $(COMMONINC)
+INCDIR = $(CONFDIR) $(ALLINC) $(COMMONINC) $(PLATFORMINC)
 
 # Define C warning options here.
 CWARN = -Wall -Wextra -Wundef -Wstrict-prototypes
@@ -185,7 +186,9 @@ include $(RULESPATH)/rules.mk
 ##############################################################################
 # Custom rules
 #
-
+flash:
+	make -j
+	openocd -s ./cfg/ -c "set BIN_FILE build/${PROJECT}.bin" -f flash.cfg
 #
 # Custom rules
 ##############################################################################

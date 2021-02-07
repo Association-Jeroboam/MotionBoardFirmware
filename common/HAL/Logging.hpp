@@ -1,6 +1,7 @@
 #pragma once
 
 namespace Logging {
+
 void init();
 
 void print(const char* fmt, ...);
