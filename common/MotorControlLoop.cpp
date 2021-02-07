@@ -1,12 +1,14 @@
 #include "MotorControlLoop.hpp"
 #include "Logging.hpp"
-#include "Board.hpp"
 #include "Parameters.hpp"
+#include "BuildConf.hpp"
 
 constexpr uint16_t TOGGLE_FREQUENCY = 10; //[Hz]
 
-MotorControlLoop::MotorControlLoop() {}
+using namespace Board::IO;
 
+MotorControlLoop::MotorControlLoop(){
+}
 void MotorControlLoop::main(){
     Logging::println("[Motor Control Loop] init");
     setName("Motor Control Loop");
@@ -27,4 +29,26 @@ void MotorControlLoop::main(){
 
     }
     Logging::println("[Motor Control Loop] deinit");
+}
+
+void MotorControlLoop::motorSetSpeed(enum motor motor, float speed){
+    switch(motor){
+        case LEFT_MOTOR:
+//            m_leftMotor.setSpeed(speed);
+            break;
+        case RIGHT_MOTOR:
+//            m_rightMotor.setSpeed(speed);
+            break;
+    }
+}
+
+void MotorControlLoop::motorSetPID(enum motor motor, float p, float i, float d){
+    switch(motor){
+        case LEFT_MOTOR:
+//            m_leftMotor.setPID(p, i, d);
+            break;
+        case RIGHT_MOTOR:
+//            m_rightMotor.setPID(p, i, d);
+            break;
+    }
 }
