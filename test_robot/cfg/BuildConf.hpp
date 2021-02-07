@@ -67,8 +67,3 @@ constexpr float WHEEL_BASE         = 0.186; //[m] Theorical 0.186
 // GPIO
 
 #define LED_LINE         LINE_ARD_D13
-
-#define LOGGING_DRIVER   SD2
-#define MOTOR_PWM_DRIVER PWMD1
-
-#define LED_LINE         LINE_ARD_D13
