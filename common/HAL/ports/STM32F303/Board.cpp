@@ -17,7 +17,7 @@ static void controlLoopTimerCallback(GPTDriver *gptp);
 static chibios_rt::EventSource eventSource;
 
 __extension__ PWMChannelConfig channelConf {
-        .mode = PWM_OUTPUT_ACTIVE_HIGH | PWM_COMPLEMENTARY_OUTPUT_ACTIVE_HIGH,
+        .mode = PWM_OUTPUT_ACTIVE_LOW | PWM_COMPLEMENTARY_OUTPUT_ACTIVE_LOW,
         .callback = NULL,
 };
 
@@ -101,7 +101,6 @@ void Board::IO::initDrivers() {
 
 void Board::IO::setMotorDutyCycle(enum motor motor, float duty_cycle){
     if( duty_cycle > 1. || duty_cycle < -1. ) return;
-    Logging::println("Setting motor %u duty cycle: %f", motor, duty_cycle);
     uint16_t percentage = (uint16_t)((duty_cycle*0.5 + 0.5) * 10000);
     pwmEnableChannel(&MOTOR_PWM_DRIVER,
                      motor,
