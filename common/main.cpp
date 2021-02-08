@@ -24,7 +24,7 @@ int main() {
 
     chThdCreateFromHeap(NULL, SHELL_WA_SIZE,
                         "shell", NORMALPRIO + 1,
-                        shellThread, (void*)&shell_cfg);
+                        shellThread, (void *) &shell_cfg);
 
     while (!chThdShouldTerminateX()) {
         chThdSleepMilliseconds(20);
