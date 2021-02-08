@@ -5,6 +5,7 @@
 
 // Communications
 #define LOGGING_DRIVER           SD2
+#define SHELL_DRIVER             LOGGING_DRIVER
 
 // Motors
 
