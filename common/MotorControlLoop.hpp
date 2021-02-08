@@ -1,5 +1,4 @@
-#ifndef MOTIONBOARDFIRMWARE_MOTORCONTROLLOOP_HPP
-#define MOTIONBOARDFIRMWARE_MOTORCONTROLLOOP_HPP
+#pragma once
 
 #include "ch.hpp"
 #include "Motor.hpp"
@@ -7,8 +6,8 @@
 
 constexpr uint16_t MOTOR_CONTROL_LOOP_WA = 0x100;
 
-class MotorControlLoop: public chibios_rt::BaseStaticThread<MOTOR_CONTROL_LOOP_WA>,
-                        public chibios_rt::EventListener {
+class MotorControlLoop : public chibios_rt::BaseStaticThread<MOTOR_CONTROL_LOOP_WA>,
+                         public chibios_rt::EventListener {
 public:
     MotorControlLoop();
 
@@ -18,9 +17,7 @@ public:
     Motor m_rightMotor;
 
     void motorSetSpeed(enum Board::IO::motor motor, float speed);
+
     void motorSetPID(enum Board::IO::motor motor, float p, float i, float d);
 
 };
-
-
-#endif //MOTIONBOARDFIRMWARE_MOTORCONTROLLOOP_HPP
