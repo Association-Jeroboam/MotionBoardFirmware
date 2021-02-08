@@ -38,6 +38,10 @@
  */
 /*===========================================================================*/
 
+#if !defined(CHPRINTF_USE_FLOAT)
+#define CHPRINTF_USE_FLOAT TRUE
+#endif
+
 /**
  * @brief   System time counter resolution.
  * @note    Allowed values are 16, 32 or 64 bits.

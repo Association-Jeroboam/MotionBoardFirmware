@@ -16,11 +16,11 @@ void Board::IO::initDrivers() {}
 
 void Board::IO::deinitPWM(){}
 
-void Board::IO::setMotorDutyCycle(enum motor motor, uint16_t duty_cycle){}
+void Board::IO::setMotorDutyCycle(enum motor motor, float duty_cycle){}
 
-int16_t Board::IO::getLeftEncoderCount(){}
+int16_t Board::IO::getEncoderCount(enum encoder encoder){}
 
-int16_t Board::IO::getRightEncoderCount(){}
+void Board::IO::resetEncoder(enum encoder encoder){}
 
 void Board::IO::toggleLED(){
     palToggleLine(LED_LINE);
