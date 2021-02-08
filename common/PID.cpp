@@ -8,9 +8,9 @@ m_p(p), m_i(i), m_d(d), m_bias(bias), m_frequency(frequency)
     m_d *= m_frequency;
     m_errorSum  = 0.;
     m_lastError = 0.;
-    m_output    = 0.; //TODO: change with neutral value
+    m_output    = 0.;
     m_initDone  = false;
-    m_maxIntegral = 1.;
+    m_maxIntegral = 1000.;
 }
 
 PID::PID():m_p(0.), m_i(0.), m_d(0.), m_bias(0.), m_frequency(1.){}
