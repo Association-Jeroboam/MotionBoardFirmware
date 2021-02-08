@@ -7,6 +7,8 @@
 #include "Shell.hpp"
 #include <Logging.hpp>
 
+MotorControlLoop motorControlLoop;
+
 int main() {
     halInit();
     halCommunityInit();
@@ -16,9 +18,10 @@ int main() {
     Logging::println("Starting up");
     shellInit();
     Board::init();
-    MotorControlLoop motorControlLoop;
+
     motorControlLoop.start(HIGHPRIO);
     chThdSleepMilliseconds(20);
+
     chThdCreateFromHeap(NULL, SHELL_WA_SIZE,
                         "shell", NORMALPRIO + 1,
                         shellThread, (void*)&shell_cfg);
