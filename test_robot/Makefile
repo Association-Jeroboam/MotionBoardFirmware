@@ -96,6 +96,7 @@ CONFDIR   := ./cfg
 BUILDDIR  := ./build
 DEPDIR    := ./.dep
 COMMONDIR := ../common
+PARAMDIR  := ./param
 
 # Licensing files.
 include $(CHIBIOS)/os/license/license.mk
@@ -138,7 +139,7 @@ ASMSRC = $(ALLASMSRC)
 ASMXSRC = $(ALLXASMSRC)
 
 # Inclusion directories.
-INCDIR = $(CONFDIR) $(ALLINC) $(COMMONINC) $(PLATFORMINC)
+INCDIR = $(CONFDIR) $(ALLINC) $(COMMONINC) $(PLATFORMINC) $(PARAMDIR)
 
 # Define C warning options here.
 CWARN = -Wall -Wextra -Wundef -Wstrict-prototypes

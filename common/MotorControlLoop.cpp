@@ -1,7 +1,6 @@
 #include "MotorControlLoop.hpp"
 #include "Logging.hpp"
 #include "Parameters.hpp"
-#include "BuildConf.hpp"
 
 constexpr uint16_t TOGGLE_FREQUENCY = 10; //[Hz]
 
