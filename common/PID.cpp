@@ -1,31 +1,30 @@
 #include "PID.h"
 
 
-PID::PID(float p, float i, float d, float bias, float frequency):
-m_p(p), m_i(i), m_d(d), m_bias(bias), m_frequency(frequency)
-{
+PID::PID(float p, float i, float d, float bias, float frequency) :
+        m_p(p), m_i(i), m_d(d), m_bias(bias), m_frequency(frequency) {
     m_i /= m_frequency;
     m_d *= m_frequency;
-    m_errorSum  = 0.;
+    m_errorSum = 0.;
     m_lastError = 0.;
-    m_output    = 0.;
-    m_initDone  = false;
+    m_output = 0.;
+    m_initDone = false;
     m_maxIntegral = 1000.;
 }
 
-PID::PID():m_p(0.), m_i(0.), m_d(0.), m_bias(0.), m_frequency(1.){}
+PID::PID() : m_p(0.), m_i(0.), m_d(0.), m_bias(0.), m_frequency(1.) {}
 
-void PID::reset(){
-    m_initDone  = false;
+void PID::reset() {
+    m_initDone = false;
     m_lastError = 0.;
-    m_errorSum  = 0.;
+    m_errorSum = 0.;
 }
 
 void PID::set(float p, float i, float d, float bias, float frequency) {
     m_frequency = frequency;
     m_p = p;
-    m_i = i/m_frequency;
-    m_d = d*m_frequency;
+    m_i = i / m_frequency;
+    m_d = d * m_frequency;
     m_bias = bias;
     this->reset();
 }
@@ -37,10 +36,10 @@ void PID::set(float p, float i, float d) {
     this->reset();
 }
 
-float PID::compute(float error){
+float PID::compute(float error) {
     float error_D;
 
-    if(!m_initDone){
+    if (!m_initDone) {
         //Do not use D in first run
         error_D = 0;
         m_initDone = true;
@@ -55,21 +54,18 @@ float PID::compute(float error){
     float I_part = m_i * m_errorSum;
     float D_part = m_d * error_D;
 
-    if(I_part > m_maxIntegral){
+    if (I_part > m_maxIntegral) {
         I_part = m_maxIntegral;
-    } else if(I_part < - m_maxIntegral){
+    } else if (I_part < -m_maxIntegral) {
         I_part = -m_maxIntegral;
     }
 
-    float output = P_part + I_part + D_part ;
+    float output = P_part + I_part + D_part;
 
     //nothing happens if pid->output == 0
-    if (output > 0)
-    {
+    if (output > 0) {
         output += m_bias;
-    }
-    else if (output < 0)
-    {
+    } else if (output < 0) {
         output -= m_bias;
     }
     return output;

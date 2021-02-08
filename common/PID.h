@@ -4,11 +4,17 @@
 class PID {
 public:
     PID(float p, float i, float d, float bias, float frequency);
+
     PID();
+
     void reset();
+
     void set(float p, float i, float d, float bias, float frequency);
+
     void set(float p, float i, float d);
+
     float compute(float error);
+
     void setMaxIntegral(float maxIntegral);
 
 private:
@@ -16,7 +22,7 @@ private:
     float m_errorSum, m_lastError;
     float m_output;
     float m_maxIntegral;
-    bool  m_initDone;
+    bool m_initDone;
 };
 
 
