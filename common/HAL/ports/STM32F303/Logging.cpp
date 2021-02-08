@@ -7,28 +7,28 @@
 #include "BuildConf.hpp"
 #include "hal_serial.h"
 
-__extension__ SerialConfig serialConfig {
+__extension__ SerialConfig serialConfig{
         .speed = 115200,
         .cr1 = 0,
         .cr2 = USART_CR2_STOP1_BITS,
         .cr3 = 0
 };
 
-void Logging::init(){
+void Logging::init() {
     sdStart(&LOGGING_DRIVER, &serialConfig);
 }
 
-void Logging::print(const char* fmt, ...) {
+void Logging::print(const char *fmt, ...) {
     va_list args;
     va_start(args, fmt);
-    chvprintf(reinterpret_cast<BaseSequentialStream*>(&LOGGING_DRIVER), fmt, args);
+    chvprintf(reinterpret_cast<BaseSequentialStream *>(&LOGGING_DRIVER), fmt, args);
     va_end(args);
 }
 
-void Logging::println(const char* fmt, ...) {
+void Logging::println(const char *fmt, ...) {
     va_list args;
     va_start(args, fmt);
-    chvprintf(reinterpret_cast<BaseSequentialStream*>(&LOGGING_DRIVER), fmt, args);
-    chprintf(reinterpret_cast<BaseSequentialStream*>(&LOGGING_DRIVER), "\n");
+    chvprintf(reinterpret_cast<BaseSequentialStream *>(&LOGGING_DRIVER), fmt, args);
+    chprintf(reinterpret_cast<BaseSequentialStream *>(&LOGGING_DRIVER), "\n");
     va_end(args);
 }
