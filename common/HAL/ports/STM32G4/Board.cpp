@@ -7,20 +7,20 @@
 #include "board.h"
 #include "BuildConf.hpp"
 
-void Board::init(){
+void Board::init() {
     Board::Com::initDrivers();
     Board::IO::initDrivers();
 }
 
 void Board::IO::initDrivers() {}
 
-void Board::IO::deinitPWM(){}
+void Board::IO::deinitPWM() {}
 
-void Board::IO::setMotorDutyCycle(enum motor motor, float duty_cycle){}
+void Board::IO::setMotorDutyCycle(enum motor motor, float duty_cycle) {}
 
-int16_t Board::IO::getEncoderCount(enum encoder encoder){}
+int16_t Board::IO::getEncoderCount(enum encoder encoder) {}
 
-void Board::IO::toggleLED(){
+void Board::IO::toggleLED() {
     palToggleLine(LED_LINE);
 }
 
