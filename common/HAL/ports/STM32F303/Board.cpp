@@ -10,7 +10,7 @@
 
 #define DEADTIME_VALUE 40
 
-#define CONTROL_LOOP_TIMER_COUNTING_FREQUENCY 2000
+#define CONTROL_LOOP_TIMER_COUNTING_FREQUENCY 2000000
 
 static void controlLoopTimerCallback(GPTDriver *gptp);
 
