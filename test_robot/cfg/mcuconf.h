@@ -230,6 +230,12 @@
  */
 #define STM32_WDG_USE_IWDG                  FALSE
 
+/*
+ * Shell settings
+ */
+#define SHELL_CMD_TEST_ENABLED FALSE
+#define SHELL_CONFIG_FILE TRUE
+
 #include "mcuconf_community.h"
 
 #endif /* MCUCONF_H */
