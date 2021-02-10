@@ -7,7 +7,9 @@
 #include "BuildConf.hpp"
 #include "hal_serial.h"
 
-__extension__ SerialConfig serialConfig{
+bool disablePrint = false;
+
+__extension__ SerialConfig serialConfig {
         .speed = 115200,
         .cr1 = 0,
         .cr2 = USART_CR2_STOP1_BITS,
@@ -18,17 +20,27 @@ void Logging::init() {
     sdStart(&LOGGING_DRIVER, &serialConfig);
 }
 
-void Logging::print(const char *fmt, ...) {
+void Logging::print(const char* fmt, ...) {
+    if(disablePrint) return;
     va_list args;
     va_start(args, fmt);
     chvprintf(reinterpret_cast<BaseSequentialStream *>(&LOGGING_DRIVER), fmt, args);
     va_end(args);
 }
 
-void Logging::println(const char *fmt, ...) {
+void Logging::println(const char* fmt, ...) {
+    if(disablePrint) return;
     va_list args;
     va_start(args, fmt);
     chvprintf(reinterpret_cast<BaseSequentialStream *>(&LOGGING_DRIVER), fmt, args);
     chprintf(reinterpret_cast<BaseSequentialStream *>(&LOGGING_DRIVER), "\n");
     va_end(args);
+}
+
+void Logging::setDisablePrint(bool disable) {
+    disablePrint = disable;
+}
+
+void Logging::write(uint8_t *txBuffer, uint16_t len) {
+    sdWrite(&LOGGING_DRIVER, txBuffer, len);
 }
