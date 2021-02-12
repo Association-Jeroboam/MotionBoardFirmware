@@ -27,6 +27,9 @@
 #include "chprintf.h"
 #include "shell.h"
 #include "BuildConf.hpp"
+#include <cstring>
+#include "DataStreamer.hpp"
+#include "Logging.hpp"
 
 char **endptr;
 
@@ -45,9 +48,19 @@ char *completion_buffer[SHELL_MAX_COMPLETIONS];
  */
 static void cmd_data_stream(BaseSequentialStream *chp, int argc, char *argv[]) {
 
-    for (uint8_t i = 0; i < argc; i++) {
-        chprintf(chp, "arg1 %s\r\n", argv[i]);
+    (void)chp;
+    if (argc == 1) {
+        if (!strcmp(argv[0], "start")) {
+            DataStreamer::instance()->start(NORMALPRIO);
+            return;
+        } else if (!strcmp(argv[0], "stop")) {
+            DataStreamer::instance()->getSelfX().requestTerminate();
+            return;
+        }
     }
+
+    Logging::println("usage:");
+    Logging::println("data_stream [start/stop]");
 }
 
 static const ShellCommand commands[] = {
