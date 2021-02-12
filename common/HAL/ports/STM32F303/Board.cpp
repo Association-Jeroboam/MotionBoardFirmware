@@ -16,53 +16,53 @@ static void controlLoopTimerCallback(GPTDriver *gptp);
 
 static chibios_rt::EventSource eventSource;
 
-__extension__ PWMChannelConfig channelConf {
-        .mode = PWM_OUTPUT_ACTIVE_HIGH | PWM_COMPLEMENTARY_OUTPUT_ACTIVE_HIGH,
+__extension__ PWMChannelConfig channelConf{
+        .mode = PWM_OUTPUT_ACTIVE_LOW | PWM_COMPLEMENTARY_OUTPUT_ACTIVE_LOW,
         .callback = NULL,
 };
 
-__extension__ const PWMConfig pwmMotorConfig {
-    .frequency = PWM_COUNTING_FREQUENCY,
-    .period = PWM_COUNTING_FREQUENCY/PWM_OUTPUT_FREQUENCY,
-    .callback = NULL,
-    .channels = {
-            channelConf,
-            channelConf,
-            {PWM_OUTPUT_DISABLED, NULL},
-            {PWM_OUTPUT_DISABLED, NULL},
-    },
-    .cr2  = 0,
-    .bdtr = DEADTIME_VALUE,
-    .dier = 0,
+__extension__ const PWMConfig pwmMotorConfig{
+        .frequency = PWM_COUNTING_FREQUENCY,
+        .period = PWM_COUNTING_FREQUENCY / PWM_OUTPUT_FREQUENCY,
+        .callback = NULL,
+        .channels = {
+                channelConf,
+                channelConf,
+                {PWM_OUTPUT_DISABLED, NULL},
+                {PWM_OUTPUT_DISABLED, NULL},
+        },
+        .cr2  = 0,
+        .bdtr = DEADTIME_VALUE,
+        .dier = 0,
 };
 
-__extension__ QEIConfig leftEncoderConf {
-    .mode        = QEI_MODE_QUADRATURE,
-    .resolution  = QEI_BOTH_EDGES,
-    .dirinv      = QEI_DIRINV_TRUE,
-    .overflow    = QEI_OVERFLOW_WRAP,
-    .min         = SHRT_MIN,
-    .max         = SHRT_MIN,
-    .notify_cb   = NULL,
-    .overflow_cb = NULL,
+__extension__ QEIConfig leftEncoderConf{
+        .mode        = QEI_MODE_QUADRATURE,
+        .resolution  = QEI_BOTH_EDGES,
+        .dirinv      = QEI_DIRINV_TRUE,
+        .overflow    = QEI_OVERFLOW_WRAP,
+        .min         = SHRT_MIN,
+        .max         = SHRT_MIN,
+        .notify_cb   = NULL,
+        .overflow_cb = NULL,
 };
 
-__extension__ QEIConfig rightEncoderConf {
-    .mode        = QEI_MODE_QUADRATURE,
-    .resolution  = QEI_BOTH_EDGES,
-    .dirinv      = QEI_DIRINV_FALSE,
-    .overflow    = QEI_OVERFLOW_WRAP,
-    .min         = SHRT_MIN,
-    .max         = SHRT_MIN,
-    .notify_cb   = NULL,
-    .overflow_cb = NULL,
+__extension__ QEIConfig rightEncoderConf{
+        .mode        = QEI_MODE_QUADRATURE,
+        .resolution  = QEI_BOTH_EDGES,
+        .dirinv      = QEI_DIRINV_FALSE,
+        .overflow    = QEI_OVERFLOW_WRAP,
+        .min         = SHRT_MIN,
+        .max         = SHRT_MIN,
+        .notify_cb   = NULL,
+        .overflow_cb = NULL,
 };
 
 __extension__ GPTConfig intervalTimerConfig{
-    .frequency = CONTROL_LOOP_TIMER_COUNTING_FREQUENCY,
-    .callback  = controlLoopTimerCallback,
-    .cr2       = 0,
-    .dier      = 0,
+        .frequency = CONTROL_LOOP_TIMER_COUNTING_FREQUENCY,
+        .callback  = controlLoopTimerCallback,
+        .cr2       = 0,
+        .dier      = 0,
 };
 
 void Board::init() {
@@ -74,12 +74,12 @@ void Board::IO::initDrivers() {
     Logging::println("IO drivers init");
 
     //Motor PWM init
-    palSetLineMode(MOTOR_LEFT_P_CHAN_LINE,  PAL_MODE_ALTERNATE(6));
-    palSetLineMode(MOTOR_LEFT_N_CHAN_LINE,  PAL_MODE_ALTERNATE(6));
+    palSetLineMode(MOTOR_LEFT_P_CHAN_LINE, PAL_MODE_ALTERNATE(6));
+    palSetLineMode(MOTOR_LEFT_N_CHAN_LINE, PAL_MODE_ALTERNATE(6));
     palSetLineMode(MOTOR_RIGHT_P_CHAN_LINE, PAL_MODE_ALTERNATE(6));
     palSetLineMode(MOTOR_RIGHT_N_CHAN_LINE, PAL_MODE_ALTERNATE(6));
     pwmStart(&MOTOR_PWM_DRIVER, &pwmMotorConfig);
-    setMotorDutyCycle(LEFT_MOTOR,  0.);
+    setMotorDutyCycle(LEFT_MOTOR, 0.);
     setMotorDutyCycle(RIGHT_MOTOR, 0.);
 
     //Encoders init
@@ -99,24 +99,23 @@ void Board::IO::initDrivers() {
     gptStart(&MOTOR_CONTROL_LOOP_TIMER, &intervalTimerConfig);
 }
 
-void Board::IO::setMotorDutyCycle(enum motor motor, float duty_cycle){
-    if( duty_cycle > 1. || duty_cycle < -1. ) return;
-    Logging::println("Setting motor %u duty cycle: %f", motor, duty_cycle);
-    uint16_t percentage = (uint16_t)((duty_cycle*0.5 + 0.5) * 10000);
+void Board::IO::setMotorDutyCycle(enum motor motor, float duty_cycle) {
+    if (duty_cycle > 1. || duty_cycle < -1.) return;
+    uint16_t percentage = (uint16_t) ((duty_cycle * 0.5 + 0.5) * 10000);
     pwmEnableChannel(&MOTOR_PWM_DRIVER,
                      motor,
                      PWM_PERCENTAGE_TO_WIDTH(&MOTOR_PWM_DRIVER, percentage));
 }
 
-void Board::IO::deinitPWM(){
+void Board::IO::deinitPWM() {
     Logging::println("PWM deinit");
     pwmDisableChannel(&MOTOR_PWM_DRIVER, LEFT_MOTOR);
     pwmDisableChannel(&MOTOR_PWM_DRIVER, RIGHT_MOTOR);
 }
 
-int16_t Board::IO::getEncoderCount(enum encoder encoder){
+int16_t Board::IO::getEncoderCount(enum encoder encoder) {
     int16_t encoderCount;
-    
+
     switch (encoder) {
         case LEFT_ENCODER:
             encoderCount = qeiGetCount(&LEFT_ENCODER_DRIVER);
@@ -130,7 +129,7 @@ int16_t Board::IO::getEncoderCount(enum encoder encoder){
     return encoderCount;
 }
 
-void Board::IO::toggleLED(){
+void Board::IO::toggleLED() {
     palToggleLine(LED_LINE);
 }
 
@@ -139,15 +138,15 @@ void Board::Com::initDrivers() {
 }
 
 void Board::Events::startMotorControlLoop(uint16_t frequency) {
-    if (frequency > CONTROL_LOOP_TIMER_COUNTING_FREQUENCY){
+    if (frequency > CONTROL_LOOP_TIMER_COUNTING_FREQUENCY) {
         frequency = CONTROL_LOOP_TIMER_COUNTING_FREQUENCY;
     }
-    uint16_t interval = (uint16_t )(1.0/(float)frequency * CONTROL_LOOP_TIMER_COUNTING_FREQUENCY);
-    gptStartContinuous(&MOTOR_CONTROL_LOOP_TIMER, (gptcnt_t)interval);
+    uint16_t interval = (uint16_t) (1.0 / (float) frequency * CONTROL_LOOP_TIMER_COUNTING_FREQUENCY);
+    gptStartContinuous(&MOTOR_CONTROL_LOOP_TIMER, (gptcnt_t) interval);
 }
 
-static void controlLoopTimerCallback(GPTDriver *gptp){
-    (void)gptp;
+static void controlLoopTimerCallback(GPTDriver *gptp) {
+    (void) gptp;
     eventSource.broadcastFlags(Board::Events::RUN_MOTOR_CONTROL);
 }
 

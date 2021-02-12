@@ -2,9 +2,9 @@
 
 namespace Logging {
 
-void init();
+    void init();
 
-void print(const char* fmt, ...);
+    void print(const char *fmt, ...);
 
-void println(const char* fmt, ...);
+    void println(const char *fmt, ...);
 } // namespace Logging

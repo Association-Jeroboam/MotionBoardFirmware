@@ -233,8 +233,8 @@
 /*
  * Shell settings
  */
-#define SHELL_CMD_TEST_ENABLED FALSE
-#define SHELL_CONFIG_FILE TRUE
+#define SHELL_CMD_TEST_ENABLED              FALSE
+#define SHELL_CONFIG_FILE                   TRUE
 
 #include "mcuconf_community.h"
 
