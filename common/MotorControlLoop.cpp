@@ -1,3 +1,4 @@
+#include <new>
 #include "MotorControlLoop.hpp"
 #include "Logging.hpp"
 #include "Parameters.hpp"
@@ -6,6 +7,16 @@
 constexpr uint16_t TOGGLE_FREQUENCY = 10; //[Hz]
 
 using namespace Board::IO;
+
+static MotorControlLoop * s_instance = nullptr;
+
+MotorControlLoop * MotorControlLoop::instance() {
+    if (s_instance == nullptr) {
+        s_instance = reinterpret_cast<MotorControlLoop *>(chHeapAlloc(nullptr, sizeof(MotorControlLoop)));
+        new(s_instance) MotorControlLoop();
+    }
+    return s_instance;
+}
 
 MotorControlLoop::MotorControlLoop() :
         m_leftMotor(LEFT_ENCODER, LEFT_MOTOR),
