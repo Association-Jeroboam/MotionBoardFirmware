@@ -30,6 +30,7 @@
 #include <cstring>
 #include "DataStreamer.hpp"
 #include "Logging.hpp"
+#include "MotorControlLoop.hpp"
 
 char **endptr;
 
@@ -63,8 +64,47 @@ static void cmd_data_stream(BaseSequentialStream *chp, int argc, char *argv[]) {
     Logging::println("data_stream [start/stop]");
 }
 
+static void cmd_motor(BaseSequentialStream *chp, int argc, char *argv[]) {
+    (void)chp;
+    if(argc >= 3){
+        enum Board::IO::motor motor;
+        if (!strcmp(argv[0], "left")) {
+            motor = Board::IO::LEFT_MOTOR;
+        } else if (!strcmp(argv[0], "right")) {
+            motor = Board::IO::RIGHT_MOTOR;
+        } else{
+            goto usage;
+        }
+
+        if (!strcmp(argv[1], "speed")) {
+            float speed = atof(argv[2]);
+            MotorControlLoop::instance()->motorSetSpeed(motor, speed);
+            return;
+        } else if (!strcmp(argv[1], "pid")) {
+            float p = 0.;
+            float i = 0.;
+            float d = 0.;
+            float * coeffs[3] = {&p, &i, &d};
+
+            for(uint8_t i = 0; i < argc - 2; i++){
+                *coeffs[i] = atof(argv[i + 2]);
+            }
+
+            MotorControlLoop::instance()->motorSetPID(motor, p, i, d);
+            return;
+        } else {
+            goto usage;
+        }
+    }
+
+usage:
+    Logging::println("usage:");
+    Logging::println("motor [left/right] [pid/speed] [parameters]");
+}
+
 static const ShellCommand commands[] = {
         {"data_stream", cmd_data_stream},
+        {"motor", cmd_motor},
         {NULL, NULL}};
 
 /*
