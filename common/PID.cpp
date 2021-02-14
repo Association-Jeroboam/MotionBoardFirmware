@@ -9,10 +9,15 @@ PID::PID(float p, float i, float d, float bias, float frequency) :
     m_lastError = 0.;
     m_output = 0.;
     m_initDone = false;
-    m_maxIntegral = 1000.;
+    m_maxIntegral = 1.;
 }
 
-PID::PID() : m_p(0.), m_i(0.), m_d(0.), m_bias(0.), m_frequency(1.) {}
+PID::PID() : m_p(0.), m_i(0.), m_d(0.), m_bias(0.), m_frequency(1.) {
+	m_lastError = 0.;
+	m_output = 0.;
+	m_initDone = false;
+	m_maxIntegral = 1.;
+}
 
 void PID::reset() {
     m_initDone = false;
@@ -22,11 +27,8 @@ void PID::reset() {
 
 void PID::set(float p, float i, float d, float bias, float frequency) {
     m_frequency = frequency;
-    m_p = p;
-    m_i = i / m_frequency;
-    m_d = d * m_frequency;
     m_bias = bias;
-    this->reset();
+    this->set(p, i, d);
 }
 
 void PID::set(float p, float i, float d) {
@@ -60,15 +62,15 @@ float PID::compute(float error) {
         I_part = -m_maxIntegral;
     }
 
-    float output = P_part + I_part + D_part;
+    m_output = P_part + I_part + D_part;
 
-    //nothing happens if pid->output == 0
-    if (output > 0) {
-        output += m_bias;
-    } else if (output < 0) {
-        output -= m_bias;
+    //nothing happens if pid->m_output == 0
+    if (m_output > 0) {
+        m_output += m_bias;
+    } else if (m_output < 0) {
+        m_output -= m_bias;
     }
-    return output;
+    return m_output;
 }
 
 void PID::setMaxIntegral(float maxIntegral) {
