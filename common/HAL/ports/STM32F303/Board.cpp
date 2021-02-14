@@ -42,7 +42,7 @@ __extension__ QEIConfig leftEncoderConf{
         .dirinv      = QEI_DIRINV_TRUE,
         .overflow    = QEI_OVERFLOW_WRAP,
         .min         = SHRT_MIN,
-        .max         = SHRT_MIN,
+        .max         = SHRT_MAX,
         .notify_cb   = NULL,
         .overflow_cb = NULL,
 };
@@ -53,7 +53,7 @@ __extension__ QEIConfig rightEncoderConf{
         .dirinv      = QEI_DIRINV_FALSE,
         .overflow    = QEI_OVERFLOW_WRAP,
         .min         = SHRT_MIN,
-        .max         = SHRT_MIN,
+        .max         = SHRT_MAX,
         .notify_cb   = NULL,
         .overflow_cb = NULL,
 };
