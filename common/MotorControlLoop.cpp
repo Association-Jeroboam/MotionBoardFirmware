@@ -35,8 +35,8 @@ void MotorControlLoop::main() {
 
     static uint16_t toggleCounter = 0;
 
-    motorSetSpeed(LEFT_MOTOR, 3.1415);
-    motorSetSpeed(RIGHT_MOTOR, 3.1415);
+    motorSetSpeed(LEFT_MOTOR, 0.);
+    motorSetSpeed(RIGHT_MOTOR, 0.);
 
     while (!shouldTerminate()) {
         waitOneEvent(Board::Events::RUN_MOTOR_CONTROL);
