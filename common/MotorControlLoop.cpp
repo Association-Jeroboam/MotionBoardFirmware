@@ -19,8 +19,8 @@ MotorControlLoop * MotorControlLoop::instance() {
 }
 
 MotorControlLoop::MotorControlLoop() :
-        m_leftMotor(LEFT_ENCODER, LEFT_MOTOR),
-        m_rightMotor(RIGHT_ENCODER, RIGHT_MOTOR) {}
+        m_leftMotor(LEFT_ENCODER, LEFT_MOTOR, WHEEL_LEFT_RADIUS),
+        m_rightMotor(RIGHT_ENCODER, RIGHT_MOTOR, WHEEL_RIGHT_RADIUS) {}
 
 void MotorControlLoop::main() {
     Logging::println("[Motor Control Loop] init");
