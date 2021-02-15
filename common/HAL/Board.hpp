@@ -31,6 +31,7 @@ namespace Board {
 
         enum event {
             RUN_MOTOR_CONTROL = 1 << 0,
+            SEND_STREAM       = 1 << 1,
         };
 
         void eventRegister(chibios_rt::EventListener *elp, enum event event);
