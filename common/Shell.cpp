@@ -92,6 +92,10 @@ static void cmd_motor(BaseSequentialStream *chp, int argc, char *argv[]) {
 
             MotorControlLoop::instance()->motorSetPID(motor, p, i, d);
             return;
+        } else if (!strcmp(argv[1], "duty_cycle")){
+            float duty_cycle = atof(argv[2]);
+            Board::IO::setMotorDutyCycle(motor, duty_cycle);
+            return;
         } else {
             goto usage;
         }
