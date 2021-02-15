@@ -1,5 +1,5 @@
 #include "PID.h"
-
+#include "Parameters.hpp"
 
 PID::PID(float p, float i, float d, float bias, float frequency) :
         m_p(p), m_i(i), m_d(d), m_bias(bias), m_frequency(frequency) {
@@ -10,6 +10,7 @@ PID::PID(float p, float i, float d, float bias, float frequency) :
     m_output = 0.;
     m_initDone = false;
     m_maxIntegral = 1.;
+    m_maxOutput = MAX_PID_OUTPUT;
 }
 
 PID::PID() : m_p(0.), m_i(0.), m_d(0.), m_bias(0.), m_frequency(1.) {
@@ -17,6 +18,7 @@ PID::PID() : m_p(0.), m_i(0.), m_d(0.), m_bias(0.), m_frequency(1.) {
 	m_output = 0.;
 	m_initDone = false;
 	m_maxIntegral = 1.;
+	m_maxOutput = MAX_PID_OUTPUT;
 }
 
 void PID::reset() {
@@ -69,6 +71,12 @@ float PID::compute(float error) {
         m_output += m_bias;
     } else if (m_output < 0) {
         m_output -= m_bias;
+    }
+
+    if (m_output> m_maxOutput){
+        m_output = m_maxOutput;
+    } else if (m_output < - m_maxOutput){
+        m_output = -m_maxOutput;
     }
     return m_output;
 }

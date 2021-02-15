@@ -22,6 +22,7 @@ private:
     float m_errorSum, m_lastError;
     float m_output;
     float m_maxIntegral;
+    float m_maxOutput;
     bool m_initDone;
 };
 
