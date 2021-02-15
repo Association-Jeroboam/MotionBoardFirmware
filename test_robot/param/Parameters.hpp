@@ -15,3 +15,13 @@ constexpr float GEAR_RATIO_INV = ((GEAR_RATIO_DEN) / (GEAR_RATIO_NUM));
 constexpr float WHEEL_LEFT_RADIUS  = 0.064; //[m] Theorical 0.064
 constexpr float WHEEL_RIGHT_RADIUS = 0.064; //[m] Theorical 0.064
 constexpr float WHEEL_BASE         = 0.186; //[m] Theorical 0.186
+
+constexpr float LEFT_MOTOR_KP      = 0.15;
+constexpr float LEFT_MOTOR_KI      = 1.5;
+constexpr float LEFT_MOTOR_KD      = 0.0;
+constexpr float LEFT_MOTOR_BIAS    = 0.2;
+
+constexpr float RIGHT_MOTOR_KP      = 0.15;
+constexpr float RIGHT_MOTOR_KI      = 1.5;
+constexpr float RIGHT_MOTOR_KD      = 0.0;
+constexpr float RIGHT_MOTOR_BIAS    = 0.2;
