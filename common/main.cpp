@@ -3,7 +3,6 @@
 #include <shell.h>
 
 #include "Board.hpp"
-#include "MotorControlLoop.hpp"
 #include "Shell.hpp"
 #include <Logging.hpp>
 
@@ -17,7 +16,6 @@ int main() {
     shellInit();
     Board::init();
 
-    MotorControlLoop::instance()->start(HIGHPRIO);
     chThdSleepMilliseconds(20);
 
     chThdCreateFromHeap(NULL, SHELL_WA_SIZE,

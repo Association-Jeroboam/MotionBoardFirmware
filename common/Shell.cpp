@@ -30,7 +30,7 @@
 #include <cstring>
 #include "DataStreamer.hpp"
 #include "Logging.hpp"
-#include "MotorControlLoop.hpp"
+#include "MotorControl.hpp"
 
 char **endptr;
 
@@ -72,40 +72,7 @@ static bool thread_launched = false;
 
 static void cmd_motor(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void)chp;
-    if(argc >= 3){
-        enum Board::IO::motor motor;
-        if (!strcmp(argv[0], "left")) {
-            motor = Board::IO::LEFT_MOTOR;
-        } else if (!strcmp(argv[0], "right")) {
-            motor = Board::IO::RIGHT_MOTOR;
-        } else{
-            goto usage;
-        }
 
-        if (!strcmp(argv[1], "speed")) {
-            float speed = atof(argv[2]);
-            MotorControlLoop::instance()->motorSetSpeed(motor, speed);
-            return;
-        } else if (!strcmp(argv[1], "pid")) {
-            float p = 0.;
-            float i = 0.;
-            float d = 0.;
-            float * coeffs[3] = {&p, &i, &d};
-
-            for(uint8_t i = 0; i < argc - 2; i++){
-                *coeffs[i] = atof(argv[i + 2]);
-            }
-
-            MotorControlLoop::instance()->motorSetPID(motor, p, i, d);
-            return;
-        } else if (!strcmp(argv[1], "duty_cycle")){
-            float duty_cycle = atof(argv[2]);
-            Board::IO::setMotorDutyCycle(motor, duty_cycle);
-            return;
-        } else {
-            goto usage;
-        }
-    }
 
 usage:
     Logging::println("usage:");
