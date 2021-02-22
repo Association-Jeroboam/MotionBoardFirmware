@@ -138,7 +138,7 @@ void Board::Com::initDrivers() {
     Logging::println("Com drivers init");
 }
 
-void Board::Events::startMotorControlLoop(uint16_t frequency) {
+void Board::Events::startControlLoop(uint16_t frequency) {
     if (frequency > CONTROL_LOOP_TIMER_COUNTING_FREQUENCY) {
         frequency = CONTROL_LOOP_TIMER_COUNTING_FREQUENCY;
     }

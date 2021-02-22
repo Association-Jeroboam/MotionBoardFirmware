@@ -36,6 +36,6 @@ namespace Board {
 
         void eventRegister(chibios_rt::EventListener *elp, enum event event);
 
-        void startMotorControlLoop(uint16_t frequency);
+        void startControlLoop(uint16_t frequency);
     }
 }
