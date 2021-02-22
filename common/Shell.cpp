@@ -48,14 +48,20 @@ char *completion_buffer[SHELL_MAX_COMPLETIONS];
  * Shell commands
  */
 static void cmd_data_stream(BaseSequentialStream *chp, int argc, char *argv[]) {
-
+static bool thread_launched = false;
     (void)chp;
     if (argc == 1) {
         if (!strcmp(argv[0], "start")) {
-            DataStreamer::instance()->start(NORMALPRIO);
+            if(! thread_launched) {
+                DataStreamer::instance()->start(NORMALPRIO);
+                thread_launched = true;
+            }
             return;
         } else if (!strcmp(argv[0], "stop")) {
-            DataStreamer::instance()->getSelfX().requestTerminate();
+            if(thread_launched) {
+                DataStreamer::instance()->getSelfX().requestTerminate();
+                thread_launched = false;
+            }
             return;
         }
     }
