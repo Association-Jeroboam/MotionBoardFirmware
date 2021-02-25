@@ -14,7 +14,6 @@ Motor::Motor(enum encoder encoder,
                                   m_encoder(encoder),
                                   m_motor(motor) {
     m_drivenDistance = 0.;
-    Logging::println("wheel r %f", m_wheelRadius);
 }
 
 void Motor::updateControl() {
@@ -27,7 +26,7 @@ void Motor::updateControl() {
 void Motor::updateSpeed() {
     int16_t encoderCount = getEncoderCount(m_encoder);
     float drivenAngle = float(encoderCount) * (1. / ENCODER_TICK_PER_TURN) * GEAR_RATIO * 2. * M_PI;
-    m_speed = drivenAngle * MOTOR_CONTROL_LOOP_FREQ;
+    m_speed = drivenAngle * MOTOR_CONTROL_LOOP_FREQ * m_wheelRadius;
     m_drivenDistance += drivenAngle * m_wheelRadius;
 }
 
