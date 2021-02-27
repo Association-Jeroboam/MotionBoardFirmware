@@ -24,6 +24,8 @@ public:
 
     float getDrivenDistance();
 
+    void reset();
+
 private:
     float m_speedSetpoint; // [mm/s]
     float m_speed;         // [mm/s]
