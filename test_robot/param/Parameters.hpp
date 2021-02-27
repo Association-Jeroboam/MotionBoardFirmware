@@ -6,7 +6,7 @@
 constexpr uint16_t LED_TOGGLE_FREQUENCY = 10; //[Hz]
 
 constexpr uint16_t MOTOR_CONTROL_LOOP_FREQ = 100; //[Hz]
-constexpr float    MOTOR_CONTROL_LOOP_DT   = 1/MOTOR_CONTROL_LOOP_FREQ; //[s]
+constexpr float    MOTOR_CONTROL_LOOP_DT   = 1./MOTOR_CONTROL_LOOP_FREQ; //[s]
 
 constexpr float ENCODER_TICK_PER_TURN = 48.;
 
@@ -30,7 +30,7 @@ constexpr float MAX_ANGULAR_SPEED  = M_PI;
 constexpr float LEFT_MOTOR_KP      = 0.003;
 constexpr float LEFT_MOTOR_KI      = 0.03;
 constexpr float LEFT_MOTOR_KD      = 0.0;
-constexpr float LEFT_MOTOR_BIAS    = 0.3;
+constexpr float LEFT_MOTOR_BIAS    = 0.31;
 
 constexpr float RIGHT_MOTOR_KP      = 0.003;
 constexpr float RIGHT_MOTOR_KI      = 0.03;

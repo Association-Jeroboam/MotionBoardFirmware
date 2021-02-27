@@ -11,6 +11,7 @@ PID::PID(float p, float i, float d, float bias, float frequency) :
     m_initDone = false;
     m_maxIntegral = DEFAULT_MAX_PID_INTEGRAL;
     m_maxOutput = DEFAULT_MAX_PID_OUTPUT;
+    m_lastInput = 0.;
 }
 
 PID::PID() : m_p(0.), m_i(0.), m_d(0.), m_bias(0.), m_frequency(1.) {
@@ -19,6 +20,7 @@ PID::PID() : m_p(0.), m_i(0.), m_d(0.), m_bias(0.), m_frequency(1.) {
 	m_initDone = false;
 	m_maxIntegral = DEFAULT_MAX_PID_INTEGRAL;
 	m_maxOutput = DEFAULT_MAX_PID_OUTPUT;
+    m_lastInput = 0.;
 }
 
 void PID::reset() {
@@ -40,7 +42,8 @@ void PID::set(float p, float i, float d) {
     this->reset();
 }
 
-float PID::compute(float error) {
+float PID::compute(float setpoint, float input) {
+    float error = setpoint - input;
     float error_D;
 
     if (!m_initDone) {
@@ -48,8 +51,9 @@ float PID::compute(float error) {
         error_D = 0;
         m_initDone = true;
     } else {
-        error_D = (error - m_lastError);
+        error_D = input - m_lastInput;
     }
+    m_lastInput = input;
 
     m_errorSum += (error + m_lastError) / 2.; // bilinear integration
     m_lastError = error;

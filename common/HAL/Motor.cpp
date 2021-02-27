@@ -16,8 +16,7 @@ Motor::Motor(enum encoder encoder,
 
 void Motor::updateControl() {
     updateMeasure();
-    float error = m_speedSetpoint - m_speed;
-    float command = m_speedPID.compute(error);
+    float command = m_speedPID.compute(m_speedSetpoint, m_speed);
     setMotorDutyCycle(m_motor, command);
     if (m_encoder == LEFT_ENCODER){
         DataStreamer::instance()->setEntry(leftPWMEnum, command);

@@ -80,8 +80,7 @@ void Control::applyControl() {
     switch (m_currentGoal.getType()) {
         case Goal::ANGLE: {
             m_angleSetpoint = m_currentGoal.getAngleData().angle + m_currentGoal.getAngleData().turns * 2 * M_PI;
-            float angleError = m_angleSetpoint - m_robotPose.getAbsoluteAngle();
-            m_angularSpeedSetpoint = m_anglePID.compute(angleError);
+            m_angularSpeedSetpoint = m_anglePID.compute(m_angleSetpoint, m_robotPose.getAbsoluteAngle());
             m_linearSpeedSetpoint = 0.;
             break;
         }
@@ -90,14 +89,13 @@ void Control::applyControl() {
             float yError = m_currentGoal.getCoordData().y - m_robotPose.getY();
 
             m_angleSetpoint = atan2(yError, xError) + m_robotPose.getTurns() * 2. * M_PI;
-            float angleError = m_angleSetpoint - m_robotPose.getAbsoluteAngle();
-            m_angularSpeedSetpoint = m_anglePID.compute(angleError);
+            m_angularSpeedSetpoint = m_anglePID.compute(m_angleSetpoint, m_robotPose.getAbsoluteAngle());
             //prevents motor saturation
             float maxLinearSpeed = MAX_WHEEL_SPEED - fabsf(m_angularSpeedSetpoint) * WHEEL_BASE * 0.5;
             m_distancePID.setMaxOutput(maxLinearSpeed);
             m_distanceError = sqrtf( xError * xError + yError * yError);
             //TODO warning: something to do with robot direction here
-            m_linearSpeedSetpoint = m_distancePID.compute(m_distanceError);
+            m_linearSpeedSetpoint = m_distancePID.compute(m_distanceError, 0.);
 
             break;
         }

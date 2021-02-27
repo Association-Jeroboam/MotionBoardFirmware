@@ -13,7 +13,7 @@ public:
 
     void set(float p, float i, float d);
 
-    float compute(float error);
+    float compute(float setpoint, float input);
 
     void setMaxIntegral(float maxIntegral);
 
@@ -22,10 +22,11 @@ public:
 private:
     float m_p, m_i, m_d, m_bias, m_frequency;
     float m_errorSum, m_lastError;
+    float m_lastInput;
     float m_output;
     float m_maxIntegral;
     float m_maxOutput;
-    bool m_initDone;
+    bool  m_initDone;
 };
 
 
