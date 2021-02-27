@@ -30,12 +30,12 @@ constexpr float MAX_ANGULAR_SPEED  = M_PI;
 constexpr float LEFT_MOTOR_KP      = 0.003;
 constexpr float LEFT_MOTOR_KI      = 0.03;
 constexpr float LEFT_MOTOR_KD      = 0.0;
-constexpr float LEFT_MOTOR_BIAS    = 0.31;
+constexpr float LEFT_MOTOR_BIAS    = 0.1;
 
 constexpr float RIGHT_MOTOR_KP      = 0.003;
 constexpr float RIGHT_MOTOR_KI      = 0.03;
 constexpr float RIGHT_MOTOR_KD      = 0.0;
-constexpr float RIGHT_MOTOR_BIAS    = 0.3;
+constexpr float RIGHT_MOTOR_BIAS    = 0.1;
 
 constexpr float INITIAL_X_POS       = 0.;
 constexpr float INITIAL_Y_POS       = 0.;
