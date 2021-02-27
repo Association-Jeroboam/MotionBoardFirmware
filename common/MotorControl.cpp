@@ -1,7 +1,7 @@
 #include "MotorControl.hpp"
 #include "Parameters.hpp"
 #include "DataStreamer.hpp"
-
+#include "Logging.hpp"
 
 
 using namespace Board::IO;
@@ -48,19 +48,38 @@ void MotorControl::motorSetPID(enum motor motor, float p, float i, float d) {
 }
 
 float MotorControl::getMotorDrivenDistance(enum motor motor) {
+    float drivenDistance;
     switch (motor) {
         case LEFT_MOTOR:
-            return m_leftMotor.getDrivenDistance();
+            drivenDistance = m_leftMotor.getDrivenDistance();
+            break;
         case RIGHT_MOTOR:
-            return m_rightMotor.getDrivenDistance();
+            drivenDistance = m_rightMotor.getDrivenDistance();
+            break;
     }
+    return drivenDistance;
 }
 
 float MotorControl::getMotorSpeed(enum Board::IO::motor motor){
+    float speed;
     switch (motor) {
         case LEFT_MOTOR:
-            return m_leftMotor.getSpeed();
+            speed = m_leftMotor.getSpeed();
+            break;
         case RIGHT_MOTOR:
-            return m_rightMotor.getSpeed();
+            speed = m_rightMotor.getSpeed();
+            break;
+    }
+    return speed;
+}
+
+void MotorControl::resetMotor(enum Board::IO::motor motor){
+    switch (motor) {
+        case LEFT_MOTOR:
+            m_leftMotor.reset();
+            break;
+        case RIGHT_MOTOR:
+            m_rightMotor.reset();
+            break;
     }
 }

@@ -18,6 +18,8 @@ public:
 
     float getMotorSpeed(enum Board::IO::motor motor);
 
+    void resetMotor(enum Board::IO::motor motor);
+
 private:
 
     Motor m_leftMotor;
