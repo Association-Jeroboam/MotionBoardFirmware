@@ -2,6 +2,7 @@
 #include "Motor.hpp"
 #include "Logging.hpp"
 #include "Parameters.hpp"
+#include "DataStreamer.hpp"
 
 using namespace Board::IO;
 
@@ -18,6 +19,11 @@ void Motor::updateControl() {
     float error = m_speedSetpoint - m_speed;
     float command = m_speedPID.compute(error);
     setMotorDutyCycle(m_motor, command);
+    if (m_encoder == LEFT_ENCODER){
+        DataStreamer::instance()->setEntry(leftPWMEnum, command);
+    } else if (m_encoder == RIGHT_ENCODER){
+        DataStreamer::instance()->setEntry(rightPWMEnum, command);
+    }
 }
 
 void Motor::updateSpeed() {
