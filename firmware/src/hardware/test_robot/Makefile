@@ -84,18 +84,24 @@ endif
 
 # Define project name here
 PROJECT = MotionBoard
+TARGET_TYPE = hardware
+TARGET = test_robot
 
 # Target settings.
 MCU      = cortex-m4
 PLATFORM = STM32F303
 
 # Imported source files and paths.
-CHIBIOS   := ../libs/ChibiOS
+CHIBIOS   := ../../../libs/ChibiOS
 CHIBIOS_CONTRIB = $(CHIBIOS)/../ChibiOS-Contrib
 CONFDIR   := ./cfg
 BUILDDIR  := ./build
 DEPDIR    := ./.dep
-COMMONDIR := ../common
+ROOTDIR   := ../../../..
+COMMONDIR := $(ROOTDIR)/common
+FIRMWAREDIR := $(ROOTDIR)/firmware
+SOURCEDIR   := $(FIRMWAREDIR)/src
+TARGETDIR := $(TARGET_TYPE)/test_robot
 PARAMDIR  := ./param
 
 # Licensing files.
@@ -121,6 +127,7 @@ LDSCRIPT= $(STARTUPLD)/STM32F303x8.ld
 
 # Project files
 include $(COMMONDIR)/common.mk
+include $(FIRMWAREDIR)/firmware.mk
 
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
@@ -139,7 +146,7 @@ ASMSRC = $(ALLASMSRC)
 ASMXSRC = $(ALLXASMSRC)
 
 # Inclusion directories.
-INCDIR = $(CONFDIR) $(ALLINC) $(COMMONINC) $(PLATFORMINC) $(PARAMDIR)
+INCDIR = $(CONFDIR) $(ALLINC) $(COMMONINC) $(PARAMDIR) $(SOURCEDIR)
 
 # Define C warning options here.
 CWARN = -Wall -Wextra -Wundef -Wstrict-prototypes
