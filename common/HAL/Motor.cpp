@@ -1,11 +1,8 @@
-#include <cmath>
+#include "LocalMath.hpp"
 #include "Motor.hpp"
 #include "Logging.hpp"
 #include "Parameters.hpp"
 
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
 using namespace Board::IO;
 
 Motor::Motor(enum encoder encoder,

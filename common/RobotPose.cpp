@@ -1,14 +1,10 @@
 #include <cmath>
+#include "LocalMath.hpp"
 #include "RobotPose.hpp"
 #include "Parameters.hpp"
 
-#ifndef M_PI
-#define M_PI 3.14159265358979323846
-#endif
-
 RobotPose::RobotPose(float x, float y, float angle) : m_x(x), m_y(y), m_angle(angle) {
     m_turns = 0;
-
 }
 
 void RobotPose::update(float dl, float dr) {
