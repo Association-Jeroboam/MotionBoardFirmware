@@ -15,7 +15,7 @@ Motor::Motor(enum encoder encoder,
 }
 
 void Motor::updateControl() {
-    updateSpeed();
+    updateMeasure();
     float error = m_speedSetpoint - m_speed;
     float command = m_speedPID.compute(error);
     setMotorDutyCycle(m_motor, command);
@@ -26,7 +26,7 @@ void Motor::updateControl() {
     }
 }
 
-void Motor::updateSpeed() {
+void Motor::updateMeasure() {
     int16_t encoderCount = getEncoderCount(m_encoder);
     float drivenAngle = float(encoderCount) * (1. / ENCODER_TICK_PER_TURN) * GEAR_RATIO * 2. * M_PI;
     m_speed = drivenAngle * MOTOR_CONTROL_LOOP_FREQ * m_wheelRadius;

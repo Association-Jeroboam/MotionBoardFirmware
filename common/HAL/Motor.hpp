@@ -33,5 +33,5 @@ private:
     const enum Board::IO::encoder m_encoder;
     const enum Board::IO::motor m_motor;
 
-    void updateSpeed();
+    void updateMeasure();
 };
