@@ -30,7 +30,7 @@
 #include <cstring>
 #include "DataStreamer.hpp"
 #include "Logging.hpp"
-#include "MotorControl.hpp"
+#include "Control.hpp"
 
 char **endptr;
 
@@ -72,16 +72,127 @@ static bool thread_launched = false;
 
 static void cmd_motor(BaseSequentialStream *chp, int argc, char *argv[]) {
     (void)chp;
+    if(argc >= 3){
+        enum Board::IO::motor motor;
+        if (!strcmp(argv[0], "left")) {
+            motor = Board::IO::LEFT_MOTOR;
+        } else if (!strcmp(argv[0], "right")) {
+            motor = Board::IO::RIGHT_MOTOR;
+        } else{
+            goto usage;
+        }
 
+        if (!strcmp(argv[1], "speed")) {
+            float speed = atof(argv[2]);
+            Goal previousGoal = Control::instance()->getCurrentGoal();
+
+            if(previousGoal.getType() == Goal::SPEED){
+                float speedToKeep;
+                switch(motor){
+                    case Board::IO::LEFT_MOTOR: {
+                        speedToKeep = previousGoal.getSpeedData().rightSpeed;
+                        Goal goal(speed, speedToKeep, Goal::SPEED);
+                        Control::instance()->setCurrentGoal(goal);
+                        break;
+                    }
+                    case Board::IO::RIGHT_MOTOR: {
+                        speedToKeep = previousGoal.getSpeedData().leftSpeed;
+                        Goal goal(speedToKeep, speed, Goal::SPEED);
+                        Control::instance()->setCurrentGoal(goal);
+                        break;
+                    }
+                }
+            } else {
+                switch(motor){
+                    case Board::IO::LEFT_MOTOR:{
+                        Goal goal(speed, 0., Goal::SPEED);
+                        Control::instance()->setCurrentGoal(goal);
+                        break;
+                    }
+                    case Board::IO::RIGHT_MOTOR:
+                        Goal goal(0., speed, Goal::SPEED);
+                        Control::instance()->setCurrentGoal(goal);
+                        break;
+                }
+            }
+            return;
+        } else if (!strcmp(argv[1], "pid")) {
+            float p = 0.;
+            float i = 0.;
+            float d = 0.;
+            float * coeffs[3] = {&p, &i, &d};
+
+            for(uint8_t i = 0; i < argc - 2; i++){
+                *coeffs[i] = atof(argv[i + 2]);
+            }
+
+            Control::instance()->setMotorPID(motor, p, i, d);
+            return;
+        } else if (!strcmp(argv[1], "duty_cycle")){
+            float duty_cycle = atof(argv[2]);
+            Board::IO::setMotorDutyCycle(motor, duty_cycle);
+            return;
+        } else {
+            goto usage;
+        }
+    }
 
 usage:
     Logging::println("usage:");
     Logging::println("motor [left/right] [pid/speed] [parameters]");
 }
 
+static void cmd_control(BaseSequentialStream *chp, int argc, char *argv[]){
+    (void)chp;
+    if(argc >= 1){
+        if (!strcmp(argv[0], "angle") && argc == 2){
+            float angle = atof(argv[1]);
+            Logging::println("angle %f", angle);
+            Goal goal(angle, 0);
+            Control::instance()->setCurrentGoal(goal);
+            return;
+        } else if(!strcmp(argv[0], "angle_pid") && argc == 2) {
+            float kp = atof(argv[1]);
+            Logging::println("angle_pid %f", kp);
+            Control::instance()->setAngleKp(kp);
+            return;
+        } else if(!strcmp(argv[0], "distance") && argc == 2) {
+            return;
+        } else if(!strcmp(argv[0], "distance_pid")) {
+            float kp = atof(argv[1]);
+            Logging::println("distance pid %f", kp);
+            Control::instance()->setDistanceKp(kp);
+            return;
+        } else if(!strcmp(argv[0], "goto") && argc == 3) {
+            float x = atof(argv[1]);
+            float y = atof(argv[2]);
+            Logging::println("goto %f %f", x, y);
+            Goal goal(x,y, Goal::COORD);
+            Control::instance()->setCurrentGoal(goal);
+            return;
+        } else if(!strcmp(argv[0], "circular") && argc == 3) {
+            float angularSpeed = atof(argv[1]);
+            float linearSpeed = atof(argv[2]);
+            Goal goal(angularSpeed, linearSpeed, Goal::CIRCULAR);
+            Control::instance()->setCurrentGoal(goal);
+            return;
+        } else if(!strcmp(argv[0], "reset")){
+            Control::instance()->reset();
+            return;
+        }
+    }
+
+    Logging::println("usage:");
+    Logging::println("control [angle/distance] [value]");
+    Logging::println("control [angle_pid/distance_pid] [value]");
+    Logging::println("control circular [angSpd] [linSpd]");
+    Logging::println("control goto [X] [Y]");
+}
+
 static const ShellCommand commands[] = {
         {"data_stream", cmd_data_stream},
         {"motor", cmd_motor},
+        {"control", cmd_control},
         {NULL, NULL}};
 
 /*
