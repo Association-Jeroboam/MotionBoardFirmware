@@ -2,6 +2,7 @@
 #include "hal.h"
 #include "Board.hpp"
 #include "BuildConf.hpp"
+#include "Parameters.hpp"
 #include "Logging.hpp"
 #include <climits>
 
@@ -42,7 +43,7 @@ __extension__ QEIConfig leftEncoderConf{
         .dirinv      = QEI_DIRINV_TRUE,
         .overflow    = QEI_OVERFLOW_WRAP,
         .min         = SHRT_MIN,
-        .max         = SHRT_MIN,
+        .max         = SHRT_MAX,
         .notify_cb   = NULL,
         .overflow_cb = NULL,
 };
@@ -53,7 +54,7 @@ __extension__ QEIConfig rightEncoderConf{
         .dirinv      = QEI_DIRINV_FALSE,
         .overflow    = QEI_OVERFLOW_WRAP,
         .min         = SHRT_MIN,
-        .max         = SHRT_MIN,
+        .max         = SHRT_MAX,
         .notify_cb   = NULL,
         .overflow_cb = NULL,
 };
@@ -100,11 +101,11 @@ void Board::IO::initDrivers() {
 }
 
 void Board::IO::setMotorDutyCycle(enum motor motor, float duty_cycle) {
-    if (duty_cycle > 1. || duty_cycle < -1.) return;
-    uint16_t percentage = (uint16_t) ((duty_cycle * 0.5 + 0.5) * 10000);
+    if (duty_cycle > MAX_PID_OUTPUT || duty_cycle < -MAX_PID_OUTPUT) return;
+    uint16_t percentage = (uint16_t) ((duty_cycle / (2 * MAX_PID_OUTPUT) + 0.5) * PWM_MAX_DUTY_CYCLE_VALUE);
     pwmEnableChannel(&MOTOR_PWM_DRIVER,
                      motor,
-                     PWM_PERCENTAGE_TO_WIDTH(&MOTOR_PWM_DRIVER, percentage));
+                     PWM_FRACTION_TO_WIDTH(&MOTOR_PWM_DRIVER, PWM_MAX_DUTY_CYCLE_VALUE, percentage));
 }
 
 void Board::IO::deinitPWM() {
