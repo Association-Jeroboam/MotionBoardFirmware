@@ -4,3 +4,4 @@ IndentWidth: 4
 PointerAlignment: Left
 AlignConsecutiveAssignments: true
 AlignConsecutiveDeclarations: true
+IndentCaseLabels: true
