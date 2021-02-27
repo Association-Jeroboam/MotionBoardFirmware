@@ -16,7 +16,11 @@ ENTRY(linearSpeedSetpoint)           \
 ENTRY(angle)                         \
 ENTRY(absoluteAngle)                 \
 ENTRY(angleSetpoint)                 \
-ENTRY(distanceError)
+ENTRY(distanceError)                 \
+ENTRY(x)                             \
+ENTRY(y)                             \
+ENTRY(leftPWM)                       \
+ENTRY(rightPWM)
 
 
 #define ENTRY(entry) entry##Enum,
