@@ -30,7 +30,7 @@
 #include <cstring>
 #include "DataStreamer.hpp"
 #include "Logging.hpp"
-#include "Control.hpp"
+#include "ControlThread.hpp"
 
 char **endptr;
 
@@ -84,7 +84,7 @@ static void cmd_motor(BaseSequentialStream *chp, int argc, char *argv[]) {
 
         if (!strcmp(argv[1], "speed")) {
             float speed = atof(argv[2]);
-            Goal previousGoal = Control::instance()->getCurrentGoal();
+            Goal previousGoal = ControlThread::instance()->getControl()->getCurrentGoal();
 
             if(previousGoal.getType() == Goal::SPEED){
                 float speedToKeep;
@@ -92,13 +92,13 @@ static void cmd_motor(BaseSequentialStream *chp, int argc, char *argv[]) {
                     case Board::IO::LEFT_MOTOR: {
                         speedToKeep = previousGoal.getSpeedData().rightSpeed;
                         Goal goal(speed, speedToKeep, Goal::SPEED);
-                        Control::instance()->setCurrentGoal(goal);
+                        ControlThread::instance()->getControl()->setCurrentGoal(goal);
                         break;
                     }
                     case Board::IO::RIGHT_MOTOR: {
                         speedToKeep = previousGoal.getSpeedData().leftSpeed;
                         Goal goal(speedToKeep, speed, Goal::SPEED);
-                        Control::instance()->setCurrentGoal(goal);
+                        ControlThread::instance()->getControl()->setCurrentGoal(goal);
                         break;
                     }
                 }
@@ -106,12 +106,12 @@ static void cmd_motor(BaseSequentialStream *chp, int argc, char *argv[]) {
                 switch(motor){
                     case Board::IO::LEFT_MOTOR:{
                         Goal goal(speed, 0., Goal::SPEED);
-                        Control::instance()->setCurrentGoal(goal);
+                        ControlThread::instance()->getControl()->setCurrentGoal(goal);
                         break;
                     }
                     case Board::IO::RIGHT_MOTOR:
                         Goal goal(0., speed, Goal::SPEED);
-                        Control::instance()->setCurrentGoal(goal);
+                        ControlThread::instance()->getControl()->setCurrentGoal(goal);
                         break;
                 }
             }
@@ -126,7 +126,7 @@ static void cmd_motor(BaseSequentialStream *chp, int argc, char *argv[]) {
                 *coeffs[i] = atof(argv[i + 2]);
             }
 
-            Control::instance()->setMotorPID(motor, p, i, d);
+            ControlThread::instance()->getControl()->setMotorPID(motor, p, i, d);
             return;
         } else if (!strcmp(argv[1], "duty_cycle")){
             float duty_cycle = atof(argv[2]);
@@ -149,35 +149,35 @@ static void cmd_control(BaseSequentialStream *chp, int argc, char *argv[]){
             float angle = atof(argv[1]);
             Logging::println("angle %f", angle);
             Goal goal(angle, 0);
-            Control::instance()->setCurrentGoal(goal);
+            ControlThread::instance()->getControl()->setCurrentGoal(goal);
             return;
         } else if(!strcmp(argv[0], "angle_pid") && argc == 2) {
             float kp = atof(argv[1]);
             Logging::println("angle_pid %f", kp);
-            Control::instance()->setAngleKp(kp);
+            ControlThread::instance()->getControl()->setAngleKp(kp);
             return;
         } else if(!strcmp(argv[0], "distance") && argc == 2) {
             return;
         } else if(!strcmp(argv[0], "distance_pid")) {
             float kp = atof(argv[1]);
             Logging::println("distance pid %f", kp);
-            Control::instance()->setDistanceKp(kp);
+            ControlThread::instance()->getControl()->setDistanceKp(kp);
             return;
         } else if(!strcmp(argv[0], "goto") && argc == 3) {
             float x = atof(argv[1]);
             float y = atof(argv[2]);
             Logging::println("goto %f %f", x, y);
             Goal goal(x,y, Goal::COORD);
-            Control::instance()->setCurrentGoal(goal);
+            ControlThread::instance()->getControl()->setCurrentGoal(goal);
             return;
         } else if(!strcmp(argv[0], "circular") && argc == 3) {
             float angularSpeed = atof(argv[1]);
             float linearSpeed = atof(argv[2]);
             Goal goal(angularSpeed, linearSpeed, Goal::CIRCULAR);
-            Control::instance()->setCurrentGoal(goal);
+            ControlThread::instance()->getControl()->setCurrentGoal(goal);
             return;
         } else if(!strcmp(argv[0], "reset")){
-            Control::instance()->reset();
+            ControlThread::instance()->getControl()->reset();
             return;
         }
     }

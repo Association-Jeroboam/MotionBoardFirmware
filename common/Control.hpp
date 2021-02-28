@@ -1,19 +1,32 @@
 #pragma once
 
-#include "ch.hpp"
 #include "Goal.hpp"
-#include "RobotPose.hpp"
 #include "MotorControl.hpp"
 #include "PID.h"
+#include "RobotPose.hpp"
 
-constexpr uint16_t CONTROL_WA = 0x200;
+struct ControlData {
+    float angularSpeed;
+    float angularSpeedSetpoint;
+    float linearSpeed;
+    float linearSpeedSetpoint;
+    float angle;
+    float absoluteAngle;
+    float angleSetpoint;
+    float distanceError;
+    float x;
+    float y;
+};
 
-class Control : public chibios_rt::BaseStaticThread<CONTROL_WA>,
-                public chibios_rt::EventListener{
-public:
-    static Control * instance();
+class Control {
+  public:
+    Control();
 
-    void main() override;
+    void update();
+
+    void updateState();
+
+    void applyControl();
 
     void setCurrentGoal(Goal goal);
 
@@ -27,18 +40,12 @@ public:
 
     void reset();
 
-private:
-    explicit Control();
+    ControlData getData();
 
-    void updateState();
-
-    void applyControl();
-
-    void updateDataStreamer();
-
+  private:
     MotorControl m_motorControl;
-    Goal      m_currentGoal;
-    RobotPose m_robotPose;
+    Goal         m_currentGoal;
+    RobotPose    m_robotPose;
 
     PID m_distancePID;
     PID m_anglePID;
