@@ -17,6 +17,8 @@ public:
 
     void setMaxIntegral(float maxIntegral);
 
+    void setMaxOutput(float maxOutput);
+
 private:
     float m_p, m_i, m_d, m_bias, m_frequency;
     float m_errorSum, m_lastError;

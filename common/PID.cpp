@@ -9,16 +9,16 @@ PID::PID(float p, float i, float d, float bias, float frequency) :
     m_lastError = 0.;
     m_output = 0.;
     m_initDone = false;
-    m_maxIntegral = 1.;
-    m_maxOutput = MAX_PID_OUTPUT;
+    m_maxIntegral = DEFAULT_MAX_PID_INTEGRAL;
+    m_maxOutput = DEFAULT_MAX_PID_OUTPUT;
 }
 
 PID::PID() : m_p(0.), m_i(0.), m_d(0.), m_bias(0.), m_frequency(1.) {
 	m_lastError = 0.;
 	m_output = 0.;
 	m_initDone = false;
-	m_maxIntegral = 1.;
-	m_maxOutput = MAX_PID_OUTPUT;
+	m_maxIntegral = DEFAULT_MAX_PID_INTEGRAL;
+	m_maxOutput = DEFAULT_MAX_PID_OUTPUT;
 }
 
 void PID::reset() {
@@ -66,7 +66,7 @@ float PID::compute(float error) {
 
     m_output = P_part + I_part + D_part;
 
-    //nothing happens if pid->m_output == 0
+    //nothing happens if m_output == 0
     if (m_output > 0) {
         m_output += m_bias;
     } else if (m_output < 0) {
@@ -83,4 +83,8 @@ float PID::compute(float error) {
 
 void PID::setMaxIntegral(float maxIntegral) {
     m_maxIntegral = maxIntegral;
+}
+
+void PID::setMaxOutput(float maxOutput) {
+    m_maxOutput = maxOutput;
 }
