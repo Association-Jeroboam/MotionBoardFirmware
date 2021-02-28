@@ -80,12 +80,17 @@ public:
 
     uint32_t getID();
 
+    void setReached(bool reached);
+
+    bool isReached();
+
     void print();
 
 private:
     enum GoalType m_type;
     goalData_t    m_data;
     uint32_t      m_ID;
+    bool          m_reached;
 
     static uint32_t s_goalCount;
 };
