@@ -1,8 +1,6 @@
 # Build folders
-target/.dep/
-target/build/
-sim/.dep/
-sim/build/
+**/.dep/
+**/build/
 
 # IDE files
 .idea/
