@@ -1,6 +1,9 @@
 #pragma once
 
 #include <inttypes.h>
+#include "LocalMath.hpp"
+
+constexpr uint16_t LED_TOGGLE_FREQUENCY = 10; //[Hz]
 
 constexpr uint16_t MOTOR_CONTROL_LOOP_FREQ = 100; //[Hz]
 constexpr float    MOTOR_CONTROL_LOOP_DT   = 1/MOTOR_CONTROL_LOOP_FREQ; //[s]
@@ -21,6 +24,9 @@ constexpr float WHEEL_LEFT_RADIUS  = 32.;  //[mm] Theorical 32
 constexpr float WHEEL_RIGHT_RADIUS = 32.;  //[mm] Theorical 32
 constexpr float WHEEL_BASE         = 186.; //[mm] Theorical 186
 
+constexpr float MAX_WHEEL_SPEED    = 550.; //[mm/s]
+constexpr float MAX_ANGULAR_SPEED  = M_PI;
+
 constexpr float LEFT_MOTOR_KP      = 0.003;
 constexpr float LEFT_MOTOR_KI      = 0.03;
 constexpr float LEFT_MOTOR_KD      = 0.0;
@@ -34,3 +40,6 @@ constexpr float RIGHT_MOTOR_BIAS    = 0.3;
 constexpr float INITIAL_X_POS       = 0.;
 constexpr float INITIAL_Y_POS       = 0.;
 constexpr float INITIAL_ANGLE       = 0.;
+
+constexpr float DISTANCE_KP         = 2.;
+constexpr float ANGLE_KP            = 5.;

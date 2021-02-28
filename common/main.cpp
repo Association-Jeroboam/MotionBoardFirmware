@@ -5,6 +5,8 @@
 #include "Board.hpp"
 #include "Shell.hpp"
 #include <Logging.hpp>
+#include "Control.hpp"
+
 
 int main() {
     halInit();
@@ -16,6 +18,7 @@ int main() {
     shellInit();
     Board::init();
 
+    Control::instance()->start(HIGHPRIO);
     chThdSleepMilliseconds(20);
 
     chThdCreateFromHeap(NULL, SHELL_WA_SIZE,
