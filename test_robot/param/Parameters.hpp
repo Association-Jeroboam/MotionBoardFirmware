@@ -43,3 +43,5 @@ constexpr float INITIAL_ANGLE       = 0.;
 
 constexpr float DISTANCE_KP         = 2.;
 constexpr float ANGLE_KP            = 5.;
+
+constexpr float COMPUTE_DIRECTION_THRESHOLD = 10.; //[mm]

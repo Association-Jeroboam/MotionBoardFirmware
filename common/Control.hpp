@@ -48,6 +48,9 @@ private:
     float m_angularSpeed;
     float m_angularSpeedSetpoint;
     float m_angleSetpoint;
+    float m_lastAngleSetpoint;
     float m_distanceError;
+    bool m_forwardDrive;
+    bool m_computeDirection;
 
 };
