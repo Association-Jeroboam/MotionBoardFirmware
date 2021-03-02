@@ -8,7 +8,20 @@ constexpr uint16_t DATA_STREAMER_WA = 256;
 ENTRY(leftWheelSpeed)                \
 ENTRY(leftWheelSpeedSetpoint)        \
 ENTRY(rightWheelSpeed)               \
-ENTRY(rightWheelSpeedSetpoint)
+ENTRY(rightWheelSpeedSetpoint)       \
+ENTRY(angularSpeed)                  \
+ENTRY(angularSpeedSetpoint)          \
+ENTRY(linearSpeed)                   \
+ENTRY(linearSpeedSetpoint)           \
+ENTRY(angle)                         \
+ENTRY(absoluteAngle)                 \
+ENTRY(angleSetpoint)                 \
+ENTRY(distanceError)                 \
+ENTRY(x)                             \
+ENTRY(y)                             \
+ENTRY(leftPWM)                       \
+ENTRY(rightPWM)
+
 
 #define ENTRY(entry) entry##Enum,
 enum dataEntryEnum : uint8_t {

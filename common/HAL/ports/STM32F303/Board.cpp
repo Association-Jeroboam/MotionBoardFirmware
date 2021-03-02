@@ -101,8 +101,8 @@ void Board::IO::initDrivers() {
 }
 
 void Board::IO::setMotorDutyCycle(enum motor motor, float duty_cycle) {
-    if (duty_cycle > MAX_PID_OUTPUT || duty_cycle < -MAX_PID_OUTPUT) return;
-    uint16_t percentage = (uint16_t) ((duty_cycle / (2 * MAX_PID_OUTPUT) + 0.5) * PWM_MAX_DUTY_CYCLE_VALUE);
+    if (duty_cycle > DEFAULT_MAX_PID_OUTPUT || duty_cycle < -DEFAULT_MAX_PID_OUTPUT) return;
+    uint16_t percentage = (uint16_t) ((duty_cycle / (2 * DEFAULT_MAX_PID_OUTPUT) + 0.5) * PWM_MAX_DUTY_CYCLE_VALUE);
     pwmEnableChannel(&MOTOR_PWM_DRIVER,
                      motor,
                      PWM_FRACTION_TO_WIDTH(&MOTOR_PWM_DRIVER, PWM_MAX_DUTY_CYCLE_VALUE, percentage));
@@ -138,7 +138,7 @@ void Board::Com::initDrivers() {
     Logging::println("Com drivers init");
 }
 
-void Board::Events::startMotorControlLoop(uint16_t frequency) {
+void Board::Events::startControlLoop(uint16_t frequency) {
     if (frequency > CONTROL_LOOP_TIMER_COUNTING_FREQUENCY) {
         frequency = CONTROL_LOOP_TIMER_COUNTING_FREQUENCY;
     }
