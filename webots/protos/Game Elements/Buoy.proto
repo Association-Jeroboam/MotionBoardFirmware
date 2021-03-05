@@ -1,0 +1,88 @@
+#VRML_OBJ R2020b utf8
+
+PROTO Buoy [
+  field            SFVec3f                  translation 0 0 0
+  field            SFRotation               rotation    0 0 1 0
+  unconnectedField SFString{"red", "green"} color       "red"
+  field            SFString                 name        "buoy"
+  field            SFFloat                  height       0.115                                                                                                             # Defines the height of the pipe.
+  field            SFFloat                  radius       0.027                                                                                                             # Defines the radius of the pipe.
+  field            SFFloat                  thickness    0.0015                                                                                                            # Defines the thickness of the pipe.
+  field            SFFloat                  thickness2   0.001
+  field            SFInt32                  subdivision  10
+]
+{
+  %{
+    local proto_path = context["project_path"]..'protos/Game Elements/'
+    local red = '0.78 0.216 0.176'
+    local green = '0.157 0.467 0.294'
+    local color = (fields.color.value == 'red') and red or green
+    local url_hd = '"' ..proto_path.. 'mesh/buoy_hd.stl"'
+
+    -- parameter checking
+    local subdivision = fields.subdivision.value
+    if subdivision > 200 then
+      io.stderr:write("High value for 'subdivision'. This can slow down the simulation\n")
+    elseif subdivision < 8 then
+      io.stderr:write("'subdivision' must be greater than or equal to 8\n")
+      subdivision = 8
+    end
+
+    local height = fields.height.value
+    if height <= 0 then
+      io.stderr:write("'height' must be greater than 0\n")
+      height = fields.height.defaultValue
+    end
+
+    local radius = fields.radius.value
+    if radius <= 0 then
+      io.stderr:write("'radius' must be greater than 0\n")
+      radius = fields.radius.defaultValue
+    end
+
+    local thickness = fields.thickness.value
+    if thickness <= 0 then
+      io.stderr:write("'thickness' must be greater than 0\n")
+      thickness = radius / 2
+    elseif thickness >= fields.radius.value then
+      io.stderr:write("'thickness' must be smaller than 'radius'\n")
+      thickness = radius / 2
+    end
+  }%
+  Solid {
+    translation IS translation
+    rotation IS rotation
+    children [
+      Transform {
+        translation -0.036 0.0575 0.036
+        rotation 1 0 0 3.14159
+        children [
+          Shape {
+            appearance PBRAppearance {
+              baseColor %{= color }%
+              roughness 1
+              metalness 0
+            }
+            geometry Mesh {
+              url [
+                %{= url_hd }%
+              ]
+            }
+          }
+        ]
+      }
+    ]
+    name IS name
+    boundingObject CupBoundingObject {
+      height IS height
+      radius IS radius
+      thickness IS thickness
+      thickness2 IS thickness2
+      subdivision IS subdivision
+    }
+    physics Physics {
+      mass    0.1
+      density -1
+    }
+  }
+}

@@ -2,22 +2,20 @@
 
 #include "inttypes.h"
 #include "ch.hpp"
+#include "Peripherals.hpp"
 
 namespace Board {
     void init();
 
     namespace IO {
 
-        enum motor : uint8_t;
-        enum encoder : uint8_t;
-
         void initDrivers();
 
         void deinitPWM();
 
-        void setMotorDutyCycle(enum motor motor, float duty_cycle);
+        void setMotorDutyCycle(Peripherals::Motor motor, float duty_cycle);
 
-        int16_t getEncoderCount(enum encoder encoder);
+        int16_t getEncoderCount(Peripherals::Encoder encoder);
 
         void toggleLED();
 
