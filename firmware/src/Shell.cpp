@@ -23,16 +23,17 @@
  */
 #include <stdlib.h>
 
-#include "hal.h"
-#include "chprintf.h"
-#include "shell.h"
 #include "BuildConf.hpp"
-#include <cstring>
+#include "ControlThread.hpp"
 #include "DataStreamer.hpp"
 #include "Logging.hpp"
-#include "ControlThread.hpp"
+#include "Peripherals.hpp"
+#include "chprintf.h"
+#include "hal.h"
+#include "shell.h"
+#include <cstring>
 
-char **endptr;
+char** endptr;
 
 /*
  * Shell history buffer
@@ -42,23 +43,23 @@ char history_buffer[SHELL_MAX_HIST_BUFF];
 /*
  * Shell completion buffer
  */
-char *completion_buffer[SHELL_MAX_COMPLETIONS];
+char* completion_buffer[SHELL_MAX_COMPLETIONS];
 
 /*
  * Shell commands
  */
-static void cmd_data_stream(BaseSequentialStream *chp, int argc, char *argv[]) {
-static bool thread_launched = false;
+static void cmd_data_stream(BaseSequentialStream* chp, int argc, char* argv[]) {
+    static bool thread_launched = false;
     (void)chp;
     if (argc == 1) {
         if (!strcmp(argv[0], "start")) {
-            if(! thread_launched) {
+            if (!thread_launched) {
                 DataStreamer::instance()->start(NORMALPRIO);
                 thread_launched = true;
             }
             return;
         } else if (!strcmp(argv[0], "stop")) {
-            if(thread_launched) {
+            if (thread_launched) {
                 DataStreamer::instance()->getSelfX().requestTerminate();
                 thread_launched = false;
             }
@@ -70,25 +71,25 @@ static bool thread_launched = false;
     Logging::println("data_stream [start/stop]");
 }
 
-static void cmd_motor(BaseSequentialStream *chp, int argc, char *argv[]) {
+static void cmd_motor(BaseSequentialStream* chp, int argc, char* argv[]) {
     (void)chp;
-    if(argc >= 3){
-        enum Board::IO::motor motor;
+    if (argc >= 3) {
+        Peripherals::Motor motor;
         if (!strcmp(argv[0], "left")) {
             motor = Board::IO::LEFT_MOTOR;
         } else if (!strcmp(argv[0], "right")) {
             motor = Board::IO::RIGHT_MOTOR;
-        } else{
+        } else {
             goto usage;
         }
 
         if (!strcmp(argv[1], "speed")) {
-            float speed = atof(argv[2]);
-            Goal previousGoal = ControlThread::instance()->getControl()->getCurrentGoal();
+            float speed        = atof(argv[2]);
+            Goal  previousGoal = ControlThread::instance()->getControl()->getCurrentGoal();
 
-            if(previousGoal.getType() == Goal::SPEED){
+            if (previousGoal.getType() == Goal::SPEED) {
                 float speedToKeep;
-                switch(motor){
+                switch (motor) {
                     case Board::IO::LEFT_MOTOR: {
                         speedToKeep = previousGoal.getSpeedData().rightSpeed;
                         Goal goal(speed, speedToKeep, Goal::SPEED);
@@ -103,8 +104,8 @@ static void cmd_motor(BaseSequentialStream *chp, int argc, char *argv[]) {
                     }
                 }
             } else {
-                switch(motor){
-                    case Board::IO::LEFT_MOTOR:{
+                switch (motor) {
+                    case Board::IO::LEFT_MOTOR: {
                         Goal goal(speed, 0., Goal::SPEED);
                         ControlThread::instance()->getControl()->setCurrentGoal(goal);
                         break;
@@ -117,18 +118,18 @@ static void cmd_motor(BaseSequentialStream *chp, int argc, char *argv[]) {
             }
             return;
         } else if (!strcmp(argv[1], "pid")) {
-            float p = 0.;
-            float i = 0.;
-            float d = 0.;
-            float * coeffs[3] = {&p, &i, &d};
+            float  p         = 0.;
+            float  i         = 0.;
+            float  d         = 0.;
+            float* coeffs[3] = {&p, &i, &d};
 
-            for(uint8_t i = 0; i < argc - 2; i++){
+            for (uint8_t i = 0; i < argc - 2; i++) {
                 *coeffs[i] = atof(argv[i + 2]);
             }
 
             ControlThread::instance()->getControl()->setMotorPID(motor, p, i, d);
             return;
-        } else if (!strcmp(argv[1], "duty_cycle")){
+        } else if (!strcmp(argv[1], "duty_cycle")) {
             float duty_cycle = atof(argv[2]);
             Board::IO::setMotorDutyCycle(motor, duty_cycle);
             return;
@@ -142,41 +143,41 @@ usage:
     Logging::println("motor [left/right] [pid/speed] [parameters]");
 }
 
-static void cmd_control(BaseSequentialStream *chp, int argc, char *argv[]){
+static void cmd_control(BaseSequentialStream* chp, int argc, char* argv[]) {
     (void)chp;
-    if(argc >= 1){
-        if (!strcmp(argv[0], "angle") && argc == 2){
+    if (argc >= 1) {
+        if (!strcmp(argv[0], "angle") && argc == 2) {
             float angle = atof(argv[1]);
             Logging::println("angle %f", angle);
             Goal goal(angle, 0);
             ControlThread::instance()->getControl()->setCurrentGoal(goal);
             return;
-        } else if(!strcmp(argv[0], "angle_pid") && argc == 2) {
+        } else if (!strcmp(argv[0], "angle_pid") && argc == 2) {
             float kp = atof(argv[1]);
             Logging::println("angle_pid %f", kp);
             ControlThread::instance()->getControl()->setAngleKp(kp);
             return;
-        } else if(!strcmp(argv[0], "distance") && argc == 2) {
+        } else if (!strcmp(argv[0], "distance") && argc == 2) {
             return;
-        } else if(!strcmp(argv[0], "distance_pid")) {
+        } else if (!strcmp(argv[0], "distance_pid")) {
             float kp = atof(argv[1]);
             Logging::println("distance pid %f", kp);
             ControlThread::instance()->getControl()->setDistanceKp(kp);
             return;
-        } else if(!strcmp(argv[0], "goto") && argc == 3) {
+        } else if (!strcmp(argv[0], "goto") && argc == 3) {
             float x = atof(argv[1]);
             float y = atof(argv[2]);
             Logging::println("goto %f %f", x, y);
-            Goal goal(x,y, Goal::COORD);
+            Goal goal(x, y, Goal::COORD);
             ControlThread::instance()->getControl()->setCurrentGoal(goal);
             return;
-        } else if(!strcmp(argv[0], "circular") && argc == 3) {
+        } else if (!strcmp(argv[0], "circular") && argc == 3) {
             float angularSpeed = atof(argv[1]);
-            float linearSpeed = atof(argv[2]);
-            Goal goal(angularSpeed, linearSpeed, Goal::CIRCULAR);
+            float linearSpeed  = atof(argv[2]);
+            Goal  goal(angularSpeed, linearSpeed, Goal::CIRCULAR);
             ControlThread::instance()->getControl()->setCurrentGoal(goal);
             return;
-        } else if(!strcmp(argv[0], "reset")){
+        } else if (!strcmp(argv[0], "reset")) {
             ControlThread::instance()->getControl()->reset();
             return;
         }
@@ -190,19 +191,19 @@ static void cmd_control(BaseSequentialStream *chp, int argc, char *argv[]){
 }
 
 static const ShellCommand commands[] = {
-        {"data_stream", cmd_data_stream},
-        {"motor", cmd_motor},
-        {"control", cmd_control},
-        {NULL, NULL}};
+    {"data_stream", cmd_data_stream},
+    {"motor", cmd_motor},
+    {"control", cmd_control},
+    {NULL, NULL}};
 
 /*
  * Shell configuration
  */
 ShellConfig shell_cfg = {
-        (BaseSequentialStream *) &SHELL_DRIVER,
-        commands,
-        history_buffer,
-        sizeof(history_buffer),
-        completion_buffer};
+    (BaseSequentialStream*)&SHELL_DRIVER,
+    commands,
+    history_buffer,
+    sizeof(history_buffer),
+    completion_buffer};
 
 /** @} */
