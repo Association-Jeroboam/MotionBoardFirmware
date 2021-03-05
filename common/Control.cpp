@@ -1,29 +1,17 @@
-#include <new>
-#include <cmath>
-#include "LocalMath.hpp"
 #include "Control.hpp"
-#include "Parameters.hpp"
-#include "Logging.hpp"
 #include "Board.hpp"
-#include "DataStreamer.hpp"
-
+#include "LocalMath.hpp"
+#include "Logging.hpp"
+#include "Parameters.hpp"
+#include <cmath>
+#include <new>
 
 using namespace Board::IO;
 
-Control * s_instance = nullptr;
-
-Control * Control::instance() {
-    if (s_instance == nullptr) {
-        s_instance = reinterpret_cast<Control *>(chHeapAlloc(nullptr, sizeof(Control)));
-        new(s_instance) Control();
-    }
-    return s_instance;
-}
-
-Control::Control() : m_robotPose(INITIAL_X_POS, INITIAL_Y_POS, INITIAL_ANGLE){
+Control::Control() : m_robotPose(INITIAL_X_POS, INITIAL_Y_POS, INITIAL_ANGLE) {
     m_distancePID.set(DISTANCE_KP, 0., 0., 0., MOTOR_CONTROL_LOOP_FREQ);
     m_anglePID.set(ANGLE_KP, 0., 0., 0., MOTOR_CONTROL_LOOP_FREQ);
-    m_distancePID.setMaxOutput( MAX_WHEEL_SPEED);
+    m_distancePID.setMaxOutput(MAX_WHEEL_SPEED);
     m_anglePID.setMaxOutput(MAX_ANGULAR_SPEED);
     m_linearSpeed          = 0.;
     m_linearSpeedSetpoint  = 0.;
@@ -35,39 +23,16 @@ Control::Control() : m_robotPose(INITIAL_X_POS, INITIAL_Y_POS, INITIAL_ANGLE){
     m_computeDirection = true;
 }
 
-void Control::main() {
-    Logging::println("[Control] init");
-    setName("Control");
-
-    static uint16_t toggleCounter = 0;
-
-    Board::Events::eventRegister(this, Board::Events::RUN_MOTOR_CONTROL);
-    Board::Events::startControlLoop(MOTOR_CONTROL_LOOP_FREQ);
-
-    while (!shouldTerminate()){
-        waitOneEvent(Board::Events::RUN_MOTOR_CONTROL);
-
-        updateState();
-
-        applyControl();
-
-        updateDataStreamer();
-
-        toggleCounter++;
-        if (toggleCounter % (MOTOR_CONTROL_LOOP_FREQ / LED_TOGGLE_FREQUENCY) == 0) {
-            Board::IO::toggleLED();
-            toggleCounter = 0;
-        }
-
-    }
-
+void Control::update() {
+    updateState();
+    applyControl();
 }
 
 void Control::updateState() {
     float dl = m_motorControl.getMotorDrivenDistance(LEFT_MOTOR);
     float dr = m_motorControl.getMotorDrivenDistance(RIGHT_MOTOR);
 
-    float left_speed = m_motorControl.getMotorSpeed(LEFT_MOTOR);
+    float left_speed  = m_motorControl.getMotorSpeed(LEFT_MOTOR);
     float right_speed = m_motorControl.getMotorSpeed(RIGHT_MOTOR);
 
     m_robotPose.update(dl, dr);
@@ -147,7 +112,7 @@ void Control::applyControl() {
         }
         case Goal::SPEED: {
             Logging::println("speed");
-            leftSpeedSetpoint = m_currentGoal.getSpeedData().leftSpeed;
+            leftSpeedSetpoint  = m_currentGoal.getSpeedData().leftSpeed;
             rightSpeedSetpoint = m_currentGoal.getSpeedData().rightSpeed;
             goto set_speeds;
         }
@@ -155,7 +120,7 @@ void Control::applyControl() {
             //TODO
             break;
         }
-        case Goal::NO_GOAL:{
+        case Goal::NO_GOAL: {
             m_linearSpeed          = 0.;
             m_linearSpeedSetpoint  = 0.;
             m_angularSpeed         = 0.;
@@ -176,21 +141,7 @@ set_speeds:
     m_motorControl.update();
 }
 
-void Control::updateDataStreamer() {
-    DataStreamer::instance()->setEntry(angularSpeedEnum, m_angularSpeed);
-    DataStreamer::instance()->setEntry(angularSpeedSetpointEnum, m_angularSpeedSetpoint);
-    DataStreamer::instance()->setEntry(linearSpeedEnum, m_linearSpeed);
-    DataStreamer::instance()->setEntry(linearSpeedSetpointEnum, m_linearSpeedSetpoint);
-    DataStreamer::instance()->setEntry(angleEnum, m_robotPose.getModuloAngle());
-    DataStreamer::instance()->setEntry(absoluteAngleEnum, m_robotPose.getAbsoluteAngle());
-    DataStreamer::instance()->setEntry(angleSetpointEnum, m_angleSetpoint);
-    DataStreamer::instance()->setEntry(distanceErrorEnum, m_distanceError);
-    DataStreamer::instance()->setEntry(xEnum, m_robotPose.getX());
-    DataStreamer::instance()->setEntry(yEnum, m_robotPose.getY());
-
-}
-
-void Control::setCurrentGoal(Goal goal){
+void Control::setCurrentGoal(Goal goal) {
     m_currentGoal = goal;
     m_computeDirection = true;
     m_currentGoal.print();
@@ -200,23 +151,23 @@ Goal Control::getCurrentGoal() {
     return m_currentGoal;
 }
 
-void Control::setAngleKp(float kp){
+void Control::setAngleKp(float kp) {
     m_anglePID.set(kp, 0., 0.);
     m_motorControl.resetMotor(LEFT_MOTOR);
     m_motorControl.resetMotor(RIGHT_MOTOR);
 }
 
-void Control::setDistanceKp(float kp){
+void Control::setDistanceKp(float kp) {
     m_distancePID.set(kp, 0., 0.);
     m_motorControl.resetMotor(LEFT_MOTOR);
     m_motorControl.resetMotor(RIGHT_MOTOR);
 }
 
-void Control::setMotorPID(Board::IO::motor motor,float p, float i, float d){
+void Control::setMotorPID(Board::IO::motor motor, float p, float i, float d) {
     m_motorControl.motorSetPID(motor, p, i, d);
 }
 
-void Control::reset(){
+void Control::reset() {
     m_robotPose.setPose(INITIAL_X_POS, INITIAL_Y_POS, INITIAL_ANGLE);
     m_anglePID.reset();
     m_distancePID.reset();
@@ -228,5 +179,21 @@ void Control::reset(){
     m_angularSpeedSetpoint = 0.;
     m_angleSetpoint        = 0.;
     m_distanceError        = 0.;
-    m_currentGoal = Goal();
+    m_currentGoal          = Goal();
+}
+
+ControlData Control::getData() {
+    ControlData data;
+    data.angularSpeed         = m_angularSpeed;
+    data.angularSpeedSetpoint = m_angularSpeedSetpoint;
+    data.linearSpeed          = m_linearSpeed;
+    data.linearSpeedSetpoint  = m_linearSpeedSetpoint;
+    data.angle                = m_robotPose.getModuloAngle();
+    data.absoluteAngle        = m_robotPose.getAbsoluteAngle();
+    data.angleSetpoint        = m_angleSetpoint;
+    data.distanceError        = m_distanceError;
+    data.x                    = m_robotPose.getX();
+    data.y                    = m_robotPose.getY();
+
+    return data;
 }

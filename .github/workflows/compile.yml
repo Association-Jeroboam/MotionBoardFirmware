@@ -7,7 +7,7 @@ jobs:
     runs-on: [self-hosted, linux]
     strategy:
       matrix:
-        platform: [target, sim]
+        platform: [hardware/robot, hardware/test_robot, sim]
       fail-fast: false
     steps:
       - name: Checking out repository

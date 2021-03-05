@@ -1,0 +1,7 @@
+COMMONCPPSRC += $(SOURCEDIR)/main.cpp
+COMMONCPPSRC += $(SOURCEDIR)/Motor.cpp
+COMMONCPPSRC += $(SOURCEDIR)/MotorControl.cpp
+COMMONCPPSRC += $(SOURCEDIR)/Shell.cpp
+COMMONCPPSRC += $(SOURCEDIR)/ControlThread.cpp
+
+include $(SOURCEDIR)/$(TARGET_TYPE)/target.mk
