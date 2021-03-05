@@ -36,7 +36,7 @@ class Control {
 
     void setDistanceKp(float kp);
 
-    void setMotorPID(Board::IO::motor motor, float p, float i, float d);
+    void setMotorPID(Peripherals::Motor motor, float p, float i, float d);
 
     void reset();
 
@@ -57,7 +57,6 @@ class Control {
     float m_angleSetpoint;
     float m_lastAngleSetpoint;
     float m_distanceError;
-    bool m_forwardDrive;
-    bool m_computeDirection;
-
+    bool  m_forwardDrive;
+    bool  m_computeDirection;
 };

@@ -1,0 +1,55 @@
+PROTO Windsock [
+    field SFString   name        "Windsock(1)"
+    field SFVec3f    translation 0 0 0
+    field SFRotation rotation    0 0 1 0
+]
+{
+    Solid {
+        name IS name
+        translation IS translation
+        rotation IS rotation
+
+        children [
+            DEF stop Transform {
+                translation 0 -0.035 -0.038
+                children [
+                    Shape {
+                        appearance PBRAppearance {
+                            baseColor 0.879623 0.838799 0.752942
+                            roughness 1
+                            metalness 0
+                            name "White"
+                        }
+                        geometry Box {
+                            size 0.022 0.04 0.04
+                        }
+                    }
+                ]
+            }
+            HingeJoint {
+                jointParameters HingeJointParameters {
+                    minStop -1.5708
+                    staticFriction 0.1
+                }
+                endPoint Solid {
+                    children [
+                        WindsockModel {
+                        }
+                    ]
+                    boundingObject Transform {
+                        rotation 0.57735 0.57735 0.57735 2.0944
+                        children [
+                            WindsockMesh {
+                            }
+                        ]
+                    }
+                    physics Physics {
+                        density -1
+                        mass 0.35
+                    }
+                }
+            }
+        ]
+        boundingObject USE stop
+    }
+}

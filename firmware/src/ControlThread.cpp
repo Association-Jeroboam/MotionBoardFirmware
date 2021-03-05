@@ -1,8 +1,9 @@
-#include <new>
 #include "ControlThread.hpp"
 #include "DataStreamer.hpp"
 #include "Logging.hpp"
 #include "Parameters.hpp"
+#include "Board.hpp"
+#include <new>
 
 ControlThread* s_instance = nullptr;
 
@@ -52,6 +53,6 @@ void ControlThread::updateDataStreamer() {
     DataStreamer::instance()->setEntry(yEnum, controlData.y);
 }
 
-Control * ControlThread::getControl() {
+Control* ControlThread::getControl() {
     return &control;
 }

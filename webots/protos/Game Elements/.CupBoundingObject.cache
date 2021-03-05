@@ -1,0 +1,11 @@
+Webots Proto Cache File version 1.5
+protoFileHash: 64e4ad1e75e2d57b775219d62902676d
+needsRobotAncestor: 0
+baseType: Group
+slotType: 
+parameters: height,radius,radius2,thickness,thickness2,subdivision,accuracy
+tags: 
+license: 
+licenseUrl: 
+documentationUrl: 
+info: This\sbounding\sobject\swith\sa\scup\sshape\sis\sformed\sby\sa\sgroup\sof\sboxes.\n
