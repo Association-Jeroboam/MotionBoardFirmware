@@ -9,7 +9,7 @@ class ControlThread : public chibios_rt::BaseStaticThread<CONTROL_WA>,
   public:
     static ControlThread* instance();
     void                  main() override;
-    Control * getControl();
+    Control*              getControl();
 
   private:
     void    updateDataStreamer();

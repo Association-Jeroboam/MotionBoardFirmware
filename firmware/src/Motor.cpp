@@ -1,10 +1,10 @@
 #include "Motor.hpp"
+#include "Board.hpp"
 #include "DataStreamer.hpp"
 #include "LocalMath.hpp"
 #include "Logging.hpp"
 #include "Parameters.hpp"
 #include "Peripherals.hpp"
-#include "Board.hpp"
 
 Motor::Motor(Peripherals::Encoder encoder,
              Peripherals::Motor   motor,
