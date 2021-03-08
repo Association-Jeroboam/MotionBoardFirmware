@@ -1,14 +1,23 @@
+#include "Control.hpp"
+#include "Parameters.hpp"
+#include "Supervisor.hpp"
 #include <iostream>
-#include <webots/Robot.hpp>
+#include <memory>
 
 using namespace webots;
 
 int main() {
-    Robot* robot = new Robot();
+    auto               control        = std::make_unique<Control>();
+    const unsigned int controlSteps   = MOTOR_CONTROL_LOOP_DT * 1000 / 8;
+    unsigned int       controlCounter = 0;
 
-    while (robot->step(8) != -1)
-        std::cout << "Hello World!" << std::endl;
+    while (supervisor->step(8) != -1) {
+        controlCounter++;
+        if (controlCounter >= controlSteps) {
+            controlCounter = 0;
+            control->update();
+        }
+    }
 
-    delete robot;
     return 0;
 }

@@ -1,6 +1,6 @@
-CXX_SOURCES = $(wildcard src/*.cpp) $(wildcard ../common/*.cpp)
-CFLAGS = -std=c++11
-INCLUDE = -I"../common" -I"./src"
+CXX_SOURCES = $(wildcard ./*.cpp) $(wildcard ../../../common/*.cpp)
+CFLAGS = -std=c++17
+INCLUDE = -I"../../../common" -I"./"
 
 ### Do not modify: this includes Webots global Makefile.include
 null :=
