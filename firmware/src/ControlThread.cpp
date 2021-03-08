@@ -1,8 +1,8 @@
 #include "ControlThread.hpp"
+#include "Board.hpp"
 #include "DataStreamer.hpp"
 #include "Logging.hpp"
 #include "Parameters.hpp"
-#include "Board.hpp"
 #include <new>
 
 ControlThread* s_instance = nullptr;

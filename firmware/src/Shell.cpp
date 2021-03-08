@@ -21,16 +21,16 @@
  * @addtogroup SHELL
  * @{
  */
-#include <stdlib.h>
-#include <cstring>
-#include "hal.h"
-#include "chprintf.h"
 #include "shell.h"
 #include "BuildConf.hpp"
 #include "ControlThread.hpp"
 #include "DataStreamer.hpp"
 #include "Logging.hpp"
 #include "Peripherals.hpp"
+#include "chprintf.h"
+#include "hal.h"
+#include <cstring>
+#include <stdlib.h>
 
 char** endptr;
 

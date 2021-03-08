@@ -27,11 +27,11 @@ class Motor {
     void reset();
 
   private:
-    float         m_speedSetpoint; // [mm/s]
-    float         m_speed;         // [mm/s]
-    float         m_drivenDistance;
-    float         m_wheelRadius;
-    PID           m_speedPID;
+    float                      m_speedSetpoint; // [mm/s]
+    float                      m_speed;         // [mm/s]
+    float                      m_drivenDistance;
+    float                      m_wheelRadius;
+    PID                        m_speedPID;
     const Peripherals::Encoder m_encoder;
     const Peripherals::Motor   m_motor;
 
