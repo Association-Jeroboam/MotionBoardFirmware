@@ -4,7 +4,6 @@
 #include "Parameters.hpp"
 #include "Peripherals.hpp"
 #include <cmath>
-#include <new>
 
 Control::Control() : m_robotPose(INITIAL_X_POS, INITIAL_Y_POS, INITIAL_ANGLE) {
     m_distancePID.set(DISTANCE_KP, 0., 0., 0., MOTOR_CONTROL_LOOP_FREQ);
@@ -46,7 +45,13 @@ void Control::applyControl() {
         case Goal::ANGLE: {
             m_angleSetpoint        = m_currentGoal.getAngleData().angle + m_currentGoal.getAngleData().turns * 2 * M_PI;
             m_angularSpeedSetpoint = m_anglePID.compute(m_angleSetpoint, m_robotPose.getAbsoluteAngle());
-            m_linearSpeedSetpoint  = 0.;
+            m_linearSpeedSetpoint = 0.;
+
+            if(fabs(m_angleSetpoint - m_robotPose.getAbsoluteAngle()) < ANGLE_PRECISION && !m_currentGoal.isReached()){
+                m_currentGoal.setReached(true);
+            } else{
+                m_currentGoal.setReached(false);
+            }
             break;
         }
         case Goal::COORD: {
@@ -90,6 +95,14 @@ void Control::applyControl() {
             }
             m_angleSetpoint = unwrap(m_lastAngleSetpoint, m_angleSetpoint);
 
+            if(fabs(m_angleSetpoint - m_robotPose.getAbsoluteAngle()) < ANGLE_PRECISION
+               && fabs(m_distanceError) < DISTANCE_PRECISION
+               && !m_currentGoal.isReached()){
+                m_currentGoal.setReached(true);
+            } else{
+                m_currentGoal.setReached(false);
+            }
+
             m_angularSpeedSetpoint = m_anglePID.compute(m_angleSetpoint, m_robotPose.getAbsoluteAngle());
             m_lastAngleSetpoint    = m_angleSetpoint;
             //prevents motor saturation
@@ -109,7 +122,6 @@ void Control::applyControl() {
             break;
         }
         case Goal::SPEED: {
-            Logging::println("speed");
             leftSpeedSetpoint  = m_currentGoal.getSpeedData().leftSpeed;
             rightSpeedSetpoint = m_currentGoal.getSpeedData().rightSpeed;
             goto set_speeds;
@@ -125,14 +137,20 @@ void Control::applyControl() {
             m_angularSpeedSetpoint = 0.;
             m_angleSetpoint        = 0.;
             m_distanceError        = 0.;
+            m_currentGoal.setReached(true);
             m_motorControl.resetMotor(Peripherals::LEFT_MOTOR);
             m_motorControl.resetMotor(Peripherals::RIGHT_MOTOR);
             break;
         }
     }
 
-    leftSpeedSetpoint  = m_linearSpeedSetpoint - m_angularSpeedSetpoint * WHEEL_BASE * 0.5;
-    rightSpeedSetpoint = m_linearSpeedSetpoint + m_angularSpeedSetpoint * WHEEL_BASE * 0.5;
+    if(m_currentGoal.isReached()){
+        leftSpeedSetpoint = 0.;
+        rightSpeedSetpoint = 0.;
+    } else {
+        leftSpeedSetpoint = m_linearSpeedSetpoint - m_angularSpeedSetpoint * WHEEL_BASE * 0.5;
+        rightSpeedSetpoint = m_linearSpeedSetpoint + m_angularSpeedSetpoint * WHEEL_BASE * 0.5;
+    }
 set_speeds:
     m_motorControl.motorSetSpeed(Peripherals::LEFT_MOTOR, leftSpeedSetpoint);
     m_motorControl.motorSetSpeed(Peripherals::RIGHT_MOTOR, rightSpeedSetpoint);
@@ -175,7 +193,8 @@ void Control::reset() {
     m_linearSpeedSetpoint  = 0.;
     m_angularSpeed         = 0.;
     m_angularSpeedSetpoint = 0.;
-    m_angleSetpoint        = 0.;
+    m_angleSetpoint        = INITIAL_ANGLE;
+    m_lastAngleSetpoint    = INITIAL_ANGLE;
     m_distanceError        = 0.;
     m_currentGoal          = Goal();
 }

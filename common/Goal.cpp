@@ -9,6 +9,7 @@ Goal::Goal(float angle, int32_t turns){
     m_data.angleData.turns = turns;
     m_ID = s_goalCount;
     s_goalCount++;
+    m_reached = false;
 }
 
 Goal::Goal(float x, float y, enum Direction direction){
@@ -18,6 +19,7 @@ Goal::Goal(float x, float y, enum Direction direction){
     m_data.coordData.direction = direction;
     m_ID = s_goalCount;
     s_goalCount++;
+    m_reached = false;
 }
 
 Goal::Goal(float input0, float input1, enum GoalType type){
@@ -48,6 +50,7 @@ Goal::Goal(float input0, float input1, enum GoalType type){
             Logging::println("[Goal] Bad goal type. Creating NO_GOAL");
             Goal();
     }
+    m_reached = false;
 }
 
 Goal::Goal(float leftPWM, float rightPWM, float time){
@@ -57,12 +60,14 @@ Goal::Goal(float leftPWM, float rightPWM, float time){
     m_data.pwmData.time = time;
     m_ID = s_goalCount;
     s_goalCount++;
+    m_reached = false;
 }
 
 Goal::Goal(){
     m_type = NO_GOAL;
     m_ID = s_goalCount;
     s_goalCount++;
+    m_reached = false;
 }
 
 enum Goal::GoalType Goal::getType(){
@@ -91,6 +96,14 @@ Goal::pwmData_t Goal::getPWMData(){
 
 uint32_t Goal::getID(){
     return m_ID;
+}
+
+void Goal::setReached(bool reached){
+    m_reached = reached;
+}
+
+bool Goal::isReached(){
+    return m_reached;
 }
 
 void Goal::print() {
