@@ -4,7 +4,6 @@
 #include "Event.hpp"
 #include "Goal.hpp"
 #include <map>
-#include "dynamic_alloc.hpp"
 
 template <typename TState>
 class Action {
