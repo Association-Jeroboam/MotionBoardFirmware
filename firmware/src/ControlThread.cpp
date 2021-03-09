@@ -1,3 +1,4 @@
+#include "ch.hpp"
 #include "ControlThread.hpp"
 #include "Board.hpp"
 #include "DataStreamer.hpp"

@@ -6,6 +6,7 @@
 #include "ControlThread.hpp"
 #include "Shell.hpp"
 #include <Logging.hpp>
+#include "Strategy.hpp"
 
 int main() {
     halInit();
@@ -16,6 +17,8 @@ int main() {
     Logging::println("Starting up");
     shellInit();
     Board::init();
+
+    Strategy strategy;
 
     ControlThread::instance()->start(HIGHPRIO);
     chThdSleepMilliseconds(20);
