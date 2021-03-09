@@ -3,6 +3,7 @@
 #include "ControlThread.hpp"
 #include "Event.hpp"
 #include "Goal.hpp"
+#include <cstring>
 #include <map>
 
 template <typename TState>
@@ -16,11 +17,7 @@ class Action {
     void resetEvents();
 
   protected:
-    std::map<Event, bool> m_events{
-        {Event::START_MATCH, false},
-        {Event::END_MATCH, false},
-        {Event::OBSTACLE_DETECTED, false},
-        {Event::GOAL_FINISHED, false}};
+    bool   m_events[20] = {false};
     TState m_currentState;
 };
 
@@ -40,9 +37,5 @@ void Action<TState>::dispatchEvent(Event event) {
 
 template <typename TState>
 void Action<TState>::resetEvents() {
-    m_events = std::map<Event, bool>{
-        {Event::START_MATCH, false},
-        {Event::END_MATCH, false},
-        {Event::OBSTACLE_DETECTED, false},
-        {Event::GOAL_FINISHED, false}};
+    memset(m_events, 0, sizeof(m_events));
 }
