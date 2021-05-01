@@ -1,6 +1,7 @@
 # Build folders
 **/.dep/
 **/build/
+**/CMakeFiles/
 
 # IDE files
 .idea/
@@ -9,3 +10,5 @@
 *.swp
 node_modules/
 **/.DS_STORE
+
+test_strategy/test_strategy
