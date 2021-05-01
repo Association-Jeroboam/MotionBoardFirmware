@@ -2,21 +2,26 @@
 
 #include <string>
 
+#include "Control.hpp"
 #include "HierarchicalStateMachine.hpp"
-#include "StateMachine/Events.hpp"
-#include "StateMachine/StateMachine.hpp"
+#include "Strategy/Events.hpp"
+#include "Strategy/Strategy.hpp"
 
 using namespace eHSM;
 
-StateMachine stateMachine;
+Strategy* stateMachine;
+Control   control;
 
 void fireEvent(Event event, const char* eventName) {
     printf("\n[EVENT] %s\n", eventName);
-    stateMachine.dispatch(event);
+    stateMachine->dispatch(event);
 }
 
 int main() {
-    stateMachine.start();
+    stateMachine = Strategy::instance();
+    stateMachine->setControl(&control);
+
+    stateMachine->start();
     fireEvent(StartMatch, "StartMatch");
     fireEvent(MoveOk, "MoveOk");
     fireEvent(CanMove, "CanMove");

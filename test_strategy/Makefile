@@ -142,6 +142,222 @@ test_strategy/fast:
 	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_strategy.dir/build.make CMakeFiles/test_strategy.dir/build
 .PHONY : test_strategy/fast
 
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Goal.o: Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Goal.cpp.o
+
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Goal.o
+
+# target to build an object file
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Goal.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_strategy.dir/build.make CMakeFiles/test_strategy.dir/Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Goal.cpp.o
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Goal.cpp.o
+
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Goal.i: Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Goal.cpp.i
+
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Goal.i
+
+# target to preprocess a source file
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Goal.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_strategy.dir/build.make CMakeFiles/test_strategy.dir/Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Goal.cpp.i
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Goal.cpp.i
+
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Goal.s: Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Goal.cpp.s
+
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Goal.s
+
+# target to generate assembly for a file
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Goal.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_strategy.dir/build.make CMakeFiles/test_strategy.dir/Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Goal.cpp.s
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Goal.cpp.s
+
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/PID.o: Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/PID.cpp.o
+
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/PID.o
+
+# target to build an object file
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/PID.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_strategy.dir/build.make CMakeFiles/test_strategy.dir/Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/PID.cpp.o
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/PID.cpp.o
+
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/PID.i: Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/PID.cpp.i
+
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/PID.i
+
+# target to preprocess a source file
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/PID.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_strategy.dir/build.make CMakeFiles/test_strategy.dir/Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/PID.cpp.i
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/PID.cpp.i
+
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/PID.s: Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/PID.cpp.s
+
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/PID.s
+
+# target to generate assembly for a file
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/PID.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_strategy.dir/build.make CMakeFiles/test_strategy.dir/Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/PID.cpp.s
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/PID.cpp.s
+
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Strategy/Strategy.o: Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Strategy/Strategy.cpp.o
+
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Strategy/Strategy.o
+
+# target to build an object file
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Strategy/Strategy.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_strategy.dir/build.make CMakeFiles/test_strategy.dir/Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Strategy/Strategy.cpp.o
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Strategy/Strategy.cpp.o
+
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Strategy/Strategy.i: Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Strategy/Strategy.cpp.i
+
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Strategy/Strategy.i
+
+# target to preprocess a source file
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Strategy/Strategy.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_strategy.dir/build.make CMakeFiles/test_strategy.dir/Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Strategy/Strategy.cpp.i
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Strategy/Strategy.cpp.i
+
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Strategy/Strategy.s: Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Strategy/Strategy.cpp.s
+
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Strategy/Strategy.s
+
+# target to generate assembly for a file
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Strategy/Strategy.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_strategy.dir/build.make CMakeFiles/test_strategy.dir/Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Strategy/Strategy.cpp.s
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Strategy/Strategy.cpp.s
+
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/robotPose.o: Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/robotPose.cpp.o
+
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/robotPose.o
+
+# target to build an object file
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/robotPose.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_strategy.dir/build.make CMakeFiles/test_strategy.dir/Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/robotPose.cpp.o
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/robotPose.cpp.o
+
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/robotPose.i: Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/robotPose.cpp.i
+
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/robotPose.i
+
+# target to preprocess a source file
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/robotPose.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_strategy.dir/build.make CMakeFiles/test_strategy.dir/Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/robotPose.cpp.i
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/robotPose.cpp.i
+
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/robotPose.s: Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/robotPose.cpp.s
+
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/robotPose.s
+
+# target to generate assembly for a file
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/robotPose.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_strategy.dir/build.make CMakeFiles/test_strategy.dir/Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/robotPose.cpp.s
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/robotPose.cpp.s
+
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/webots/controllers/eurobot/Logging.o: Users/pymzor/Projets/jeroboam/MotionBoardFirmware/webots/controllers/eurobot/Logging.cpp.o
+
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/webots/controllers/eurobot/Logging.o
+
+# target to build an object file
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/webots/controllers/eurobot/Logging.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_strategy.dir/build.make CMakeFiles/test_strategy.dir/Users/pymzor/Projets/jeroboam/MotionBoardFirmware/webots/controllers/eurobot/Logging.cpp.o
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/webots/controllers/eurobot/Logging.cpp.o
+
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/webots/controllers/eurobot/Logging.i: Users/pymzor/Projets/jeroboam/MotionBoardFirmware/webots/controllers/eurobot/Logging.cpp.i
+
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/webots/controllers/eurobot/Logging.i
+
+# target to preprocess a source file
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/webots/controllers/eurobot/Logging.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_strategy.dir/build.make CMakeFiles/test_strategy.dir/Users/pymzor/Projets/jeroboam/MotionBoardFirmware/webots/controllers/eurobot/Logging.cpp.i
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/webots/controllers/eurobot/Logging.cpp.i
+
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/webots/controllers/eurobot/Logging.s: Users/pymzor/Projets/jeroboam/MotionBoardFirmware/webots/controllers/eurobot/Logging.cpp.s
+
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/webots/controllers/eurobot/Logging.s
+
+# target to generate assembly for a file
+Users/pymzor/Projets/jeroboam/MotionBoardFirmware/webots/controllers/eurobot/Logging.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_strategy.dir/build.make CMakeFiles/test_strategy.dir/Users/pymzor/Projets/jeroboam/MotionBoardFirmware/webots/controllers/eurobot/Logging.cpp.s
+.PHONY : Users/pymzor/Projets/jeroboam/MotionBoardFirmware/webots/controllers/eurobot/Logging.cpp.s
+
+src/Control.o: src/Control.cpp.o
+
+.PHONY : src/Control.o
+
+# target to build an object file
+src/Control.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_strategy.dir/build.make CMakeFiles/test_strategy.dir/src/Control.cpp.o
+.PHONY : src/Control.cpp.o
+
+src/Control.i: src/Control.cpp.i
+
+.PHONY : src/Control.i
+
+# target to preprocess a source file
+src/Control.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_strategy.dir/build.make CMakeFiles/test_strategy.dir/src/Control.cpp.i
+.PHONY : src/Control.cpp.i
+
+src/Control.s: src/Control.cpp.s
+
+.PHONY : src/Control.s
+
+# target to generate assembly for a file
+src/Control.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_strategy.dir/build.make CMakeFiles/test_strategy.dir/src/Control.cpp.s
+.PHONY : src/Control.cpp.s
+
+src/Motor.o: src/Motor.cpp.o
+
+.PHONY : src/Motor.o
+
+# target to build an object file
+src/Motor.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_strategy.dir/build.make CMakeFiles/test_strategy.dir/src/Motor.cpp.o
+.PHONY : src/Motor.cpp.o
+
+src/Motor.i: src/Motor.cpp.i
+
+.PHONY : src/Motor.i
+
+# target to preprocess a source file
+src/Motor.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_strategy.dir/build.make CMakeFiles/test_strategy.dir/src/Motor.cpp.i
+.PHONY : src/Motor.cpp.i
+
+src/Motor.s: src/Motor.cpp.s
+
+.PHONY : src/Motor.s
+
+# target to generate assembly for a file
+src/Motor.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_strategy.dir/build.make CMakeFiles/test_strategy.dir/src/Motor.cpp.s
+.PHONY : src/Motor.cpp.s
+
+src/MotorControl.o: src/MotorControl.cpp.o
+
+.PHONY : src/MotorControl.o
+
+# target to build an object file
+src/MotorControl.cpp.o:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_strategy.dir/build.make CMakeFiles/test_strategy.dir/src/MotorControl.cpp.o
+.PHONY : src/MotorControl.cpp.o
+
+src/MotorControl.i: src/MotorControl.cpp.i
+
+.PHONY : src/MotorControl.i
+
+# target to preprocess a source file
+src/MotorControl.cpp.i:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_strategy.dir/build.make CMakeFiles/test_strategy.dir/src/MotorControl.cpp.i
+.PHONY : src/MotorControl.cpp.i
+
+src/MotorControl.s: src/MotorControl.cpp.s
+
+.PHONY : src/MotorControl.s
+
+# target to generate assembly for a file
+src/MotorControl.cpp.s:
+	$(MAKE) $(MAKESILENT) -f CMakeFiles/test_strategy.dir/build.make CMakeFiles/test_strategy.dir/src/MotorControl.cpp.s
+.PHONY : src/MotorControl.cpp.s
+
 src/main.o: src/main.cpp.o
 
 .PHONY : src/main.o
@@ -178,6 +394,30 @@ help:
 	@echo "... edit_cache"
 	@echo "... rebuild_cache"
 	@echo "... test_strategy"
+	@echo "... Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Goal.o"
+	@echo "... Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Goal.i"
+	@echo "... Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Goal.s"
+	@echo "... Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/PID.o"
+	@echo "... Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/PID.i"
+	@echo "... Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/PID.s"
+	@echo "... Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Strategy/Strategy.o"
+	@echo "... Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Strategy/Strategy.i"
+	@echo "... Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/Strategy/Strategy.s"
+	@echo "... Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/robotPose.o"
+	@echo "... Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/robotPose.i"
+	@echo "... Users/pymzor/Projets/jeroboam/MotionBoardFirmware/common/robotPose.s"
+	@echo "... Users/pymzor/Projets/jeroboam/MotionBoardFirmware/webots/controllers/eurobot/Logging.o"
+	@echo "... Users/pymzor/Projets/jeroboam/MotionBoardFirmware/webots/controllers/eurobot/Logging.i"
+	@echo "... Users/pymzor/Projets/jeroboam/MotionBoardFirmware/webots/controllers/eurobot/Logging.s"
+	@echo "... src/Control.o"
+	@echo "... src/Control.i"
+	@echo "... src/Control.s"
+	@echo "... src/Motor.o"
+	@echo "... src/Motor.i"
+	@echo "... src/Motor.s"
+	@echo "... src/MotorControl.o"
+	@echo "... src/MotorControl.i"
+	@echo "... src/MotorControl.s"
 	@echo "... src/main.o"
 	@echo "... src/main.i"
 	@echo "... src/main.s"

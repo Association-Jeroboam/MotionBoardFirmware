@@ -15,7 +15,7 @@ const uint32_t LIGHTHOUSE_STATE_EVENTS = 1;
 template <std::uint32_t MAX_EVENTS_HANDLED>
 class MatchState : public ::eHSM::State {
   public:
-    MatchState() : eHSM::State(&eventList_) {
+    MatchState() : eHSM::State(&eventList_), getFirstBuoyState(1, 0), getSecondBuoyState(1, 1) {
         getFirstBuoyState.setSuperstate(*this);
         getSecondBuoyState.setSuperstate(*this);
         lightHouseState.setSuperstate(*this);

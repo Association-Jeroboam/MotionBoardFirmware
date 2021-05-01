@@ -13,7 +13,7 @@ const uint32_t GRIP_BUOY_STATE_EVENTS  = 1;
 template <std::uint32_t MAX_EVENTS_HANDLED>
 class GetBuoyState : public ::eHSM::State {
   public:
-    GetBuoyState() : eHSM::State(&eventList_) {
+    GetBuoyState(float x, float y) : eHSM::State(&eventList_), goToBuoyState(x, y) {
         goToBuoyState.setSuperstate(*this);
         gripBuoyState.setSuperstate(*this);
 
