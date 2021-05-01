@@ -1,9 +1,10 @@
-#include "ch.hpp"
 #include "ControlThread.hpp"
 #include "Board.hpp"
 #include "DataStreamer.hpp"
 #include "Logging.hpp"
 #include "Parameters.hpp"
+#include "Strategy/Strategy.hpp"
+#include "ch.hpp"
 #include <new>
 
 ControlThread* s_instance = nullptr;
@@ -14,6 +15,9 @@ ControlThread* ControlThread::instance() {
         new (s_instance) ControlThread();
     }
     return s_instance;
+}
+
+ControlThread::ControlThread() : moveOkFired(false) {
 }
 
 void ControlThread::main() {
@@ -29,6 +33,19 @@ void ControlThread::main() {
         waitOneEvent(Board::Events::RUN_MOTOR_CONTROL);
 
         control.update();
+
+        bool goalReached = control.getCurrentGoal().isReached();
+
+        if (goalReached) {
+            if (!moveOkFired) {
+                // TODO : dispatch chibiOS event to a new StrategyThread which will dispatch like this :
+                // Strategy::instance()->dispatch(MoveOk);
+                moveOkFired = true;
+            }
+        } else {
+            moveOkFired = false;
+        }
+
         updateDataStreamer();
 
         toggleCounter++;

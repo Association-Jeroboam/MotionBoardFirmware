@@ -12,6 +12,8 @@ class ControlThread : public chibios_rt::BaseStaticThread<CONTROL_WA>,
     Control*              getControl();
 
   private:
+    ControlThread();
     void    updateDataStreamer();
+    bool    moveOkFired;
     Control control;
 };
