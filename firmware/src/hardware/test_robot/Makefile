@@ -101,6 +101,7 @@ ROOTDIR   := ../../../..
 COMMONDIR := $(ROOTDIR)/common
 FIRMWAREDIR := $(ROOTDIR)/firmware
 SOURCEDIR   := $(FIRMWAREDIR)/src
+LIBDIR    := $(FIRMWAREDIR)/libs
 TARGETDIR := $(TARGET_TYPE)/test_robot
 PARAMDIR  := ./param
 
