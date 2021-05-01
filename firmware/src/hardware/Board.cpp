@@ -5,6 +5,8 @@
 #include "ch.hpp"
 #include "hal.h"
 #include <climits>
+#include "CanRxThread.hpp"
+#include "CanTxThread.hpp"
 
 #define PWM_COUNTING_FREQUENCY 20000000
 #define PWM_OUTPUT_FREQUENCY 20000
@@ -17,6 +19,9 @@ static void controlLoopTimerCallback(GPTDriver* gptp);
 static void startMatchTimerCallback(GPTDriver* gptp);
 
 static chibios_rt::EventSource eventSource;
+
+CanTxThread canTxThread;
+CanRxThread canRxThread;
 
 __extension__ PWMChannelConfig channelConf{
     .mode     = PWM_OUTPUT_ACTIVE_LOW | PWM_COMPLEMENTARY_OUTPUT_ACTIVE_LOW,
@@ -72,6 +77,11 @@ __extension__ GPTConfig startMatchTimerConfig{
         .callback  = startMatchTimerCallback,
         .cr2       = 0,
         .dier      = 0,
+};
+
+CANConfig canConfig = {
+    .mcr = 0,
+    .btr = 0x00050007,
 };
 
 void Board::init() {
@@ -146,6 +156,24 @@ void Board::IO::toggleLED() {
 
 void Board::Com::initDrivers() {
     Logging::println("Com drivers init");
+}
+
+void Board::Com::CANBus::init(){
+    palSetLineMode(CAN_TX_PIN, CAN_TX_PIN_MODE);
+    palSetLineMode(CAN_RX_PIN, CAN_RX_PIN_MODE);
+    canStart(&CAN_DRIVER, &canConfig);
+    canTxThread.start(NORMALPRIO);
+    canRxThread.start(NORMALPRIO+1);
+    // let Threads finish initialization
+    chThdYield();
+}
+
+bool Board::Com::CANBus::send(canFrame_t canData){
+    return canTxThread.send(canData);
+}
+
+void Board::Com::CANBus::registerListener(CanListener *listener) {
+    canRxThread.registerListener(listener);
 }
 
 void Board::Events::startControlLoop(uint16_t frequency) {

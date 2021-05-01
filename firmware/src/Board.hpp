@@ -3,6 +3,8 @@
 #include "Peripherals.hpp"
 #include "ch.hpp"
 #include "inttypes.h"
+#include "CanProtocol.hpp"
+#include "CanListener.hpp"
 
 namespace Board {
 void init();
@@ -23,7 +25,12 @@ void toggleLED();
 
 namespace Com {
 void initDrivers();
-}
+namespace CANBus{
+    void init();
+    bool send(canFrame_t canData);
+    void registerListener(CanListener * listener);
+} //namespace CanBus
+} // namespace Com
 
 namespace Events {
 
