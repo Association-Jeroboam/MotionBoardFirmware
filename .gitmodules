@@ -7,3 +7,6 @@
 [submodule "libs/eHSM"]
 	path = libs/eHSM
 	url = https://gitlab.com/ecruzolivera/eHSM
+[submodule "firmware/libs/CanProtocol"]
+	path = firmware/libs/CanProtocol
+	url = git@github.com:Association-Jeroboam/CanProtocol.git
