@@ -27,13 +27,15 @@ void initDrivers();
 
 namespace Events {
 
-enum event {
+enum eventFlags {
     RUN_MOTOR_CONTROL = 1 << 0,
     SEND_STREAM       = 1 << 1,
+    START_MATCH       = 1 << 2,
 };
 
-void eventRegister(chibios_rt::EventListener* elp, enum event event);
+void eventRegister(chibios_rt::EventListener* elp, eventmask_t event);
 
 void startControlLoop(uint16_t frequency);
+void startStartMatchTimer(uint16_t interval_ms);
 } // namespace Events
 } // namespace Board

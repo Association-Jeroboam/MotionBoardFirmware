@@ -152,6 +152,6 @@ static void controlLoopTimerCallback(GPTDriver* gptp) {
     eventSource.broadcastFlags(Board::Events::RUN_MOTOR_CONTROL);
 }
 
-void Board::Events::eventRegister(chibios_rt::EventListener* elp, enum event event) {
+void Board::Events::eventRegister(chibios_rt::EventListener* elp, eventmask_t event) {
     eventSource.registerMask(elp, event);
 }

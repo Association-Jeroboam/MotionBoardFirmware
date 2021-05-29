@@ -3,11 +3,12 @@
 #include "DataStreamer.hpp"
 #include "Logging.hpp"
 #include "Parameters.hpp"
+#include "Strategy/Events.hpp"
 #include "Strategy/Strategy.hpp"
 #include "ch.hpp"
 #include <new>
 
-ControlThread* s_instance = nullptr;
+static ControlThread* s_instance = nullptr;
 
 ControlThread* ControlThread::instance() {
     if (s_instance == nullptr) {
@@ -17,43 +18,53 @@ ControlThread* ControlThread::instance() {
     return s_instance;
 }
 
-ControlThread::ControlThread() : moveOkFired(false) {
+ControlThread::ControlThread() : BaseStaticThread<CONTROL_THREAD_WA>(), EventListener(), EventSource(), moveOkFired(true) {
 }
 
 void ControlThread::main() {
-    Logging::println("[Control] init");
-    setName("Control");
+    Logging::println("[ControlThread] init");
+    setName("ControlThread");
 
     static uint16_t toggleCounter = 0;
 
-    Board::Events::eventRegister(this, Board::Events::RUN_MOTOR_CONTROL);
+    Board::Events::eventRegister(this, RunMotorControl);
     Board::Events::startControlLoop(MOTOR_CONTROL_LOOP_FREQ);
 
     while (!shouldTerminate()) {
-        waitOneEvent(Board::Events::RUN_MOTOR_CONTROL);
+        waitOneEvent(RunMotorControl);
+        eventflags_t flags = getAndClearFlags();
+        if(flags & Board::Events::RUN_MOTOR_CONTROL) {
 
-        control.update();
+            control.update();
 
-        bool goalReached = control.getCurrentGoal().isReached();
+            bool goalReached = control.getCurrentGoal().isReached();
 
-        if (goalReached) {
-            if (!moveOkFired) {
-                // TODO : dispatch chibiOS event to a new StrategyThread which will dispatch like this :
-                // Strategy::instance()->dispatch(MoveOk);
-                moveOkFired = true;
+            if (goalReached) {
+                if (!moveOkFired) {
+                    Logging::println("Goal reached");
+                    //                    chThdSleep(TIME_MS2I(1));
+                    this->broadcastFlagsI(GoalReached);
+                    Logging::println("Goal reached returned");
+                    moveOkFired = true;
+                }
+            } else {
+                if (moveOkFired) {
+                    Logging::println("new goal");
+                    moveOkFired = false;
+                }
             }
-        } else {
-            moveOkFired = false;
-        }
 
-        updateDataStreamer();
+            updateDataStreamer();
 
-        toggleCounter++;
-        if (toggleCounter % (MOTOR_CONTROL_LOOP_FREQ / LED_TOGGLE_FREQUENCY) == 0) {
-            Board::IO::toggleLED();
-            toggleCounter = 0;
+            toggleCounter++;
+            if (toggleCounter % (MOTOR_CONTROL_LOOP_FREQ / LED_TOGGLE_FREQUENCY) == 0) {
+                Board::IO::toggleLED();
+                toggleCounter = 0;
+            }
         }
     }
+
+    Logging::println("[ControlThread] end");
 }
 
 void ControlThread::updateDataStreamer() {
