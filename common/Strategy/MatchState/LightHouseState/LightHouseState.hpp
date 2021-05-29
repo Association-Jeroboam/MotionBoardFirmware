@@ -1,5 +1,5 @@
 #pragma once
-#include <stdio.h>
+#include "Logging.hpp"
 
 #include "State.hpp"
 
@@ -14,25 +14,25 @@ class LightHouseState : public ::eHSM::State {
     }
 
     void onCompassOk(int event) {
-        printf("compass ok !!!");
+        Logging::println("compass ok !!!");
 
         if (!compassOk) {
-            printf("going to do stuff !");
+            Logging::println("going to do stuff !");
         }
     }
 
     void setCompassOk(int event) {
-        printf("set compass ok");
+        Logging::println("set compass ok");
         compassOk = true;
     }
 
   private:
     void doStuff() {
-        printf("DOING STUFF BECAUSE COMPASS OK");
+        Logging::println("DOING STUFF BECAUSE COMPASS OK");
     }
 
     void onEntry() {
-        printf("[ENTER] LightHouseState\n");
+        Logging::println("[ENTER] LightHouseState\n");
 
         if (compassOk) {
             doStuff();
@@ -40,7 +40,7 @@ class LightHouseState : public ::eHSM::State {
     }
 
     void onExit() {
-        printf("[EXIT] LightHouseState\n");
+        Logging::println("[EXIT] LightHouseState\n");
     }
 
     bool                      compassOk;

@@ -1,11 +1,7 @@
 #include "Strategy/Strategy.hpp"
 
-Strategy* inst = nullptr;
+Strategy Strategy::s_instance;
 
 Strategy* Strategy::instance() {
-    if (inst == nullptr) {
-        inst = new Strategy();
-    }
-
-    return inst;
+    return &s_instance;
 }

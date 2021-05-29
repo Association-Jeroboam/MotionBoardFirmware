@@ -1,5 +1,6 @@
 #pragma once
 #include <stdio.h>
+#include "Logging.hpp"
 
 #include "State.hpp"
 
@@ -12,11 +13,11 @@ class GripBuoyState : public ::eHSM::State {
 
   private:
     void onEntry() {
-        printf("[ENTER] GripBuoyState\n");
+        Logging::println("[ENTER] GripBuoyState\n");
     }
 
     void onExit() {
-        printf("[EXIT] GripBuoyState\n");
+        Logging::println("[EXIT] GripBuoyState\n");
     }
 
     Declare::Array<Event, MAX_EVENTS_HANDLED> eventList_;

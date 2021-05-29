@@ -20,6 +20,7 @@ class Strategy : public HierarchicalStateMachine {
 
         setInitialState(idleState);
     };
+    static Strategy s_instance;
 
   protected:
     Declare::IdleState<IDLE_STATE_EVENTS>   idleState;

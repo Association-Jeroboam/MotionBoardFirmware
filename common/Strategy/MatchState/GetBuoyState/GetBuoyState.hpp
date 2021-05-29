@@ -1,9 +1,11 @@
 #pragma once
 #include <stdio.h>
+#include "Logging.hpp"
 
 #include "GoToBuoyState.hpp"
 #include "GripBuoyState.hpp"
 #include "State.hpp"
+#include "Strategy/Events.hpp"
 
 namespace eHSM {
 namespace Declare {
@@ -27,11 +29,11 @@ class GetBuoyState : public ::eHSM::State {
 
   private:
     void onEntry() {
-        printf("[ENTER] GetBuoyState\n");
+        Logging::println("[ENTER] GetBuoyState\n");
     }
 
     void onExit() {
-        printf("[EXIT] GetBuoyState\n");
+        Logging::println("[EXIT] GetBuoyState\n");
     }
 
     Declare::Array<Event, MAX_EVENTS_HANDLED> eventList_;
