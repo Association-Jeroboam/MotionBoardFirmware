@@ -25,7 +25,7 @@ endif
 
 # Linker extra options here.
 ifeq ($(USE_LDOPT),)
-  USE_LDOPT = 
+  USE_LDOPT = --print-memory-usage
 endif
 
 # Enable this if you want link time optimizations (LTO).
@@ -128,6 +128,7 @@ LDSCRIPT= $(STARTUPLD)/STM32F303x8.ld
 # Project files
 include $(COMMONDIR)/common.mk
 include $(FIRMWAREDIR)/firmware.mk
+include $(ROOTDIR)/libs/common_libs.mk
 
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.

@@ -47,4 +47,4 @@ constexpr float ANGLE_KP            = 5.;
 constexpr float COMPUTE_DIRECTION_THRESHOLD = 10.; //[mm]
 
 constexpr float ANGLE_PRECISION = 0.01; //[rad]
-constexpr float DISTANCE_PRECISION = 1;  //[mm]
+constexpr float DISTANCE_PRECISION = 5;  //[mm]
