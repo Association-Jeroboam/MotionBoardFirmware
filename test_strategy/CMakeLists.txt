@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.19)
+cmake_minimum_required(VERSION 3.16)
 
 project(test_strategy)
 
@@ -10,8 +10,9 @@ add_executable(${PROJECT_NAME}
     src/MotorControl.cpp
     src/Motor.cpp
     ../common/Strategy/Strategy.cpp
+    ../common/Strategy/MatchState/GetBuoyState/GoToBuoyState.cpp
     ../common/PID.cpp
-    ../common/robotPose.cpp
+    ../common/RobotPose.cpp
     ../common/Goal.cpp
     ../webots/controllers/eurobot/Logging.cpp
 )
