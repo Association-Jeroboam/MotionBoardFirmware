@@ -23,7 +23,7 @@ static chibios_rt::EventSource eventSource;
 CanTxThread canTxThread;
 CanRxThread canRxThread;
 
-__extension__ PWMChannelConfig channelConf{
+__extension__ const PWMChannelConfig channelConf{
     .mode     = PWM_OUTPUT_ACTIVE_LOW | PWM_COMPLEMENTARY_OUTPUT_ACTIVE_LOW,
     .callback = NULL,
 };
@@ -43,7 +43,7 @@ __extension__ const PWMConfig pwmMotorConfig{
     .dier = 0,
 };
 
-__extension__ QEIConfig leftEncoderConf{
+__extension__ const QEIConfig leftEncoderConf{
     .mode        = QEI_MODE_QUADRATURE,
     .resolution  = QEI_BOTH_EDGES,
     .dirinv      = QEI_DIRINV_TRUE,
@@ -54,7 +54,7 @@ __extension__ QEIConfig leftEncoderConf{
     .overflow_cb = NULL,
 };
 
-__extension__ QEIConfig rightEncoderConf{
+__extension__ const QEIConfig rightEncoderConf{
     .mode        = QEI_MODE_QUADRATURE,
     .resolution  = QEI_BOTH_EDGES,
     .dirinv      = QEI_DIRINV_FALSE,
@@ -65,21 +65,21 @@ __extension__ QEIConfig rightEncoderConf{
     .overflow_cb = NULL,
 };
 
-__extension__ GPTConfig intervalTimerConfig{
+__extension__ const GPTConfig intervalTimerConfig{
     .frequency = CONTROL_LOOP_TIMER_COUNTING_FREQUENCY,
     .callback  = controlLoopTimerCallback,
     .cr2       = 0,
     .dier      = 0,
 };
 
-__extension__ GPTConfig startMatchTimerConfig{
+__extension__ const GPTConfig startMatchTimerConfig{
         .frequency = 1000,
         .callback  = startMatchTimerCallback,
         .cr2       = 0,
         .dier      = 0,
 };
 
-CANConfig canConfig = {
+CANConfig const canConfig = {
     .mcr = 0,
     .btr = 0x00050007,
 };
