@@ -24,8 +24,11 @@ constexpr float WHEEL_LEFT_RADIUS  = 32.;  //[mm] Theorical 32
 constexpr float WHEEL_RIGHT_RADIUS = 32.;  //[mm] Theorical 32
 constexpr float WHEEL_BASE         = 186.; //[mm] Theorical 186
 
-constexpr float MAX_WHEEL_SPEED    = 550.; //[mm/s]
-constexpr float MAX_ANGULAR_SPEED  = M_PI;
+constexpr float MAX_WHEEL_SPEED    = 550.; // [mm/s]
+constexpr float MAX_ANGULAR_SPEED  = M_PI; // [rad/s]
+
+constexpr float MAX_LINEAR_ACCL  = 10000.; // [mm/s²]
+constexpr float MAX_ANGULAR_ACCL = 50.; // [rad/s²]
 
 constexpr float LEFT_MOTOR_KP      = 0.003;
 constexpr float LEFT_MOTOR_KI      = 0.03;

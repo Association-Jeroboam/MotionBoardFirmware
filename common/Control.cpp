@@ -37,6 +37,23 @@ void Control::updateState() {
     m_angularSpeed = (right_speed - left_speed) / WHEEL_BASE;
 }
 
+void Control::applyAccelerationLimits(){
+	float maxLinearSpeedSetpoint = m_linearSpeed + MAX_LINEAR_ACCL * MOTOR_CONTROL_LOOP_DT;
+	float maxAngularSpeedSetpoint = m_angularSpeed + MAX_ANGULAR_ACCL * MOTOR_CONTROL_LOOP_DT;
+
+	if( m_angularSpeedSetpoint > maxAngularSpeedSetpoint ) {
+		m_angularSpeedSetpoint = maxAngularSpeedSetpoint;
+	} else if ( m_angularSpeedSetpoint < -maxAngularSpeedSetpoint ) {
+		m_angularSpeedSetpoint = -maxAngularSpeedSetpoint;
+	}
+
+	if( m_linearSpeedSetpoint  > maxLinearSpeedSetpoint ) {
+		m_linearSpeedSetpoint = maxLinearSpeedSetpoint;
+	} else if ( m_linearSpeedSetpoint < - maxLinearSpeedSetpoint ) {
+		m_linearSpeedSetpoint = -maxLinearSpeedSetpoint;
+	}
+}
+
 void Control::applyControl() {
     float leftSpeedSetpoint;
     float rightSpeedSetpoint;
@@ -143,6 +160,8 @@ void Control::applyControl() {
             break;
         }
     }
+
+    applyAccelerationLimits();
 
     if(m_currentGoal.isReached()){
         leftSpeedSetpoint = 0.;

@@ -26,6 +26,8 @@ class Control {
 
     void updateState();
 
+    void applyAccelerationLimits();
+
     void applyControl();
 
     void setCurrentGoal(Goal goal);
