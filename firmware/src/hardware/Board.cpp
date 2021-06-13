@@ -8,10 +8,6 @@
 #include "CanRxThread.hpp"
 #include "CanTxThread.hpp"
 
-#define PWM_COUNTING_FREQUENCY 20000000
-#define PWM_OUTPUT_FREQUENCY 20000
-
-#define DEADTIME_VALUE 40
 
 #define CONTROL_LOOP_TIMER_COUNTING_FREQUENCY 2000000
 
@@ -22,26 +18,6 @@ static chibios_rt::EventSource eventSource;
 
 CanTxThread canTxThread;
 CanRxThread canRxThread;
-
-__extension__ const PWMChannelConfig channelConf{
-    .mode     = PWM_OUTPUT_ACTIVE_LOW | PWM_COMPLEMENTARY_OUTPUT_ACTIVE_LOW,
-    .callback = NULL,
-};
-
-__extension__ const PWMConfig pwmMotorConfig{
-    .frequency = PWM_COUNTING_FREQUENCY,
-    .period    = PWM_COUNTING_FREQUENCY / PWM_OUTPUT_FREQUENCY,
-    .callback  = NULL,
-    .channels  = {
-        channelConf,
-        channelConf,
-        {PWM_OUTPUT_DISABLED, NULL},
-        {PWM_OUTPUT_DISABLED, NULL},
-    },
-    .cr2  = 0,
-    .bdtr = DEADTIME_VALUE,
-    .dier = 0,
-};
 
 __extension__ const QEIConfig leftEncoderConf{
     .mode        = QEI_MODE_QUADRATURE,
@@ -79,11 +55,6 @@ __extension__ const GPTConfig startMatchTimerConfig{
         .dier      = 0,
 };
 
-CANConfig const canConfig = {
-    .mcr = 0,
-    .btr = 0x00050007,
-};
-
 void Board::init() {
     Board::Com::initDrivers();
     Board::IO::initDrivers();
@@ -91,17 +62,13 @@ void Board::init() {
 
 void Board::IO::initDrivers() {
     Logging::println("IO drivers init");
+    palSetLineMode(LED_LINE, PAL_MODE_OUTPUT_PUSHPULL);
+    initPWM();
+    initEncoders();
+    initTimers();
+}
 
-    //Motor PWM init
-    palSetLineMode(MOTOR_LEFT_P_CHAN_LINE, PAL_MODE_ALTERNATE(6));
-    palSetLineMode(MOTOR_LEFT_N_CHAN_LINE, PAL_MODE_ALTERNATE(6));
-    palSetLineMode(MOTOR_RIGHT_P_CHAN_LINE, PAL_MODE_ALTERNATE(6));
-    palSetLineMode(MOTOR_RIGHT_N_CHAN_LINE, PAL_MODE_ALTERNATE(6));
-    pwmStart(&MOTOR_PWM_DRIVER, &pwmMotorConfig);
-    setMotorDutyCycle(Peripherals::LEFT_MOTOR, 0.);
-    setMotorDutyCycle(Peripherals::RIGHT_MOTOR, 0.);
-
-    //Encoders init
+void Board::IO::initEncoders() {
     //Left encoder
     palSetLineMode(ENCODER_LEFT_CHAN1_LINE, PAL_MODE_ALTERNATE(ENCODER_LEFT_CHAN1_PIN_MODE));
     palSetLineMode(ENCODER_LEFT_CHAN2_LINE, PAL_MODE_ALTERNATE(ENCODER_LEFT_CHAN2_PIN_MODE));
@@ -113,8 +80,9 @@ void Board::IO::initDrivers() {
     palSetLineMode(ENCODER_RIGHT_CHAN2_LINE, PAL_MODE_ALTERNATE(ENCODER_RIGHT_CHAN2_PIN_MODE));
     qeiStart(&RIGHT_ENCODER_DRIVER, &rightEncoderConf);
     qeiEnable(&RIGHT_ENCODER_DRIVER);
+}
 
-    //Event Timers
+void Board::IO::initTimers() {
     gptStart(&MOTOR_CONTROL_LOOP_TIMER, &intervalTimerConfig);
     gptStart(&START_MATCH_TIMER, &startMatchTimerConfig);
 }
