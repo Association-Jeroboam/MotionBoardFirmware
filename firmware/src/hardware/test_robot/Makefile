@@ -5,7 +5,7 @@
 
 # Compiler options here.
 ifeq ($(USE_OPT),)
-  USE_OPT = -O2 -ggdb -fomit-frame-pointer -falign-functions=16 -specs=nano.specs -specs=nosys.specs -lm
+  USE_OPT = -Os -ggdb -fomit-frame-pointer -falign-functions=16 -specs=nano.specs -specs=nosys.specs -lm
 endif
 
 # C specific options here (added to USE_OPT).
@@ -202,6 +202,12 @@ include $(RULESPATH)/rules.mk
 flash:
 	make -j
 	openocd -s ./cfg/ -c "set BIN_FILE build/${PROJECT}.bin" -f flash.cfg
+
+gdb:
+	gnome-terminal --command "openocd -s ./cfg/ -f gdb.cfg"
+	arm-none-eabi-gdb build/${PROJECT}.elf -x ../gdb_script.gdb
+	killall openocd
+
 #
 # Custom rules
 ##############################################################################
