@@ -20,13 +20,16 @@ void DataStreamer::main() {
     Logging::println("Starting Data Stream, disabling logging");
     chThdSleepMilliseconds(20);
     Logging::setDisablePrint(true);
-    Board::Events::eventRegister(this, Board::Events::SEND_STREAM);
+    Board::Events::eventRegister(this, BoardEvent);
 
     while (!shouldTerminate()) {
 
-        eventmask_t event = waitOneEvent(Board::Events::SEND_STREAM);
-        if(event & Board::Events::SEND_STREAM){
-            sendData();
+        eventmask_t event = waitOneEvent(BoardEvent);
+        if(event & BoardEvent) {
+            eventflags_t flags = getAndClearFlags();
+            if (flags & Board::Events::RUN_MOTOR_CONTROL) {
+                sendData();
+            }
         }
 
     }
