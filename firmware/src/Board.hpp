@@ -12,6 +12,9 @@ void init();
 namespace IO {
 
 void initDrivers();
+void initPWM();
+void initEncoders();
+void initTimers();
 
 void deinitPWM();
 

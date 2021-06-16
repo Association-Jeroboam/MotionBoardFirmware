@@ -5,7 +5,7 @@
 
 # Compiler options here.
 ifeq ($(USE_OPT),)
-  USE_OPT = -O2 -ggdb -fomit-frame-pointer -falign-functions=16
+  USE_OPT = -O2 -ggdb -fomit-frame-pointer -falign-functions=16 -specs=nano.specs -specs=nosys.specs -lm
 endif
 
 # C specific options here (added to USE_OPT).
@@ -15,7 +15,7 @@ endif
 
 # C++ specific options here (added to USE_OPT).
 ifeq ($(USE_CPPOPT),)
-  USE_CPPOPT = -fno-rtti -std=c++17
+  USE_CPPOPT = -fno-rtti -std=c++17 -fno-exceptions
 endif
 
 # Enable this if you want the linker to remove unused code and data.
@@ -25,7 +25,7 @@ endif
 
 # Linker extra options here.
 ifeq ($(USE_LDOPT),)
-  USE_LDOPT = 
+  USE_LDOPT = --print-memory-usage
 endif
 
 # Enable this if you want link time optimizations (LTO).
@@ -84,18 +84,25 @@ endif
 
 # Define project name here
 PROJECT = MotionBoard
+TARGET_TYPE = hardware
+TARGET = robot
 
 # Target settings.
 MCU      = cortex-m4
 PLATFORM = STM32G4
 
 # Imported source files and paths.
-CHIBIOS   := ../libs/ChibiOS
+CHIBIOS   := ../../../libs/ChibiOS
 CHIBIOS_CONTRIB = $(CHIBIOS)/../ChibiOS-Contrib
 CONFDIR   := ./cfg
 BUILDDIR  := ./build
 DEPDIR    := ./.dep
-COMMONDIR := ../common
+ROOTDIR   := ../../../..
+COMMONDIR := $(ROOTDIR)/common
+FIRMWAREDIR := $(ROOTDIR)/firmware
+SOURCEDIR   := $(FIRMWAREDIR)/src
+LIBDIR    := $(FIRMWAREDIR)/libs
+TARGETDIR := $(TARGET_TYPE)/test_robot
 PARAMDIR  := ./param
 
 # Licensing files.
@@ -121,6 +128,8 @@ LDSCRIPT= $(STARTUPLD)/STM32G431xB.ld
 
 # Project files
 include $(COMMONDIR)/common.mk
+include $(FIRMWAREDIR)/firmware.mk
+include $(ROOTDIR)/libs/common_libs.mk
 
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.
@@ -139,7 +148,7 @@ ASMSRC = $(ALLASMSRC)
 ASMXSRC = $(ALLXASMSRC)
 
 # Inclusion directories.
-INCDIR = $(CONFDIR) $(ALLINC) $(COMMONINC) $(PLATFORMINC) $(PARAMDIR)
+INCDIR = $(CONFDIR) $(ALLINC) $(COMMONINC) $(PARAMDIR) $(SOURCEDIR)
 
 # Define C warning options here.
 CWARN = -Wall -Wextra -Wundef -Wstrict-prototypes
@@ -192,6 +201,11 @@ include $(RULESPATH)/rules.mk
 flash:
 	make -j
 	openocd -s ./cfg/ -c "set BIN_FILE build/${PROJECT}.bin" -f flash.cfg
+
+gdb:
+	gnome-terminal --command "openocd -s ./cfg/ -f gdb.cfg"
+	arm-none-eabi-gdb build/${PROJECT}.elf -x ../gdb_script.gdb
+	killall openocd
 #
 # Custom rules
 ##############################################################################

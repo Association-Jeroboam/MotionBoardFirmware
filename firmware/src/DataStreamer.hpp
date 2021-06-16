@@ -40,6 +40,10 @@ typedef struct {
     dataEntry data;
 } __attribute__((packed)) DataStreamType;
 
+enum DataStreamEvent{
+    BoardEvent = 1 <<0,
+};
+
 class DataStreamer : public chibios_rt::BaseStaticThread<DATA_STREAMER_WA>,
                      public chibios_rt::EventListener {
 

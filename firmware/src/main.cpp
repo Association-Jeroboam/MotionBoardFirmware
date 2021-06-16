@@ -10,6 +10,7 @@
 #include <Logging.hpp>
 
 Strategy* stateMachine;
+static THD_WORKING_AREA(waShellThread, SHELL_WA_SIZE);
 
 int main() {
     halInit();
@@ -23,13 +24,17 @@ int main() {
 
     ControlThread::instance()->start(NORMALPRIO+1);
     chThdSleepMilliseconds(10);
+    Goal goal(100, 500, Goal::COORD);
+//    ControlThread::instance()->getControl()->setCurrentGoal(goal);
     StrategyThread::instance()->start(NORMALPRIO+2);
     chThdYield();
     chThdSleepMilliseconds(10);
 
-    chThdCreateFromHeap(NULL, SHELL_WA_SIZE,
-                        "shell", NORMALPRIO + 1,
-                        shellThread, (void*)&shell_cfg);
+    chThdCreateStatic(waShellThread, sizeof(waShellThread), NORMALPRIO,
+                      shellThread, (void*)&shell_cfg);
+//    chThdCreateFromHeap(NULL, SHELL_WA_SIZE,
+//                        "shell", NORMALPRIO,
+//                        shellThread, (void*)&shell_cfg);
 
     while (!chThdShouldTerminateX()) {
         chThdSleepMilliseconds(20);

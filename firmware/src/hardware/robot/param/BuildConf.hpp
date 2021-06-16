@@ -1,9 +1,74 @@
 #pragma once
 
 #include "Board.hpp"
-
-#define LOGGING_DRIVER SD4
+#define LOGGING_DRIVER SD2
 #define SHELL_DRIVER LOGGING_DRIVER
-#define MOTOR_PWM_DRIVER PWMD1 //might change
+#define MOTOR_PWM_DRIVER PWMD1  //right for now
+#define MOTOR_PWM_DRIVER2 PWMD4 //left for now
 
-#define LED_LINE LINE_LED
+#define LOGGING_TX_PIN PAL_LINE(GPIOA, 2U)
+#define LOGGING_TX_PIN_MODE PAL_MODE_ALTERNATE(7)
+#define LOGGING_RX_PIN PAL_LINE(GPIOA, 3U)
+#define LOGGING_RX_PIN_MODE PAL_MODE_ALTERNATE(7)
+
+#define CAN_DRIVER CAND1
+#define CAN_TX_PIN      PAL_LINE(GPIOA, 12U)
+#define CAN_TX_PIN_MODE PAL_MODE_ALTERNATE(9)
+#define CAN_RX_PIN      PAL_LINE(GPIOA, 11U)
+#define CAN_RX_PIN_MODE PAL_MODE_ALTERNATE(9)
+
+CANConfig const canConfig = {
+    .DBTP = 0,
+    .CCCR = 0,
+    .TEST = 0
+};
+
+#define MOTOR_LEFT_P_CHAN_LINE PAL_LINE(GPIOA, 10U)
+#define MOTOR_RIGHT_P_CHAN_LINE PAL_LINE(GPIOA, 8U)
+
+#define MOTOR_LEFT_P_CHAN_LINE_MODE  PAL_MODE_ALTERNATE(10)
+#define MOTOR_RIGHT_P_CHAN_LINE_MODE PAL_MODE_ALTERNATE(6)
+
+#define PWM_COUNTING_FREQUENCY 20000000
+#define PWM_OUTPUT_FREQUENCY   20000
+
+__extension__ const PWMChannelConfig channelConf{
+    .mode     = PWM_OUTPUT_ACTIVE_LOW,
+    .callback = NULL,
+};
+
+__extension__ const PWMConfig pwmMotorConfig{
+    .frequency = PWM_COUNTING_FREQUENCY,
+    .period    = PWM_COUNTING_FREQUENCY / PWM_OUTPUT_FREQUENCY,
+    .callback  = NULL,
+    .channels  = {
+        channelConf,
+        channelConf,
+        {PWM_OUTPUT_DISABLED, NULL},
+        {PWM_OUTPUT_DISABLED, NULL},
+    },
+    .cr2  = 0,
+    .bdtr = 0,
+    .dier = 0,
+};
+
+#define LEFT_ENCODER_DRIVER QEID3
+#define RIGHT_ENCODER_DRIVER QEID2
+
+#define ENCODER_LEFT_CHAN1_LINE PAL_LINE(GPIOB, 4U)
+#define ENCODER_LEFT_CHAN2_LINE PAL_LINE(GPIOB, 6U)
+#define ENCODER_RIGHT_CHAN1_LINE PAL_LINE(GPIOA, 0U)
+#define ENCODER_RIGHT_CHAN2_LINE PAL_LINE(GPIOA, 1U)
+
+#define ENCODER_LEFT_CHAN1_PIN_MODE 1
+#define ENCODER_LEFT_CHAN2_PIN_MODE 1
+#define ENCODER_RIGHT_CHAN1_PIN_MODE 2
+#define ENCODER_RIGHT_CHAN2_PIN_MODE 2
+
+// Timers
+
+#define MOTOR_CONTROL_LOOP_TIMER GPTD7
+#define START_MATCH_TIMER GPTD15
+
+// GPIO
+#define LED_LINE PAL_LINE(GPIOB, 8U)
