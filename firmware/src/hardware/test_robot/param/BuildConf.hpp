@@ -30,6 +30,7 @@
 // Timers
 
 #define MOTOR_CONTROL_LOOP_TIMER GPTD7
+#define START_MATCH_TIMER GPTD15
 
 // GPIO
 

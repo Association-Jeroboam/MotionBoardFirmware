@@ -3,5 +3,7 @@ COMMONCPPSRC += $(SOURCEDIR)/Motor.cpp
 COMMONCPPSRC += $(SOURCEDIR)/MotorControl.cpp
 COMMONCPPSRC += $(SOURCEDIR)/Shell.cpp
 COMMONCPPSRC += $(SOURCEDIR)/ControlThread.cpp
+COMMONCPPSRC += $(SOURCEDIR)/StrategyThread.cpp
+COMMONCPPSRC += $(SOURCEDIR)/Memory.cpp
 
 include $(SOURCEDIR)/$(TARGET_TYPE)/target.mk

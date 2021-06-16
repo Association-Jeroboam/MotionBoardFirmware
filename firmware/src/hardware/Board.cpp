@@ -14,6 +14,7 @@
 #define CONTROL_LOOP_TIMER_COUNTING_FREQUENCY 2000000
 
 static void controlLoopTimerCallback(GPTDriver* gptp);
+static void startMatchTimerCallback(GPTDriver* gptp);
 
 static chibios_rt::EventSource eventSource;
 
@@ -66,6 +67,13 @@ __extension__ GPTConfig intervalTimerConfig{
     .dier      = 0,
 };
 
+__extension__ GPTConfig startMatchTimerConfig{
+        .frequency = 1000,
+        .callback  = startMatchTimerCallback,
+        .cr2       = 0,
+        .dier      = 0,
+};
+
 void Board::init() {
     Board::Com::initDrivers();
     Board::IO::initDrivers();
@@ -98,6 +106,7 @@ void Board::IO::initDrivers() {
 
     //Event Timers
     gptStart(&MOTOR_CONTROL_LOOP_TIMER, &intervalTimerConfig);
+    gptStart(&START_MATCH_TIMER, &startMatchTimerConfig);
 }
 
 void Board::IO::setMotorDutyCycle(Peripherals::Motor motor, float duty_cycle) {
@@ -147,11 +156,20 @@ void Board::Events::startControlLoop(uint16_t frequency) {
     gptStartContinuous(&MOTOR_CONTROL_LOOP_TIMER, (gptcnt_t)interval);
 }
 
-static void controlLoopTimerCallback(GPTDriver* gptp) {
-    (void)gptp;
-    eventSource.broadcastFlags(Board::Events::RUN_MOTOR_CONTROL);
+void Board::Events::startStartMatchTimer(uint16_t interval_ms) {
+    gptStartOneShot(&START_MATCH_TIMER, (gptcnt_t)interval_ms);
 }
 
-void Board::Events::eventRegister(chibios_rt::EventListener* elp, enum event event) {
+static void controlLoopTimerCallback(GPTDriver* gptp) {
+    (void)gptp;
+    eventSource.broadcastFlagsI(Board::Events::RUN_MOTOR_CONTROL);
+}
+
+static void startMatchTimerCallback(GPTDriver* gptp) {
+    (void)gptp;
+    eventSource.broadcastFlagsI(Board::Events::START_MATCH);
+}
+
+void Board::Events::eventRegister(chibios_rt::EventListener* elp, eventmask_t event) {
     eventSource.registerMask(elp, event);
 }

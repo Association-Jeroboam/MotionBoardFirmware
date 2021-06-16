@@ -1,22 +1,15 @@
-#include "Control.hpp"
-#include "Parameters.hpp"
+#include "ControlThread.hpp"
 #include "Supervisor.hpp"
 #include <iostream>
 #include <memory>
 
-using namespace webots;
+extern std::shared_ptr<webots::Supervisor> supervisor;
 
 int main() {
-    auto               control        = std::make_unique<Control>();
-    const unsigned int controlSteps   = MOTOR_CONTROL_LOOP_DT * 1000 / 8;
-    unsigned int       controlCounter = 0;
+    auto controlThread = std::make_unique<ControlThread>();
 
     while (supervisor->step(8) != -1) {
-        controlCounter++;
-        if (controlCounter >= controlSteps) {
-            controlCounter = 0;
-            control->update();
-        }
+        controlThread->main();
     }
 
     return 0;

@@ -10,7 +10,7 @@
 bool disablePrint = false;
 
 __extension__ SerialConfig serialConfig {
-        .speed = 115200,
+        .speed = 921600,
         .cr1 = 0,
         .cr2 = USART_CR2_STOP1_BITS,
         .cr3 = 0

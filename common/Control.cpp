@@ -45,13 +45,12 @@ void Control::applyControl() {
         case Goal::ANGLE: {
             m_angleSetpoint        = m_currentGoal.getAngleData().angle + m_currentGoal.getAngleData().turns * 2 * M_PI;
             m_angularSpeedSetpoint = m_anglePID.compute(m_angleSetpoint, m_robotPose.getAbsoluteAngle());
-            m_linearSpeedSetpoint = 0.;
+            m_linearSpeedSetpoint  = 0.;
 
-            if(fabs(m_angleSetpoint - m_robotPose.getAbsoluteAngle()) < ANGLE_PRECISION && !m_currentGoal.isReached()){
+            if (fabs(m_angleSetpoint - m_robotPose.getAbsoluteAngle()) < ANGLE_PRECISION && !m_currentGoal.isReached()) {
                 m_currentGoal.setReached(true);
-            } else{
-                m_currentGoal.setReached(false);
             }
+
             break;
         }
         case Goal::COORD: {
@@ -95,12 +94,8 @@ void Control::applyControl() {
             }
             m_angleSetpoint = unwrap(m_lastAngleSetpoint, m_angleSetpoint);
 
-            if(fabs(m_angleSetpoint - m_robotPose.getAbsoluteAngle()) < ANGLE_PRECISION
-               && fabs(m_distanceError) < DISTANCE_PRECISION
-               && !m_currentGoal.isReached()){
+            if (fabs(m_angleSetpoint - m_robotPose.getAbsoluteAngle()) < ANGLE_PRECISION && fabs(m_distanceError) < DISTANCE_PRECISION && !m_currentGoal.isReached()) {
                 m_currentGoal.setReached(true);
-            } else{
-                m_currentGoal.setReached(false);
             }
 
             m_angularSpeedSetpoint = m_anglePID.compute(m_angleSetpoint, m_robotPose.getAbsoluteAngle());
@@ -144,13 +139,9 @@ void Control::applyControl() {
         }
     }
 
-    if(m_currentGoal.isReached()){
-        leftSpeedSetpoint = 0.;
-        rightSpeedSetpoint = 0.;
-    } else {
-        leftSpeedSetpoint = m_linearSpeedSetpoint - m_angularSpeedSetpoint * WHEEL_BASE * 0.5;
-        rightSpeedSetpoint = m_linearSpeedSetpoint + m_angularSpeedSetpoint * WHEEL_BASE * 0.5;
-    }
+    leftSpeedSetpoint  = m_linearSpeedSetpoint - m_angularSpeedSetpoint * WHEEL_BASE * 0.5;
+    rightSpeedSetpoint = m_linearSpeedSetpoint + m_angularSpeedSetpoint * WHEEL_BASE * 0.5;
+
 set_speeds:
     m_motorControl.motorSetSpeed(Peripherals::LEFT_MOTOR, leftSpeedSetpoint);
     m_motorControl.motorSetSpeed(Peripherals::RIGHT_MOTOR, rightSpeedSetpoint);

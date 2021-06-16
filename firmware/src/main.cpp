@@ -4,8 +4,12 @@
 
 #include "Board.hpp"
 #include "ControlThread.hpp"
+#include "Strategy/Events.hpp"
 #include "Shell.hpp"
+#include "StrategyThread.hpp"
 #include <Logging.hpp>
+
+Strategy* stateMachine;
 
 int main() {
     halInit();
@@ -13,12 +17,15 @@ int main() {
     chSysInit();
 
     Logging::init();
-    Logging::println("Starting up");
+    Logging::println("[main] Starting up");
     shellInit();
     Board::init();
 
-    ControlThread::instance()->start(HIGHPRIO);
-    chThdSleepMilliseconds(20);
+    ControlThread::instance()->start(NORMALPRIO+1);
+    chThdSleepMilliseconds(10);
+    StrategyThread::instance()->start(NORMALPRIO+2);
+    chThdYield();
+    chThdSleepMilliseconds(10);
 
     chThdCreateFromHeap(NULL, SHELL_WA_SIZE,
                         "shell", NORMALPRIO + 1,
@@ -28,5 +35,5 @@ int main() {
         chThdSleepMilliseconds(20);
     }
 
-    Logging::println("Shutting down");
+    Logging::println("[main] Shutting down");
 }

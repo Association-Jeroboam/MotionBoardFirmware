@@ -4,3 +4,6 @@
 [submodule "libs/ChibiOS-Contrib"]
 	path = firmware/libs/ChibiOS-Contrib
 	url = git@github.com:Association-Jeroboam/ChibiOS-Contrib.git
+[submodule "libs/eHSM"]
+	path = libs/eHSM
+	url = https://gitlab.com/ecruzolivera/eHSM
