@@ -61,4 +61,5 @@ class DataStreamer : public chibios_rt::BaseStaticThread<DATA_STREAMER_WA>,
 
     uint32_t                m_packetCounter;
     volatile DataStreamType m_data;
+    static DataStreamer     s_instance;
 };

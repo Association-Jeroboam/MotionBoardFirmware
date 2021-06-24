@@ -5,14 +5,10 @@
 
 using namespace chibios_rt;
 
-static DataStreamer *s_instance = nullptr;
+DataStreamer DataStreamer::s_instance;
 
 DataStreamer *DataStreamer::instance() {
-    if (s_instance == nullptr) {
-        s_instance = reinterpret_cast<DataStreamer *>(chHeapAlloc(nullptr, sizeof(DataStreamer)));
-        new(s_instance) DataStreamer();
-    }
-    return s_instance;
+    return &s_instance;
 }
 
 void DataStreamer::main() {
