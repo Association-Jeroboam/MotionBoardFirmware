@@ -8,14 +8,10 @@
 #include "ch.hpp"
 #include <new>
 
-static ControlThread* s_instance = nullptr;
+ControlThread ControlThread::s_instance;
 
 ControlThread* ControlThread::instance() {
-    if (s_instance == nullptr) {
-        s_instance = reinterpret_cast<ControlThread*>(chHeapAlloc(nullptr, sizeof(ControlThread)));
-        new (s_instance) ControlThread();
-    }
-    return s_instance;
+    return &s_instance;
 }
 
 ControlThread::ControlThread() : BaseStaticThread<CONTROL_THREAD_WA>(), EventListener(), EventSource(), moveOkFired(true) {
