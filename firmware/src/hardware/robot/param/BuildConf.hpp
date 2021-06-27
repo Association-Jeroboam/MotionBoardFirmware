@@ -32,7 +32,7 @@ __extension__ const SerialConfig lidarSDConfig {
 #define CAN_RX_PIN_MODE PAL_MODE_ALTERNATE(9)
 
 CANConfig const canConfig = {
-    .DBTP = 0,
+    .DBTP = 0x1051664,
     .CCCR = 0,
     .TEST = 0
 };
