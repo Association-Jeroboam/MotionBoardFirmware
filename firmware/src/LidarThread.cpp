@@ -4,17 +4,13 @@
 #include "BuildConf.hpp"
 #include <new>
 
-static LidarThread * s_instance = nullptr;
+LidarThread LidarThread::s_instance;
 
 LidarThread * LidarThread::instance() {
-    if (s_instance == nullptr) {
-        s_instance = reinterpret_cast<LidarThread*>(chHeapAlloc(nullptr, sizeof(LidarThread)));
-        new (s_instance) LidarThread();
-    }
-    return s_instance;
+    return &s_instance;
 }
 
-LidarThread::LidarThread() : BaseStaticThread<LIDAR_THREAD_WA>(), EventSource() {
+LidarThread::LidarThread() : BaseStaticThread<LIDAR_THREAD_WA>() {
     m_scanComplete = false;
     m_sampleCount = 0;
     m_scan[ANGLE][0] = 0.;
