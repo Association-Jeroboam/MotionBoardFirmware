@@ -6,6 +6,7 @@ COMMONCPPSRC += $(SOURCEDIR)/ControlThread.cpp
 COMMONCPPSRC += $(SOURCEDIR)/StrategyThread.cpp
 COMMONCPPSRC += $(SOURCEDIR)/Memory.cpp
 COMMONCPPSRC += $(SOURCEDIR)/LidarThread.cpp
+COMMONCPPSRC += $(SOURCEDIR)/ClusterBuffer.cpp
 COMMONCPPSRC += $(SOURCEDIR)/Point.cpp
 
 include $(SOURCEDIR)/$(TARGET_TYPE)/target.mk
