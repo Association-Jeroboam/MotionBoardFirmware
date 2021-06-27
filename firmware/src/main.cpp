@@ -9,6 +9,7 @@
 #include "StrategyThread.hpp"
 #include <Logging.hpp>
 #include "LidarThread.hpp"
+#include "AvoidanceThread.hpp"
 
 Strategy* stateMachine;
 static THD_WORKING_AREA(waShellThread, SHELL_WA_SIZE);
@@ -28,6 +29,8 @@ int main() {
     StrategyThread::instance()->start(NORMALPRIO+2);
     chThdSleepMilliseconds(10);
     LidarThread::instance()->start(NORMALPRIO+3);
+    chThdSleepMilliseconds(10);
+    AvoidanceThread::instance()->start(NORMALPRIO - 1);
     chThdSleepMilliseconds(10);
 
     chThdCreateStatic(waShellThread, sizeof(waShellThread), NORMALPRIO,

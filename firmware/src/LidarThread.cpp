@@ -1,5 +1,6 @@
 #include <cmath>
 #include "LidarThread.hpp"
+#include "AvoidanceThread.hpp"
 #include "Logging.hpp"
 #include "BuildConf.hpp"
 #include <new>
@@ -11,9 +12,6 @@ LidarThread * LidarThread::instance() {
 }
 
 LidarThread::LidarThread() : BaseStaticThread<LIDAR_THREAD_WA>() {
-    m_scanComplete = false;
-    m_sampleCount = 0;
-    m_scan[ANGLE][0] = 0.;
 }
 
 void LidarThread::main() {
@@ -29,24 +27,21 @@ void LidarThread::main() {
     Logging::println("hw %u", info.hardware_version);
     Logging::println("model %u", info.model);
 
-    m_lidar.startScan();
-
+    bool timeoutDisplayed = false;
     while (!shouldTerminate()) {
-        m_lidar.waitPoint();
+        u_result res = m_lidar.waitPoint(50);
 
-        float angle    = m_lidar.getCurrentPoint().angle;
-        float distance = m_lidar.getCurrentPoint().distance;
-
-        if(m_lidar.getCurrentPoint().startBit) {
-            Logging::println("[LidarThread] process scan %u smpl", m_sampleCount);
-            //TODO: process scan
-            m_sampleCount = 0;
+        if(res == RESULT_OK) {
+            timeoutDisplayed = false;
+            AvoidanceThread::instance()->sendPoint(&m_lidar.getCurrentPoint());
         } else {
-            m_sampleCount++;
+            if(!timeoutDisplayed) {
+                timeoutDisplayed = true;
+                m_lidar.startScan();
+                Logging::println("[LidarThread] wait point timeout");
+            }
+            chThdSleepMilliseconds(10);
         }
-        m_scan[ANGLE][m_sampleCount]    = angle;
-        m_scan[DISTANCE][m_sampleCount] = distance;
-
     }
 
     Logging::println("[LidarThread] Shutdown");
