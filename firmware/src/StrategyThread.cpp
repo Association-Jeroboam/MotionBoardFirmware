@@ -7,14 +7,10 @@
 
 using namespace chibios_rt;
 
-static StrategyThread* s_instance;
+StrategyThread StrategyThread::s_instance;
 
 StrategyThread* StrategyThread::instance() {
-    if (s_instance == nullptr) {
-        s_instance = reinterpret_cast<StrategyThread*>(chHeapAlloc(nullptr, sizeof(StrategyThread)));
-        new (s_instance) StrategyThread();
-    }
-    return s_instance;
+    return &s_instance;
 }
 
 void StrategyThread::main() {

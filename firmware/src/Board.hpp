@@ -33,6 +33,10 @@ namespace CANBus{
     bool send(canFrame_t canData);
     void registerListener(CanListener * listener);
 } //namespace CanBus
+
+namespace Lidar {
+    void init();
+} // namespace Lidar
 } // namespace Com
 
 namespace Events {

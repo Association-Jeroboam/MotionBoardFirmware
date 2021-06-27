@@ -70,14 +70,14 @@ void Board::IO::initDrivers() {
 
 void Board::IO::initEncoders() {
     //Left encoder
-    palSetLineMode(ENCODER_LEFT_CHAN1_LINE, PAL_MODE_ALTERNATE(ENCODER_LEFT_CHAN1_PIN_MODE));
-    palSetLineMode(ENCODER_LEFT_CHAN2_LINE, PAL_MODE_ALTERNATE(ENCODER_LEFT_CHAN2_PIN_MODE));
+    palSetLineMode(ENCODER_LEFT_CHAN1_LINE, ENCODER_LEFT_CHAN1_PIN_MODE);
+    palSetLineMode(ENCODER_LEFT_CHAN2_LINE, ENCODER_LEFT_CHAN2_PIN_MODE);
     qeiStart(&LEFT_ENCODER_DRIVER, &leftEncoderConf);
     qeiEnable(&LEFT_ENCODER_DRIVER);
 
     //Right encoder
-    palSetLineMode(ENCODER_RIGHT_CHAN1_LINE, PAL_MODE_ALTERNATE(ENCODER_RIGHT_CHAN1_PIN_MODE));
-    palSetLineMode(ENCODER_RIGHT_CHAN2_LINE, PAL_MODE_ALTERNATE(ENCODER_RIGHT_CHAN2_PIN_MODE));
+    palSetLineMode(ENCODER_RIGHT_CHAN1_LINE, ENCODER_RIGHT_CHAN1_PIN_MODE);
+    palSetLineMode(ENCODER_RIGHT_CHAN2_LINE, ENCODER_RIGHT_CHAN2_PIN_MODE);
     qeiStart(&RIGHT_ENCODER_DRIVER, &rightEncoderConf);
     qeiEnable(&RIGHT_ENCODER_DRIVER);
 }
@@ -124,6 +124,8 @@ void Board::IO::toggleLED() {
 
 void Board::Com::initDrivers() {
     Logging::println("Com drivers init");
+    CANBus::init();
+    Lidar::init();
 }
 
 void Board::Com::CANBus::init(){
@@ -142,6 +144,12 @@ bool Board::Com::CANBus::send(canFrame_t canData){
 
 void Board::Com::CANBus::registerListener(CanListener *listener) {
     canRxThread.registerListener(listener);
+}
+
+void Board::Com::Lidar::init() {
+    palSetLineMode(LIDAR_SD_TX_PIN, LIDAR_SD_TX_PIN_MODE);
+    palSetLineMode(LIDAR_SD_RX_PIN, LIDAR_SD_RX_PIN_MODE);
+    sdStart(&LIDAR_SD_DRIVER, &lidarSDConfig);
 }
 
 void Board::Events::startControlLoop(uint16_t frequency) {

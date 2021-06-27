@@ -2,7 +2,7 @@
 #include "Control.hpp"
 #include "ch.hpp"
 
-constexpr uint16_t CONTROL_THREAD_WA = 0x200;
+constexpr uint16_t CONTROL_THREAD_WA = 0x800;
 
 enum ControlThreadEvents {
     RunMotorControl = 1 << 0,
@@ -22,6 +22,7 @@ class ControlThread : public chibios_rt::BaseStaticThread<CONTROL_THREAD_WA>,
 
   private:
     ControlThread();
+    static ControlThread s_instance;
 
     void    updateDataStreamer();
     bool    moveOkFired;

@@ -32,6 +32,8 @@ class Control {
 
     Goal getCurrentGoal();
 
+    RobotPose getRobotPose();
+
     void setAngleKp(float kp);
 
     void setDistanceKp(float kp);

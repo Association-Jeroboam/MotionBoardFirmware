@@ -25,4 +25,5 @@ class StrategyThread : public chibios_rt::BaseStaticThread<STRATEGY_THREAD_WA>{
     chibios_rt::EventListener m_controlListener;
     explicit StrategyThread();
     void handleEvent();
+    static StrategyThread s_instance;
 };

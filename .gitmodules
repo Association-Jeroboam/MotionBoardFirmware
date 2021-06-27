@@ -10,3 +10,6 @@
 [submodule "firmware/libs/CanProtocol"]
 	path = firmware/libs/CanProtocol
 	url = git@github.com:Association-Jeroboam/CanProtocol.git
+[submodule "firmware/libs/rplidar_arduino"]
+	path = firmware/libs/rplidar_arduino
+	url = git@github.com:robopeak/rplidar_arduino.git

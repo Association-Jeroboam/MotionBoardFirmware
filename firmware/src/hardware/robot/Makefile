@@ -204,7 +204,7 @@ flash:
 
 gdb:
 	gnome-terminal --command "openocd -s ./cfg/ -f gdb.cfg"
-	arm-none-eabi-gdb build/${PROJECT}.elf -x ../gdb_script.gdb
+	gdb-multiarch build/${PROJECT}.elf -x ../gdb_script.gdb
 	killall openocd
 #
 # Custom rules
