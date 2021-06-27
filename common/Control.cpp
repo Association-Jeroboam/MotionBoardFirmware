@@ -205,3 +205,7 @@ ControlData Control::getData() {
 
     return data;
 }
+
+RobotPose Control::getRobotPose() {
+    return m_robotPose;
+}
