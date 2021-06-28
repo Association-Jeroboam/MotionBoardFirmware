@@ -36,7 +36,7 @@ __extension__ const SerialConfig lidarSDConfig {
 
 CANConfig const canConfig = {
     .mcr = 0,
-    .btr = 0x00050007,
+    .btr = 0x001c0003,
 };
 
 #define MOTOR_LEFT_P_CHAN_LINE PAL_LINE(GPIOA, 9U)
