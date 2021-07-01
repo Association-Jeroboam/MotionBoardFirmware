@@ -58,6 +58,14 @@ void ControlThread::main() {
                 toggleCounter = 0;
             }
         }
+
+        if(flags & Board::Events::EMERGENCY_STOP){
+            Logging::println("[ControlThread] Emeregency Stop!");
+        }
+
+        if(flags & Board::Events::EMERGENCY_CLEARED){
+            Logging::println("[ControlThread] Emeregency Cleared");
+        }
     }
 
     Logging::println("[ControlThread] end");

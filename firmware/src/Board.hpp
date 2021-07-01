@@ -15,6 +15,9 @@ void initDrivers();
 void initPWM();
 void initEncoders();
 void initTimers();
+void initGPIO();
+bool getSide();
+uint8_t getStrategy();
 
 void deinitPWM();
 
@@ -45,6 +48,8 @@ enum eventFlags {
     RUN_MOTOR_CONTROL = 1 << 0,
     SEND_STREAM       = 1 << 1,
     START_MATCH       = 1 << 2,
+    EMERGENCY_STOP    = 1 << 3,
+    EMERGENCY_CLEARED = 1 << 4,
 };
 
 void eventRegister(chibios_rt::EventListener* elp, eventmask_t event);

@@ -13,6 +13,8 @@
 
 static void controlLoopTimerCallback(GPTDriver* gptp);
 static void startMatchTimerCallback(GPTDriver* gptp);
+static void gpioStartMatchCb(void *arg);
+static void gpioEmergencyStopCb(void *arg);
 
 static chibios_rt::EventSource eventSource;
 
@@ -62,10 +64,10 @@ void Board::init() {
 
 void Board::IO::initDrivers() {
     Logging::println("IO drivers init");
-    palSetLineMode(LED_LINE, PAL_MODE_OUTPUT_PUSHPULL);
     initPWM();
     initEncoders();
     initTimers();
+    initGPIO();
 }
 
 void Board::IO::initEncoders() {
@@ -84,7 +86,36 @@ void Board::IO::initEncoders() {
 
 void Board::IO::initTimers() {
     gptStart(&MOTOR_CONTROL_LOOP_TIMER, &intervalTimerConfig);
-    gptStart(&START_MATCH_TIMER, &startMatchTimerConfig);
+//    gptStart(&START_MATCH_TIMER, &startMatchTimerConfig);
+}
+
+void Board::IO::initGPIO() {
+    palSetLineMode(LED_LINE, LED_LINE_MODE);
+
+    palSetLineMode(START_PIN, START_PIN_MODE);
+    palEnableLineEvent(START_PIN, PAL_EVENT_MODE_FALLING_EDGE);
+    palSetLineCallback(START_PIN, gpioStartMatchCb, NULL);
+
+    palSetLineMode(STRATEGY_1_PIN, STRATEGY_1_PIN_MODE);
+
+    palSetLineMode(STRATEGY_2_PIN, STRATEGY_2_PIN_MODE);
+
+    palSetLineMode(SIDE_PIN, SIDE_PIN_MODE);
+
+    palSetLineMode(EMGCY_STOP_PIN, EMGCY_STOP_PIN_MODE);
+    palEnableLineEvent(EMGCY_STOP_PIN, PAL_EVENT_MODE_BOTH_EDGES);
+    palSetLineCallback(EMGCY_STOP_PIN, gpioEmergencyStopCb, NULL);
+}
+
+bool Board::IO::getSide() {
+    return (palReadLine(SIDE_PIN) == PAL_HIGH);
+}
+
+uint8_t Board::IO::getStrategy() {
+    uint8_t strategy = 0;
+    strategy |= palReadLine(STRATEGY_1_PIN) << 0;
+    strategy |= palReadLine(STRATEGY_2_PIN) << 1;
+    return strategy;
 }
 
 void Board::IO::deinitPWM() {
@@ -152,7 +183,7 @@ void Board::Events::startControlLoop(uint16_t frequency) {
 }
 
 void Board::Events::startStartMatchTimer(uint16_t interval_ms) {
-    gptStartOneShot(&START_MATCH_TIMER, (gptcnt_t)interval_ms);
+//    gptStartOneShot(&START_MATCH_TIMER, (gptcnt_t)interval_ms);
 }
 
 static void controlLoopTimerCallback(GPTDriver* gptp) {
@@ -163,6 +194,19 @@ static void controlLoopTimerCallback(GPTDriver* gptp) {
 static void startMatchTimerCallback(GPTDriver* gptp) {
     (void)gptp;
     eventSource.broadcastFlagsI(Board::Events::START_MATCH);
+}
+
+static void gpioStartMatchCb(void *arg) {
+    palDisableLineEvent(START_PIN);
+    eventSource.broadcastFlagsI(Board::Events::START_MATCH);
+}
+
+static void gpioEmergencyStopCb(void *arg) {
+    if(palReadLine(EMGCY_STOP_PIN) == PAL_LOW) {
+        eventSource.broadcastFlagsI(Board::Events::EMERGENCY_STOP);
+    } else {
+        eventSource.broadcastFlagsI(Board::Events::EMERGENCY_CLEARED);
+    }
 }
 
 void Board::Events::eventRegister(chibios_rt::EventListener* elp, eventmask_t event) {
