@@ -46,6 +46,13 @@ Goal::Goal(float input0, float input1, enum GoalType type){
             m_ID = s_goalCount;
             s_goalCount++;
             break;
+        case PWM:
+            m_type = type;
+            m_data.pwmData.leftPWM = input0;
+            m_data.pwmData.rightPWM = input1;
+            m_ID = s_goalCount;
+            s_goalCount++;
+            break;
         default:
             Logging::println("[Goal] Bad goal type. Creating NO_GOAL");
             Goal();
@@ -121,7 +128,7 @@ void Goal::print() {
             Logging::println("Speed goal l_spd %f r_spd %f", m_data.speedData.leftSpeed, m_data.speedData.rightSpeed);
             break;
         case PWM:
-            Logging::println("PWM goal, not supported yet.");
+            Logging::println("PWM goal, l_pwm %.2f r_pwm %.2f", m_data.pwmData.leftPWM, m_data.pwmData.rightPWM);
             break;
         case NO_GOAL:
             Logging::println("No Goal");
