@@ -32,10 +32,18 @@ __extension__ const SerialConfig lidarSDConfig {
 #define CAN_RX_PIN_MODE PAL_MODE_ALTERNATE(9)
 
 CANConfig const canConfig = {
-    .DBTP = 0x1051664,
+    .NBTP = 0x2070C01,
+    .DBTP = 0,
     .CCCR = 0,
-    .TEST = 0
+    .TEST = 0,
+    .RXGFC = 0
 };
+
+#define CAN_CLK_PRESCALER 16 << FDCAN_DBTP_DBRP_Pos
+#define CAN_DTSEG1        12 << FDCAN_DBTP_DTSEG1_Pos
+#define CAN_DTSEG2        1 << FDCAN_DBTP_DTSEG2_Pos
+#define CAN_DSJW          0
+
 
 #define MOTOR_LEFT_P_CHAN_LINE PAL_LINE(GPIOA, 10U)
 #define MOTOR_RIGHT_P_CHAN_LINE PAL_LINE(GPIOA, 8U)
