@@ -52,9 +52,12 @@ int main() {
         } else {
             state = PLIERS_OPEN;
         }
-        Logging::println("[CAN] sent pliers %u state %u", PLIERS_REAR_MIDDLE, state);
+//        Logging::println("[CAN] sent pliers %u state %u", PLIERS_REAR_MIDDLE, state);
         Board::IO::toggleLED();
-        chThdSleepMilliseconds(200);
+        bool side = Board::IO::getSide();
+        uint8_t strategy = Board::IO::getStrategy();
+        Logging::println("side %u strategy %u", side, strategy);
+        chThdSleepMilliseconds(2000);
 
     }
 
