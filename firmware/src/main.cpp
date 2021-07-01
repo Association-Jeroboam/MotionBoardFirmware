@@ -23,9 +23,9 @@ int main() {
     Logging::println("[main] Starting up");
     shellInit();
     Board::init();
-//    chThdSleepMilliseconds(10);
-//    ControlThread::instance()->start(NORMALPRIO+1);
-//    chThdSleepMilliseconds(10);
+    chThdSleepMilliseconds(10);
+    ControlThread::instance()->start(NORMALPRIO+1);
+    chThdSleepMilliseconds(10);
 //    StrategyThread::instance()->start(NORMALPRIO+2);
 //    chThdSleepMilliseconds(10);
 //    LidarThread::instance()->start(NORMALPRIO+3);
