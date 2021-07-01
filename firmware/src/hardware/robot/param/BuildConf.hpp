@@ -45,19 +45,27 @@ CANConfig const canConfig = {
 #define CAN_DSJW          0
 
 
-#define MOTOR_LEFT_P_CHAN_LINE PAL_LINE(GPIOA, 10U)
+#define MOTOR_LEFT_P_CHAN_LINE  PAL_LINE(GPIOA, 10U)
 #define MOTOR_RIGHT_P_CHAN_LINE PAL_LINE(GPIOA, 8U)
 
 #define MOTOR_LEFT_P_CHAN_LINE_MODE  PAL_MODE_ALTERNATE(6)
 #define MOTOR_RIGHT_P_CHAN_LINE_MODE PAL_MODE_ALTERNATE(6)
 
-#define PWM_COUNTING_FREQUENCY 20000000
-#define PWM_OUTPUT_FREQUENCY   20000
+#define MOTOR_LEFT_DIR_PIN  PAL_LINE(GPIOA, 15U)
+#define MOTOR_LEFT_DIR_PIN_MODE  PAL_MODE_OUTPUT_PUSHPULL
+#define MOTOR_RIGHT_DIR_PIN PAL_LINE(GPIOB, 3U)
+#define MOTOR_RIGHT_DIR_PIN_MODE PAL_MODE_OUTPUT_PUSHPULL
+
+#define PWM_COUNTING_FREQUENCY 1000000
+#define PWM_OUTPUT_FREQUENCY   10000
 
 __extension__ const PWMChannelConfig channelConf{
-    .mode     = PWM_OUTPUT_ACTIVE_LOW,
+    .mode     = PWM_OUTPUT_ACTIVE_HIGH,
     .callback = NULL,
 };
+
+constexpr uint8_t MOTOR_LEFT_CHANNEL  = 2;
+constexpr uint8_t MOTOR_RIGHT_CHANNEL = 0;
 
 __extension__ const PWMConfig pwmMotorConfig{
     .frequency = PWM_COUNTING_FREQUENCY,
@@ -65,8 +73,8 @@ __extension__ const PWMConfig pwmMotorConfig{
     .callback  = NULL,
     .channels  = {
         channelConf,
-        channelConf,
         {PWM_OUTPUT_DISABLED, NULL},
+        channelConf,
         {PWM_OUTPUT_DISABLED, NULL},
     },
     .cr2  = 0,
