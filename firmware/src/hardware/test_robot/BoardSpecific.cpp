@@ -15,3 +15,18 @@ void Board::IO::initPWM() {
     setMotorDutyCycle(Peripherals::LEFT_MOTOR, 0.);
     setMotorDutyCycle(Peripherals::RIGHT_MOTOR, 0.);
 }
+
+void Board::IO::setMotorDutyCycle(Peripherals::Motor motor, float duty_cycle) {
+    if (duty_cycle > DEFAULT_MAX_PID_OUTPUT || duty_cycle < -DEFAULT_MAX_PID_OUTPUT)
+        return;
+    uint16_t percentage = (uint16_t)((duty_cycle / (2 * DEFAULT_MAX_PID_OUTPUT) + 0.5) * PWM_MAX_DUTY_CYCLE_VALUE);
+    uint16_t channel;
+    if(motor == Peripherals::Motor::LEFT_MOTOR) {
+        channel = MOTOR_LEFT_CHANNEL;
+    } else {
+        channel = MOTOR_RIGHT_CHANNEL;
+    }
+    pwmEnableChannel(&MOTOR_PWM_DRIVER,
+                     channel,
+                     PWM_FRACTION_TO_WIDTH(&MOTOR_PWM_DRIVER, PWM_MAX_DUTY_CYCLE_VALUE, percentage));
+}
