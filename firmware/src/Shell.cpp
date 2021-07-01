@@ -132,7 +132,18 @@ static void cmd_motor(BaseSequentialStream* chp, int argc, char* argv[]) {
             return;
         } else if (!strcmp(argv[1], "duty_cycle")) {
             float duty_cycle = atof(argv[2]);
-            Board::IO::setMotorDutyCycle(motor, duty_cycle);
+            float dc_left;
+            float dc_right;
+            if( motor == Peripherals::Motor::LEFT_MOTOR ) {
+                dc_left = duty_cycle;
+                dc_right = 0;
+            } else {
+                dc_left = 0;
+                dc_right = duty_cycle;
+            }
+            Goal goal(dc_left, dc_right, Goal::PWM);
+
+            ControlThread::instance()->getControl()->setCurrentGoal(goal);
             return;
         } else {
             goto usage;
