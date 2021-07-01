@@ -5,7 +5,7 @@
 
 # Compiler options here.
 ifeq ($(USE_OPT),)
-  USE_OPT = -O2 -ggdb -fomit-frame-pointer -falign-functions=16 -specs=nano.specs -specs=nosys.specs -lm
+  USE_OPT = -O0 -ggdb -fomit-frame-pointer -falign-functions=32 -specs=nano.specs -specs=nosys.specs -lm
 endif
 
 # C specific options here (added to USE_OPT).
@@ -116,7 +116,7 @@ include $(CHIBIOS)/os/hal/boards/ST_NUCLEO64_G431RB/board.mk
 include $(CHIBIOS)/os/hal/osal/rt-nil/osal.mk
 # RTOS files (optional).
 include $(CHIBIOS)/os/rt/rt.mk
-include $(CHIBIOS)/os/common/ports/ARMCMx/compilers/GCC/mk/port_v7m.mk
+include $(CHIBIOS)/os/common/ports/ARMv7-M/compilers/GCC/mk/port.mk
 # Auto-build files in ./source recursively.
 include $(CHIBIOS)/tools/mk/autobuild.mk
 include $(CHIBIOS)/os/hal/lib/streams/streams.mk
