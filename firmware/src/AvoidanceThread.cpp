@@ -74,9 +74,10 @@ void AvoidanceThread::filterPoints() {
     ClusterBuffer buffer(3);
     uint16_t dropCount = 0;
     uint16_t loops = 0;
-    for (uint16_t i = 0; i < m_sampleCount; i++) {
-        float angle = m_scan[i][ANGLE];
-        float distance = m_scan[i][DISTANCE];
+    for (uint16_t i = 0; i < m_sampleCount + CLUSTER_BUFFER_SIZE - 1; i++) {
+        uint16_t index = i % m_sampleCount;
+        float angle = m_scan[index][ANGLE];
+        float distance = m_scan[index][DISTANCE];
         loops++;
         if( distance < LIDAR_MIN_DISTANCE || distance > LIDAR_MAX_DISTANCE) {
             buffer.addPoint(Point(0,0), false);
