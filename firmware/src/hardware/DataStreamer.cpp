@@ -3,6 +3,10 @@
 #include "MotionBoard.hpp"
 #include <new>
 
+enum DataStreamEvent{
+    BoardEvent = 1 <<0,
+};
+
 using namespace chibios_rt;
 
 DataStreamer DataStreamer::s_instance;

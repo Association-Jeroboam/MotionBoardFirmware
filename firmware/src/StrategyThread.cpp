@@ -5,6 +5,12 @@
 #include "MotionBoard.hpp"
 #include <new>
 
+enum StrategyThreadEvent {
+    ComEvent     = 1 << 0,
+    BoardEvent   = 1 << 1,
+    ControlEvent = 1 << 2,
+};
+
 using namespace chibios_rt;
 
 StrategyThread StrategyThread::s_instance;

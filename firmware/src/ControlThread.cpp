@@ -8,6 +8,10 @@
 #include "ch.hpp"
 #include <new>
 
+enum ControlThreadEvents {
+    BoardEvent = 1 << 0,
+};
+
 ControlThread ControlThread::s_instance;
 
 ControlThread* ControlThread::instance() {
@@ -23,11 +27,11 @@ void ControlThread::main() {
 
     static uint16_t toggleCounter = 0;
 
-    Board::Events::eventRegister(this, RunMotorControl);
+    Board::Events::eventRegister(this, BoardEvent);
     Board::Events::startControlLoop(MOTOR_CONTROL_LOOP_FREQ);
 
     while (!shouldTerminate()) {
-        waitOneEvent(RunMotorControl);
+        waitOneEvent(BoardEvent);
         eventflags_t flags = getAndClearFlags();
         if (flags & Board::Events::RUN_MOTOR_CONTROL) {
 

@@ -4,9 +4,6 @@
 
 constexpr uint16_t CONTROL_THREAD_WA = 0x800;
 
-enum ControlThreadEvents {
-    RunMotorControl = 1 << 0,
-};
 
 enum ControlThreadFlags {
     GoalReached = 1 << 0,
