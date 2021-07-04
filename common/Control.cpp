@@ -4,6 +4,7 @@
 #include "Parameters.hpp"
 #include "Peripherals.hpp"
 #include <cmath>
+#include "Board.hpp"
 
 Control::Control() : m_robotPose(INITIAL_X_POS, INITIAL_Y_POS, INITIAL_ANGLE) {
     m_distancePID.set(DISTANCE_KP, 0., 0., 0., MOTOR_CONTROL_LOOP_FREQ);
@@ -122,7 +123,8 @@ void Control::applyControl() {
             goto set_speeds;
         }
         case Goal::PWM: {
-            //TODO
+            Board::IO::setMotorDutyCycle(Peripherals::Motor::LEFT_MOTOR, m_currentGoal.getPWMData().leftPWM);
+            Board::IO::setMotorDutyCycle(Peripherals::Motor::RIGHT_MOTOR, m_currentGoal.getPWMData().rightPWM);
             break;
         }
         case Goal::NO_GOAL: {

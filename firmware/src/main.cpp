@@ -23,39 +23,21 @@ int main() {
     Logging::println("[main] Starting up");
     shellInit();
     Board::init();
-//    chThdSleepMilliseconds(10);
-//    ControlThread::instance()->start(NORMALPRIO+1);
-//    chThdSleepMilliseconds(10);
-//    StrategyThread::instance()->start(NORMALPRIO+2);
-//    chThdSleepMilliseconds(10);
-//    LidarThread::instance()->start(NORMALPRIO+3);
-//    chThdSleepMilliseconds(10);
-//    AvoidanceThread::instance()->start(NORMALPRIO - 1);
-//    chThdSleepMilliseconds(10);
+    chThdSleepMilliseconds(10);
+    ControlThread::instance()->start(NORMALPRIO+1);
+    chThdSleepMilliseconds(10);
+    StrategyThread::instance()->start(NORMALPRIO+2);
+    chThdSleepMilliseconds(10);
+    LidarThread::instance()->start(NORMALPRIO+3);
+    chThdSleepMilliseconds(10);
+    AvoidanceThread::instance()->start(NORMALPRIO - 1);
+    chThdSleepMilliseconds(10);
 
     chThdCreateStatic(waShellThread, sizeof(waShellThread), NORMALPRIO,
                       shellThread, (void*)&shell_cfg);
-    enum pliersState state = PLIERS_OPEN;
     while (!chThdShouldTerminateX()) {
-        canFrame_t frame;
-        frame.ID = CAN_PLIERS_ID;
-        frame.data.pliersData = {
-            .plierID = PLIERS_REAR_MIDDLE,
-            .state = state,
-        };
-        frame.len = CAN_PLIERS_LEN;
-
-        Board::Com::CANBus::send(frame);
-
-        if (state == PLIERS_OPEN) {
-            state = PLIERS_CLOSE;
-        } else {
-            state = PLIERS_OPEN;
-        }
-        Logging::println("[CAN] sent pliers %u state %u", PLIERS_REAR_MIDDLE, state);
         Board::IO::toggleLED();
-        chThdSleepMilliseconds(200);
-
+        chThdSleepMilliseconds(2000);
     }
 
     Logging::println("[main] Shutting down");
