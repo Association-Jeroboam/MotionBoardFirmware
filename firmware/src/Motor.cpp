@@ -17,7 +17,7 @@ Motor::Motor(Peripherals::Encoder encoder,
 void Motor::updateControl() {
     updateMeasure();
     float command = m_speedPID.compute(m_speedSetpoint, m_speed);
-//    Board::IO::setMotorDutyCycle(m_motor, command);
+    Board::IO::setMotorDutyCycle(m_motor, command);
     if (m_encoder == Peripherals::LEFT_ENCODER) {
         DataStreamer::instance()->setEntry(leftPWMEnum, command);
     } else if (m_encoder == Peripherals::RIGHT_ENCODER) {
