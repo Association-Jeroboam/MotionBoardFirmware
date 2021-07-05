@@ -22,18 +22,17 @@
  * @{
  */
 
-#include <stdlib.h>
-#include <cstring>
-#include "hal.h"
-#include "chprintf.h"
-#include "shell.h"
 #include "BuildConf.hpp"
 #include "ControlThread.hpp"
 #include "DataStreamer.hpp"
 #include "Logging.hpp"
+#include "MotionBoard.hpp"
 #include "Peripherals.hpp"
-#include "Board.hpp"
-
+#include "chprintf.h"
+#include "hal.h"
+#include "shell.h"
+#include <cstring>
+#include <stdlib.h>
 
 char** endptr;
 
@@ -135,11 +134,11 @@ static void cmd_motor(BaseSequentialStream* chp, int argc, char* argv[]) {
             float duty_cycle = atof(argv[2]);
             float dc_left;
             float dc_right;
-            if( motor == Peripherals::Motor::LEFT_MOTOR ) {
-                dc_left = duty_cycle;
+            if (motor == Peripherals::Motor::LEFT_MOTOR) {
+                dc_left  = duty_cycle;
                 dc_right = 0;
             } else {
-                dc_left = 0;
+                dc_left  = 0;
                 dc_right = duty_cycle;
             }
             Goal goal(dc_left, dc_right, Goal::PWM);
@@ -205,28 +204,28 @@ static void cmd_control(BaseSequentialStream* chp, int argc, char* argv[]) {
 static void cmd_pliers(BaseSequentialStream* chp, int argc, char* argv[]) {
     (void)chp;
     if (argc == 2) {
-        enum pliersID id = (enum pliersID)atoi(argv[0]);
+        enum pliersID    id = (enum pliersID)atoi(argv[0]);
         enum pliersState state;
-        if(!strcmp(argv[1], "open")) {
+        if (!strcmp(argv[1], "open")) {
             state = PLIERS_OPEN;
-        } else if(!strcmp(argv[1], "close")) {
+        } else if (!strcmp(argv[1], "close")) {
             state = PLIERS_CLOSE;
         } else {
             goto usage;
         }
 
-        if(id > PLIERS_REAR_FAR_LEFT){
+        if (id > PLIERS_REAR_FAR_LEFT) {
             Logging::println("Bad ID");
             goto usage;
         }
 
         canFrame_t frame = {
-            .ID = CAN_PLIERS_ID,
+            .ID  = CAN_PLIERS_ID,
             .len = CAN_PLIERS_LEN,
         };
         frame.data.pliersData = {
             .plierID = id,
-            .state = state,
+            .state   = state,
         };
         Board::Com::CANBus::send(frame);
     } else {
@@ -234,7 +233,7 @@ static void cmd_pliers(BaseSequentialStream* chp, int argc, char* argv[]) {
     }
     return;
 
-    usage:
+usage:
     Logging::println("usage:");
     Logging::println("pliers [pliersID] [open/close]");
 }
@@ -243,16 +242,16 @@ static void cmd_pliers_block(BaseSequentialStream* chp, int argc, char* argv[]) 
     (void)chp;
     if (argc == 1) {
         uint8_t state;
-        if(!strcmp(argv[0], "engage")) {
+        if (!strcmp(argv[0], "engage")) {
             state = 1;
-        } else if(!strcmp(argv[0], "disengage")) {
+        } else if (!strcmp(argv[0], "disengage")) {
             state = 0;
         } else {
             goto usage;
         }
 
         canFrame_t frame = {
-            .ID = CAN_PLIERS_BLOCK_ID,
+            .ID  = CAN_PLIERS_BLOCK_ID,
             .len = CAN_PLIERS_BLOCK_LEN,
         };
         frame.data.pliersBlockData = {
@@ -264,7 +263,7 @@ static void cmd_pliers_block(BaseSequentialStream* chp, int argc, char* argv[]) 
     }
     return;
 
-    usage:
+usage:
     Logging::println("usage:");
     Logging::println("pliers_block [engage/disengage]");
 }
@@ -272,8 +271,8 @@ static void cmd_pliers_block(BaseSequentialStream* chp, int argc, char* argv[]) 
 static void cmd_slider(BaseSequentialStream* chp, int argc, char* argv[]) {
     (void)chp;
     if (argc == 2) {
-        uint16_t distance = atoi(argv[1]);
-        canFrame_t frame = {
+        uint16_t   distance = atoi(argv[1]);
+        canFrame_t frame    = {
             .ID  = CAN_SLIDERS_ID,
             .len = CAN_SLIDERS_LEN,
         };
@@ -281,9 +280,9 @@ static void cmd_slider(BaseSequentialStream* chp, int argc, char* argv[]) {
             .position = distance,
         };
 
-        if(!strcmp(argv[0], "elevator")) {
+        if (!strcmp(argv[0], "elevator")) {
             frame.data.slidersData.sliderID = SLIDER_ELEVATOR;
-        } else if(!strcmp(argv[0], "translator")) {
+        } else if (!strcmp(argv[0], "translator")) {
             frame.data.slidersData.sliderID = SLIDER_ELEVATOR;
         } else {
             goto usage;
@@ -294,11 +293,10 @@ static void cmd_slider(BaseSequentialStream* chp, int argc, char* argv[]) {
     }
     return;
 
-    usage:
+usage:
     Logging::println("usage:");
     Logging::println("slider [elevator/translator] [distance (mm)]");
 }
-
 
 static const ShellCommand commands[] = {
     {"data_stream", cmd_data_stream},

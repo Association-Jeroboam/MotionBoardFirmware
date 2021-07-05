@@ -1,20 +1,19 @@
-#include "Board.hpp"
+#include "MotionBoard.hpp"
 #include "BuildConf.hpp"
+#include "CanRxThread.hpp"
+#include "CanTxThread.hpp"
 #include "Logging.hpp"
 #include "Parameters.hpp"
 #include "ch.hpp"
 #include "hal.h"
 #include <climits>
-#include "CanRxThread.hpp"
-#include "CanTxThread.hpp"
-
 
 #define CONTROL_LOOP_TIMER_COUNTING_FREQUENCY 2000000
 
 static void controlLoopTimerCallback(GPTDriver* gptp);
 static void startMatchTimerCallback(GPTDriver* gptp);
-static void gpioStartMatchCb(void *arg);
-static void gpioEmergencyStopCb(void *arg);
+static void gpioStartMatchCb(void* arg);
+static void gpioEmergencyStopCb(void* arg);
 
 static chibios_rt::EventSource eventSource;
 
@@ -51,10 +50,10 @@ __extension__ const GPTConfig intervalTimerConfig{
 };
 
 __extension__ const GPTConfig startMatchTimerConfig{
-        .frequency = 1000,
-        .callback  = startMatchTimerCallback,
-        .cr2       = 0,
-        .dier      = 0,
+    .frequency = 1000,
+    .callback  = startMatchTimerCallback,
+    .cr2       = 0,
+    .dier      = 0,
 };
 
 void Board::init() {
@@ -86,7 +85,7 @@ void Board::IO::initEncoders() {
 
 void Board::IO::initTimers() {
     gptStart(&MOTOR_CONTROL_LOOP_TIMER, &intervalTimerConfig);
-//    gptStart(&START_MATCH_TIMER, &startMatchTimerConfig);
+    //    gptStart(&START_MATCH_TIMER, &startMatchTimerConfig);
 }
 
 void Board::IO::initGPIO() {
@@ -137,7 +136,7 @@ int16_t Board::IO::getEncoderCount(Peripherals::Encoder encoder) {
             qeiSetCount(&RIGHT_ENCODER_DRIVER, 0);
             break;
     }
-    if(encoderCount != 0) {
+    if (encoderCount != 0) {
         Logging::println("[Board] encoder %u cnt %i", encoder, encoderCount);
     }
     return encoderCount;
@@ -153,21 +152,21 @@ void Board::Com::initDrivers() {
     Lidar::init();
 }
 
-void Board::Com::CANBus::init(){
+void Board::Com::CANBus::init() {
     palSetLineMode(CAN_TX_PIN, CAN_TX_PIN_MODE);
     palSetLineMode(CAN_RX_PIN, CAN_RX_PIN_MODE);
     canStart(&CAN_DRIVER, &canConfig);
     canTxThread.start(NORMALPRIO);
-    canRxThread.start(NORMALPRIO+1);
+    canRxThread.start(NORMALPRIO + 1);
     // let Threads finish initialization
     chThdYield();
 }
 
-bool Board::Com::CANBus::send(canFrame_t canData){
+bool Board::Com::CANBus::send(canFrame_t canData) {
     return canTxThread.send(canData);
 }
 
-void Board::Com::CANBus::registerListener(CanListener *listener) {
+void Board::Com::CANBus::registerListener(CanListener* listener) {
     canRxThread.registerListener(listener);
 }
 
@@ -186,7 +185,7 @@ void Board::Events::startControlLoop(uint16_t frequency) {
 }
 
 void Board::Events::startStartMatchTimer(uint16_t interval_ms) {
-//    gptStartOneShot(&START_MATCH_TIMER, (gptcnt_t)interval_ms);
+    //    gptStartOneShot(&START_MATCH_TIMER, (gptcnt_t)interval_ms);
 }
 
 static void controlLoopTimerCallback(GPTDriver* gptp) {
@@ -199,13 +198,13 @@ static void startMatchTimerCallback(GPTDriver* gptp) {
     eventSource.broadcastFlagsI(Board::Events::START_MATCH);
 }
 
-static void gpioStartMatchCb(void *arg) {
+static void gpioStartMatchCb(void* arg) {
     palDisableLineEvent(START_PIN);
     eventSource.broadcastFlagsI(Board::Events::START_MATCH);
 }
 
-static void gpioEmergencyStopCb(void *arg) {
-    if(palReadLine(EMGCY_STOP_PIN) == PAL_LOW) {
+static void gpioEmergencyStopCb(void* arg) {
+    if (palReadLine(EMGCY_STOP_PIN) == PAL_LOW) {
         eventSource.broadcastFlagsI(Board::Events::EMERGENCY_STOP);
     } else {
         eventSource.broadcastFlagsI(Board::Events::EMERGENCY_CLEARED);

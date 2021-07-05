@@ -1,16 +1,16 @@
-#include <new>
 #include "DataStreamer.hpp"
-#include "Board.hpp"
 #include "Logging.hpp"
+#include "MotionBoard.hpp"
+#include <new>
 
 using namespace chibios_rt;
 
-static DataStreamer *s_instance = nullptr;
+static DataStreamer* s_instance = nullptr;
 
-DataStreamer *DataStreamer::instance() {
+DataStreamer* DataStreamer::instance() {
     if (s_instance == nullptr) {
-        s_instance = reinterpret_cast<DataStreamer *>(chHeapAlloc(nullptr, sizeof(DataStreamer)));
-        new(s_instance) DataStreamer();
+        s_instance = reinterpret_cast<DataStreamer*>(chHeapAlloc(nullptr, sizeof(DataStreamer)));
+        new (s_instance) DataStreamer();
     }
     return s_instance;
 }
@@ -25,10 +25,9 @@ void DataStreamer::main() {
     while (!shouldTerminate()) {
 
         eventmask_t event = waitOneEvent(Board::Events::SEND_STREAM);
-        if(event & Board::Events::SEND_STREAM){
+        if (event & Board::Events::SEND_STREAM) {
             sendData();
         }
-
     }
     chThdSleepMilliseconds(20);
     Logging::setDisablePrint(false);
@@ -46,11 +45,11 @@ DataStreamer::DataStreamer() : BaseStaticThread<DATA_STREAMER_WA>(), EventListen
     m_packetCounter = 0;
 }
 
-#define ENTRY(entry)           \
-case entry##Enum:{                   \
-    m_data.data.entry = value; \
-    break;                     \
-}
+#define ENTRY(entry)               \
+    case entry##Enum: {            \
+        m_data.data.entry = value; \
+        break;                     \
+    }
 
 void DataStreamer::setEntry(enum dataEntryEnum entry, float value) {
     switch (entry) {

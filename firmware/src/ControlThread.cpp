@@ -1,7 +1,7 @@
 #include "ControlThread.hpp"
-#include "Board.hpp"
 #include "DataStreamer.hpp"
 #include "Logging.hpp"
+#include "MotionBoard.hpp"
 #include "Parameters.hpp"
 #include "Strategy/Events.hpp"
 #include "Strategy/Strategy.hpp"
@@ -29,7 +29,7 @@ void ControlThread::main() {
     while (!shouldTerminate()) {
         waitOneEvent(RunMotorControl);
         eventflags_t flags = getAndClearFlags();
-        if(flags & Board::Events::RUN_MOTOR_CONTROL) {
+        if (flags & Board::Events::RUN_MOTOR_CONTROL) {
 
             control.update();
 
@@ -59,11 +59,11 @@ void ControlThread::main() {
             }
         }
 
-        if(flags & Board::Events::EMERGENCY_STOP){
+        if (flags & Board::Events::EMERGENCY_STOP) {
             Logging::println("[ControlThread] Emeregency Stop!");
         }
 
-        if(flags & Board::Events::EMERGENCY_CLEARED){
+        if (flags & Board::Events::EMERGENCY_CLEARED) {
             Logging::println("[ControlThread] Emeregency Cleared");
         }
     }
