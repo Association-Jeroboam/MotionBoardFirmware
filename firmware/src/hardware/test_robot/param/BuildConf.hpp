@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Board.hpp"
+#include "MotionBoard.hpp"
 #include "board.h"
 
 // Communications
@@ -19,19 +19,18 @@
 #define LIDAR_SD_RX_PIN PAL_LINE(GPIOA, 10U)
 #define LIDAR_SD_RX_PIN_MODE PAL_MODE_ALTERNATE(7)
 
-__extension__ const SerialConfig lidarSDConfig {
-        .speed = 115200,
-        .cr1 = 0,
-        .cr2 = USART_CR2_STOP1_BITS,
-        .cr3 = 0
-};
+__extension__ const SerialConfig lidarSDConfig{
+    .speed = 115200,
+    .cr1   = 0,
+    .cr2   = USART_CR2_STOP1_BITS,
+    .cr3   = 0};
 
 #define MOTOR_PWM_DRIVER PWMD1
 
 #define CAN_DRIVER CAND1
-#define CAN_TX_PIN      LINE_ARD_D2
+#define CAN_TX_PIN LINE_ARD_D2
 #define CAN_TX_PIN_MODE PAL_MODE_ALTERNATE(9)
-#define CAN_RX_PIN      LINE_ARD_D10
+#define CAN_RX_PIN LINE_ARD_D10
 #define CAN_RX_PIN_MODE PAL_MODE_ALTERNATE(9)
 
 CANConfig const canConfig = {
@@ -44,8 +43,8 @@ CANConfig const canConfig = {
 #define MOTOR_RIGHT_P_CHAN_LINE PAL_LINE(GPIOA, 8U)
 #define MOTOR_RIGHT_N_CHAN_LINE PAL_LINE(GPIOA, 7U)
 
-#define MOTOR_LEFT_P_CHAN_LINE_MODE  PAL_MODE_ALTERNATE(6)
-#define MOTOR_LEFT_N_CHAN_LINE_MODE  PAL_MODE_ALTERNATE(6)
+#define MOTOR_LEFT_P_CHAN_LINE_MODE PAL_MODE_ALTERNATE(6)
+#define MOTOR_LEFT_N_CHAN_LINE_MODE PAL_MODE_ALTERNATE(6)
 #define MOTOR_RIGHT_P_CHAN_LINE_MODE PAL_MODE_ALTERNATE(6)
 #define MOTOR_RIGHT_N_CHAN_LINE_MODE PAL_MODE_ALTERNATE(6)
 
@@ -53,8 +52,8 @@ constexpr uint8_t MOTOR_LEFT_CHANNEL  = 1;
 constexpr uint8_t MOTOR_RIGHT_CHANNEL = 0;
 
 #define PWM_COUNTING_FREQUENCY 20000000
-#define PWM_OUTPUT_FREQUENCY   20000
-#define DEADTIME_VALUE         40
+#define PWM_OUTPUT_FREQUENCY 20000
+#define DEADTIME_VALUE 40
 
 __extension__ const PWMChannelConfig channelConf{
     .mode     = PWM_OUTPUT_ACTIVE_LOW | PWM_COMPLEMENTARY_OUTPUT_ACTIVE_LOW,

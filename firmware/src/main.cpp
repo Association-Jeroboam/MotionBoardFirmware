@@ -2,14 +2,14 @@
 #include <hal.h>
 #include <shell.h>
 
-#include "Board.hpp"
+#include "AvoidanceThread.hpp"
 #include "ControlThread.hpp"
+#include "LidarThread.hpp"
+#include "MotionBoard.hpp"
+#include "MotionBoardShell.hpp"
 #include "Strategy/Events.hpp"
-#include "Shell.hpp"
 #include "StrategyThread.hpp"
 #include <Logging.hpp>
-#include "LidarThread.hpp"
-#include "AvoidanceThread.hpp"
 
 Strategy* stateMachine;
 static THD_WORKING_AREA(waShellThread, SHELL_WA_SIZE);
@@ -24,11 +24,11 @@ int main() {
     shellInit();
     Board::init();
     chThdSleepMilliseconds(10);
-    ControlThread::instance()->start(NORMALPRIO+1);
+    ControlThread::instance()->start(NORMALPRIO + 1);
     chThdSleepMilliseconds(10);
-    StrategyThread::instance()->start(NORMALPRIO+2);
+    StrategyThread::instance()->start(NORMALPRIO + 2);
     chThdSleepMilliseconds(10);
-    LidarThread::instance()->start(NORMALPRIO+3);
+    LidarThread::instance()->start(NORMALPRIO + 3);
     chThdSleepMilliseconds(10);
     AvoidanceThread::instance()->start(NORMALPRIO - 1);
     chThdSleepMilliseconds(10);

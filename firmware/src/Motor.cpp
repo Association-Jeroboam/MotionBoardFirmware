@@ -1,8 +1,8 @@
 #include "Motor.hpp"
-#include "Board.hpp"
 #include "DataStreamer.hpp"
 #include "LocalMath.hpp"
 #include "Logging.hpp"
+#include "MotionBoard.hpp"
 #include "Parameters.hpp"
 #include "Peripherals.hpp"
 

@@ -1,8 +1,8 @@
 #include "StrategyThread.hpp"
-#include "Board.hpp"
 #include "ControlThread.hpp"
 #include "Events.hpp"
 #include "Logging.hpp"
+#include "MotionBoard.hpp"
 #include <new>
 
 using namespace chibios_rt;
@@ -24,7 +24,7 @@ void StrategyThread::main() {
     Strategy::instance()->setControl(ControlThread::instance()->getControl());
     Strategy::instance()->start();
     Board::Events::startStartMatchTimer(3000);
-    Logging::println("[StrategyThread] init %p" , this);
+    Logging::println("[StrategyThread] init %p", this);
 
     while (!shouldTerminate()) {
         eventmask_t event = waitOneEvent(ControlEvent | BoardEvent);
@@ -34,14 +34,14 @@ void StrategyThread::main() {
         }
         if (event & BoardEvent) {
             eventflags_t flags = m_boardListener.getAndClearFlags();
-            if(flags & Board::Events::START_MATCH){
+            if (flags & Board::Events::START_MATCH) {
                 Logging::println("[StrategyThread] StartMatch");
                 Strategy::instance()->dispatch(StartMatch);
             }
         }
         if (event & ControlEvent) {
             eventflags_t flags = m_controlListener.getAndClearFlags();
-            if(flags & GoalReached) {
+            if (flags & GoalReached) {
                 Logging::println("[StrategyThread] MoveOk");
                 Strategy::instance()->dispatch(MoveOk);
                 Strategy::instance()->dispatch(CanMove);

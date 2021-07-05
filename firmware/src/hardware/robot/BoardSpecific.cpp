@@ -1,6 +1,6 @@
-#include "Board.hpp"
 #include "BuildConf.hpp"
 #include "Logging.hpp"
+#include "MotionBoard.hpp"
 #include "Parameters.hpp"
 #include "ch.hpp"
 #include "hal.h"
@@ -22,11 +22,10 @@ void Board::IO::setMotorDutyCycle(Peripherals::Motor motor, float duty_cycle) {
         return;
     }
 
-
-    uint16_t percentage =  (fabs(duty_cycle) / DEFAULT_MAX_PID_OUTPUT) * PWM_MAX_DUTY_CYCLE_VALUE;
+    uint16_t percentage = (fabs(duty_cycle) / DEFAULT_MAX_PID_OUTPUT) * PWM_MAX_DUTY_CYCLE_VALUE;
     uint16_t channel;
     ioline_t dir_pin;
-    if(motor == Peripherals::Motor::LEFT_MOTOR) {
+    if (motor == Peripherals::Motor::LEFT_MOTOR) {
         channel = MOTOR_LEFT_CHANNEL;
         dir_pin = MOTOR_LEFT_DIR_PIN;
     } else {
@@ -34,7 +33,7 @@ void Board::IO::setMotorDutyCycle(Peripherals::Motor motor, float duty_cycle) {
         dir_pin = MOTOR_RIGHT_DIR_PIN;
     }
 
-    if(duty_cycle > 0) {
+    if (duty_cycle > 0) {
         palWriteLine(dir_pin, PAL_HIGH);
     } else {
         palWriteLine(dir_pin, PAL_LOW);

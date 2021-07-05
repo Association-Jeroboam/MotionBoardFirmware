@@ -1,13 +1,13 @@
-#include <new>
 #include "DataStreamer.hpp"
-#include "Board.hpp"
 #include "Logging.hpp"
+#include "MotionBoard.hpp"
+#include <new>
 
 using namespace chibios_rt;
 
 DataStreamer DataStreamer::s_instance;
 
-DataStreamer *DataStreamer::instance() {
+DataStreamer* DataStreamer::instance() {
     return &s_instance;
 }
 
@@ -21,13 +21,12 @@ void DataStreamer::main() {
     while (!shouldTerminate()) {
 
         eventmask_t event = waitOneEvent(BoardEvent);
-        if(event & BoardEvent) {
+        if (event & BoardEvent) {
             eventflags_t flags = getAndClearFlags();
             if (flags & Board::Events::RUN_MOTOR_CONTROL) {
                 sendData();
             }
         }
-
     }
     chThdSleepMilliseconds(20);
     Logging::setDisablePrint(false);
@@ -45,11 +44,11 @@ DataStreamer::DataStreamer() : BaseStaticThread<DATA_STREAMER_WA>(), EventListen
     m_packetCounter = 0;
 }
 
-#define ENTRY(entry)           \
-case entry##Enum:{                   \
-    m_data.data.entry = value; \
-    break;                     \
-}
+#define ENTRY(entry)               \
+    case entry##Enum: {            \
+        m_data.data.entry = value; \
+        break;                     \
+    }
 
 void DataStreamer::setEntry(enum dataEntryEnum entry, float value) {
     switch (entry) {

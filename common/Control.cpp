@@ -1,10 +1,10 @@
 #include "Control.hpp"
 #include "LocalMath.hpp"
 #include "Logging.hpp"
+#include "MotionBoard.hpp"
 #include "Parameters.hpp"
 #include "Peripherals.hpp"
 #include <cmath>
-#include "Board.hpp"
 
 Control::Control() : m_robotPose(INITIAL_X_POS, INITIAL_Y_POS, INITIAL_ANGLE) {
     m_distancePID.set(DISTANCE_KP, 0., 0., 0., MOTOR_CONTROL_LOOP_FREQ);
