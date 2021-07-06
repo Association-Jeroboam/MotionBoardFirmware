@@ -9,6 +9,7 @@ add_executable(${PROJECT_NAME}
     src/Control.cpp
     src/MotorControl.cpp
     src/Motor.cpp
+    src/Switchers.cpp
     ../common/Strategy/Strategy.cpp
     ../common/Strategy/MatchState/GetBuoyState/GoToBuoyState.cpp
     ../common/PID.cpp

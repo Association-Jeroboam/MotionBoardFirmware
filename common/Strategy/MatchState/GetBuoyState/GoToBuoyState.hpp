@@ -5,16 +5,14 @@
 
 namespace eHSM {
 namespace Declare {
-template <std::uint32_t MAX_EVENTS_HANDLED>
+template <std::uint8_t MAX_EVENTS_HANDLED>
 class GoToBuoyState : public ::eHSM::State {
   public:
-    GoToBuoyState(float x, float y);
+    GoToBuoyState();
 
   private:
     void                                      onEntry();
     void                                      onExit();
-    float                                     x;
-    float                                     y;
     Declare::Array<Event, MAX_EVENTS_HANDLED> eventList_;
     E_DISABLE_COPY(GoToBuoyState);
 };

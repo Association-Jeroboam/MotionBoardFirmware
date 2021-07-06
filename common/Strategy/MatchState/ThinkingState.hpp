@@ -7,21 +7,21 @@
 namespace eHSM {
 namespace Declare {
 template <std::uint8_t MAX_EVENTS_HANDLED>
-class GripBuoyState : public ::eHSM::State {
+class ThinkingState : public ::eHSM::State {
   public:
-    GripBuoyState() : eHSM::State(&eventList_) {}
+    ThinkingState() : eHSM::State(&eventList_) {}
 
   private:
     void onEntry() {
-        Logging::println("[ENTER] GripBuoyState\n");
+        Logging::println("[ENTER] ThinkingState\n");
     }
 
     void onExit() {
-        Logging::println("[EXIT] GripBuoyState\n");
+        Logging::println("[EXIT] ThinkingState\n");
     }
 
     Declare::Array<Event, MAX_EVENTS_HANDLED> eventList_;
-    E_DISABLE_COPY(GripBuoyState);
+    E_DISABLE_COPY(ThinkingState);
 };
 } // namespace Declare
 

@@ -5,7 +5,7 @@
 
 namespace eHSM {
 namespace Declare {
-template <std::uint32_t MAX_EVENTS_HANDLED>
+template <std::uint8_t MAX_EVENTS_HANDLED>
 class IdleState : public ::eHSM::State {
   public:
     IdleState() : eHSM::State(&eventList_) {}

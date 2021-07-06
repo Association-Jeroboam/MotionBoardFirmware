@@ -1,51 +1,40 @@
 #pragma once
-#include <stdio.h>
 #include "Logging.hpp"
+#include <stdio.h>
 
 #include "../Events.hpp"
 #include "GetBuoyState/GetBuoyState.hpp"
 #include "LightHouseState/LightHouseState.hpp"
 #include "State.hpp"
+#include "ThinkingState.hpp"
 
 namespace eHSM {
 namespace Declare {
-const uint32_t GET_1_BUOY_STATE_EVENTS = 1;
-const uint32_t GET_2_BUOY_STATE_EVENTS = 1;
-const uint32_t GET_3_BUOY_STATE_EVENTS = 1;
-const uint32_t GET_4_BUOY_STATE_EVENTS = 1;
-const uint32_t LIGHTHOUSE_STATE_EVENTS = 1;
+const uint8_t THIKING_STATE_EVENTS    = 1;
+const uint8_t GET_BUOY_STATE_EVENTS   = 1;
+const uint8_t LIGHTHOUSE_STATE_EVENTS = 1;
 
-template <std::uint32_t MAX_EVENTS_HANDLED>
+template <std::uint8_t MAX_EVENTS_HANDLED>
 class MatchState : public ::eHSM::State {
   public:
-    MatchState() : eHSM::State(&eventList_), getFirstBuoyState(500, 0),
-                                             getSecondBuoyState(500, 500),
-                                             getThirdBuoyState(0, 500),
-                                             getFourthBuoyState(0, 0){
-        getFirstBuoyState.setSuperstate(*this);
-        getSecondBuoyState.setSuperstate(*this);
-        getThirdBuoyState.setSuperstate(*this);
-        getFourthBuoyState.setSuperstate(*this);
+    MatchState() : eHSM::State(&eventList_) {
+        thinkingState.setSuperstate(*this);
+        getBuoyState.setSuperstate(*this);
         lightHouseState.setSuperstate(*this);
 
-        this->setInitialSubState(getFirstBuoyState);
+        this->setInitialSubState(thinkingState);
 
-        getFirstBuoyState.gripBuoyState.addEvent(CanMove, getSecondBuoyState);
-        getSecondBuoyState.gripBuoyState.addEvent(CanMove, getThirdBuoyState);
-        getThirdBuoyState.gripBuoyState.addEvent(CanMove, getFourthBuoyState);
-        getFourthBuoyState.gripBuoyState.addEvent(CanMove, getFirstBuoyState);
-
+        thinkingState.addEvent(DoGetBuoy, getBuoyState);
+        getBuoyState.gripBuoyState.addEvent(CanMove, thinkingState);
 
         State::Action_t actionHolder;
         actionHolder.bind<Declare::LightHouseState, &Declare::LightHouseState::setCompassOk>(&lightHouseState);
         this->addEvent(CompassOk, actionHolder);
     }
 
-    Declare::GetBuoyState<GET_1_BUOY_STATE_EVENTS> getFirstBuoyState;
-    Declare::GetBuoyState<GET_2_BUOY_STATE_EVENTS> getSecondBuoyState;
-    Declare::GetBuoyState<GET_3_BUOY_STATE_EVENTS> getThirdBuoyState;
-    Declare::GetBuoyState<GET_4_BUOY_STATE_EVENTS> getFourthBuoyState;
-    Declare::LightHouseState                       lightHouseState;
+    Declare::ThinkingState<THIKING_STATE_EVENTS> thinkingState;
+    Declare::GetBuoyState<GET_BUOY_STATE_EVENTS> getBuoyState;
+    Declare::LightHouseState                     lightHouseState;
 
   private:
     void onEntry() {

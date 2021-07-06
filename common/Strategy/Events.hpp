@@ -8,6 +8,8 @@ enum Event {
     EndMatch         = 1 << 3,
     EmergencyStop    = 1 << 4,
     MoveOk           = 1 << 5,
-    CanMove          = 1 << 6
+    CanMove          = 1 << 6,
+    DoGetBuoy        = 1 << 7,
+    DoLightHouse     = 1 << 8,
 };
 // }
