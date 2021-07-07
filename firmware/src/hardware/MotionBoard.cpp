@@ -92,7 +92,7 @@ void Board::IO::initGPIO() {
     palSetLineMode(LED_LINE, LED_LINE_MODE);
 
     palSetLineMode(START_PIN, START_PIN_MODE);
-    palEnableLineEvent(START_PIN, PAL_EVENT_MODE_FALLING_EDGE);
+    palEnableLineEvent(START_PIN, PAL_EVENT_MODE_RISING_EDGE);
     palSetLineCallback(START_PIN, gpioStartMatchCb, NULL);
 
     palSetLineMode(STRATEGY_1_PIN, STRATEGY_1_PIN_MODE);
@@ -108,6 +108,10 @@ void Board::IO::initGPIO() {
 
 bool Board::IO::getSide() {
     return (palReadLine(SIDE_PIN) == PAL_HIGH);
+}
+
+bool Board::IO::getStart() {
+    return (palReadLine(START_PIN) == PAL_HIGH);
 }
 
 uint8_t Board::IO::getStrategy() {

@@ -17,6 +17,7 @@ void    initEncoders();
 void    initTimers();
 void    initGPIO();
 bool    getSide();
+bool    getStart();
 uint8_t getStrategy();
 
 void deinitPWM();
