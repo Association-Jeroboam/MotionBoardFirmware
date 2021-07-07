@@ -122,13 +122,7 @@ class Strategy : public HierarchicalStateMachine {
     }
 
     EventData* getEventData() {
-        if (nextEvent != nullptr) {
-            nextEvent = nullptr;
-            return eventData;
-        }
-
-        Logging::println("[Strategy] Error: trying to get event data twice");
-        return nullptr;
+        return eventData;
     };
 
     Declare::IdleState<IDLE_STATE_EVENTS>   idleState;

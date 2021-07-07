@@ -12,6 +12,7 @@ add_executable(${PROJECT_NAME}
     src/Switchers.cpp
     ../common/Strategy/Strategy.cpp
     ../common/Strategy/MatchState/GetBuoyState/GoToBuoyState.cpp
+    ../common/Strategy/MatchState/GetBuoyState/TurnState.cpp
     ../common/PID.cpp
     ../common/RobotPose.cpp
     ../common/Goal.cpp

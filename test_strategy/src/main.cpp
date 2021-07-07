@@ -25,13 +25,17 @@ int main() {
     stateMachine->start();
     fireEvent(StartMatch, "StartMatch");
     fireEvent(MoveOk, "MoveOk");
+    fireEvent(MoveOk, "MoveOk");
     fireEvent(CanMove, "CanMove");
+    fireEvent(MoveOk, "MoveOk");
     fireEvent(MoveOk, "MoveOk");
     fireEvent(CanMove, "CanMove");
     fireEvent(CompassOk, "CompassOk");
     fireEvent(StartFunnyAction, "StartFunnyAction");
     fireEvent(MoveOk, "MoveOk");
+    fireEvent(MoveOk, "MoveOk");
     fireEvent(CanMove, "CanMove");
+    fireEvent(MoveOk, "MoveOk");
     fireEvent(MoveOk, "MoveOk");
     fireEvent(CanMove, "CanMove");
     fireEvent(EndMatch, "EndMatch");

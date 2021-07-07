@@ -14,15 +14,15 @@ GoToBuoyState<MAX_EVENTS_HANDLED>::GoToBuoyState() : eHSM::State(&eventList_) {
 
 template <std::uint8_t MAX_EVENTS_HANDLED>
 void GoToBuoyState<MAX_EVENTS_HANDLED>::onEntry() {
-    GetBuoyData*  data = (GetBuoyData*)Strategy::instance()->getEventData();
-    const int16_t x    = data->x;
-    const int16_t y    = data->y;
+    GetBuoyData* data = (GetBuoyData*)Strategy::instance()->getEventData();
+    int16_t      x    = data->x;
+    int16_t      y    = data->y;
 
     Logging::println("[ENTER] GoToBuoyState %i %i\n", x, y);
 
     Goal goal(x, y, Goal::Direction::FORWARD);
 
-    Logging::println("[DEBUG] Set Goal %i %i\n", goal.getCoordData().x, goal.getCoordData().y);
+    Logging::println("[DEBUG] Set GoTo Goal %i %i\n", goal.getCoordData().x, goal.getCoordData().y);
 
     Strategy::instance()->control->setCurrentGoal(goal);
 }
