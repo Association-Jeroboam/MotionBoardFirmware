@@ -2,7 +2,7 @@
 #include "ch.hpp"
 #include "RPLidar.h"
 
-constexpr uint16_t LIDAR_THREAD_WA = 0x200;
+constexpr uint16_t LIDAR_THREAD_WA = 0x400;
 
 class LidarThread : public chibios_rt::BaseStaticThread<LIDAR_THREAD_WA> {
 public:

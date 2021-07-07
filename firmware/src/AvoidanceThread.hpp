@@ -4,7 +4,7 @@
 #include "hal.h"
 #include "RPLidar.h"
 
-constexpr uint16_t AVOIDANCE_THREAD_WA = 0x200;
+constexpr uint16_t AVOIDANCE_THREAD_WA = 0x400;
 
 constexpr uint16_t AVOIDANCE_POINTS_QUEUE_LEN  = 20;
 constexpr uint16_t SCAN_SIZE = 360;

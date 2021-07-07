@@ -119,8 +119,8 @@ uint8_t Board::IO::getStrategy() {
 
 void Board::IO::deinitPWM() {
     Logging::println("PWM deinit");
-    pwmDisableChannel(&MOTOR_PWM_DRIVER, Peripherals::LEFT_MOTOR);
-    pwmDisableChannel(&MOTOR_PWM_DRIVER, Peripherals::RIGHT_MOTOR);
+//    pwmDisableChannel(&MOTOR_PWM_DRIVER, Peripherals::LEFT_MOTOR);
+//    pwmDisableChannel(&MOTOR_PWM_DRIVER, Peripherals::RIGHT_MOTOR);
 }
 
 int16_t Board::IO::getEncoderCount(Peripherals::Encoder encoder) {
@@ -129,11 +129,11 @@ int16_t Board::IO::getEncoderCount(Peripherals::Encoder encoder) {
     switch (encoder) {
         case Peripherals::LEFT_ENCODER:
             encoderCount = qeiGetCount(&LEFT_ENCODER_DRIVER);
-            qeiSetCount(&LEFT_ENCODER_DRIVER, 0);
+//            qeiSetCount(&LEFT_ENCODER_DRIVER, 0);
             break;
         case Peripherals::RIGHT_ENCODER:
             encoderCount = qeiGetCount(&RIGHT_ENCODER_DRIVER);
-            qeiSetCount(&RIGHT_ENCODER_DRIVER, 0);
+//            qeiSetCount(&RIGHT_ENCODER_DRIVER, 0);
             break;
     }
     return encoderCount;
@@ -145,7 +145,7 @@ void Board::IO::toggleLED() {
 
 void Board::Com::initDrivers() {
     Logging::println("Com drivers init");
-    CANBus::init();
+//    CANBus::init();
     Lidar::init();
 }
 

@@ -28,9 +28,9 @@ int main() {
     chThdSleepMilliseconds(10);
     StrategyThread::instance()->start(NORMALPRIO + 2);
     chThdSleepMilliseconds(10);
-    LidarThread::instance()->start(NORMALPRIO + 3);
+    LidarThread::instance()->start(NORMALPRIO + 4);
     chThdSleepMilliseconds(10);
-    AvoidanceThread::instance()->start(NORMALPRIO - 1);
+    AvoidanceThread::instance()->start(NORMALPRIO +3);
     chThdSleepMilliseconds(10);
 
     chThdCreateStatic(waShellThread, sizeof(waShellThread), NORMALPRIO,
