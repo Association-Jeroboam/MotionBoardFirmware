@@ -52,12 +52,11 @@ class Control {
 
     PID m_distancePID;
     PID m_anglePID;
+    float goalPos;
 
     float direction    = 1;
     float initialPos   = 0;
     float t            = 0;
-    float anglePeak[4] = {0, M_PI, M_PI, M_PI};
-    float T[4]         = {0, 0, 0, 0};
 
     float m_linearSpeed;
     float m_linearSpeedSetpoint;
