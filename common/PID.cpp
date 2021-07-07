@@ -21,12 +21,15 @@ PID::PID() : m_p(0.), m_i(0.), m_d(0.), m_bias(0.), m_frequency(1.) {
 	m_maxIntegral = DEFAULT_MAX_PID_INTEGRAL;
 	m_maxOutput = DEFAULT_MAX_PID_OUTPUT;
     m_lastInput = 0.;
+    m_errorSum = 0;
 }
 
 void PID::reset() {
-    m_initDone = false;
-    m_lastError = 0.;
-    m_errorSum = 0.;
+	m_lastError = 0.;
+	m_output = 0.;
+	m_initDone = false;
+	m_lastInput = 0.;
+	m_errorSum = 0;
 }
 
 void PID::set(float p, float i, float d, float bias, float frequency) {

@@ -34,9 +34,21 @@ void Board::IO::setMotorDutyCycle(Peripherals::Motor motor, float duty_cycle) {
     }
 
     if (duty_cycle > 0) {
-        palWriteLine(dir_pin, PAL_HIGH);
+        if(channel == MOTOR_LEFT_CHANNEL){
+            palWriteLine(dir_pin, MOTOR_LEFT_FORWARD);
+        } else if (channel == MOTOR_RIGHT_CHANNEL) {
+            palWriteLine(dir_pin, MOTOR_RIGHT_FORWARD);
+        } else {
+            return;
+        }
     } else {
-        palWriteLine(dir_pin, PAL_LOW);
+        if(channel == MOTOR_LEFT_CHANNEL){
+            palWriteLine(dir_pin, MOTOR_LEFT_BACKWARD);
+        } else if (channel == MOTOR_RIGHT_CHANNEL) {
+            palWriteLine(dir_pin, MOTOR_RIGHT_BACKWARD);
+        } else {
+            return;
+        }
         duty_cycle = -duty_cycle;
     }
 

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "LocalMath.hpp"
 #include "Goal.hpp"
 #include "MotorControl.hpp"
 #include "PID.h"
@@ -51,6 +52,11 @@ class Control {
 
     PID m_distancePID;
     PID m_anglePID;
+    float goalPos;
+
+    float direction    = 1;
+    float initialPos   = 0;
+    float t            = 0;
 
     float m_linearSpeed;
     float m_linearSpeedSetpoint;

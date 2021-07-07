@@ -7,9 +7,11 @@
 #include <cmath>
 
 Control::Control() : m_robotPose(INITIAL_X_POS, INITIAL_Y_POS, INITIAL_ANGLE) {
-    m_distancePID.set(DISTANCE_KP, 0., 0., 0., MOTOR_CONTROL_LOOP_FREQ);
+    m_distancePID.set(DISTANCE_KP, DISTANCE_KI, 0., 0., MOTOR_CONTROL_LOOP_FREQ);
     m_anglePID.set(ANGLE_KP, 0., 0., 0., MOTOR_CONTROL_LOOP_FREQ);
     m_distancePID.setMaxOutput(MAX_WHEEL_SPEED);
+    m_distancePID.setMaxIntegral(MAX_WHEEL_SPEED);
+    m_anglePID.setMaxIntegral(MAX_ANGULAR_SPEED);
     m_anglePID.setMaxOutput(MAX_ANGULAR_SPEED);
     m_linearSpeed          = 0.;
     m_linearSpeedSetpoint  = 0.;
@@ -42,13 +44,39 @@ void Control::applyControl() {
     float leftSpeedSetpoint;
     float rightSpeedSetpoint;
 
+    float lastLinearSpeedSetpoint = m_linearSpeedSetpoint;
+    float lastAngularSpeedSetpoint = m_angularSpeedSetpoint;
+    float linearAccl;
+    float angularAccl;
+
     switch (m_currentGoal.getType()) {
         case Goal::ANGLE: {
-            m_angleSetpoint        = m_currentGoal.getAngleData().angle + m_currentGoal.getAngleData().turns * 2 * M_PI;
+            t += MOTOR_CONTROL_LOOP_DT;
+            float finalAngle        = (m_currentGoal.getAngleData().angle + m_currentGoal.getAngleData().turns * 2 * M_PI);
+            float rotDir;
+            float a;
+            float b;
+            if(finalAngle >= initialPos) {
+                rotDir = 1.;
+                a = finalAngle;
+                b = initialPos;
+            } else {
+                rotDir = -1;
+                a = initialPos;
+                b = finalAngle;
+            }
+//            float rotDir = finalAngle >= initialPos ? 1 : - 1;
+            Logging::println("final angle %f", finalAngle);
+
+
+            float coeff = 1 / (1 + expf(-rotDir * 3.*(t-2.5)));
+//            m_angleSetpoint        = (finalAngle + initialPos) / (1 + expf(-rotDir * 4.*(t-2.))) - finalAngle;
+            m_angleSetpoint        = (a - b) * coeff + b;
+
             m_angularSpeedSetpoint = m_anglePID.compute(m_angleSetpoint, m_robotPose.getAbsoluteAngle());
             m_linearSpeedSetpoint  = 0.;
 
-            if (fabs(m_angleSetpoint - m_robotPose.getAbsoluteAngle()) < ANGLE_PRECISION && !m_currentGoal.isReached()) {
+            if (fabs(finalAngle - m_robotPose.getAbsoluteAngle()) < ANGLE_PRECISION && !m_currentGoal.isReached()) {
                 m_currentGoal.setReached(true);
             }
 
@@ -58,6 +86,8 @@ void Control::applyControl() {
             float xError      = m_currentGoal.getCoordData().x - m_robotPose.getX();
             float yError      = m_currentGoal.getCoordData().y - m_robotPose.getY();
             float angleToGoal = atan2(yError, xError);
+            float angleError = angleToGoal - m_robotPose.getModuloAngle();
+            angleError = moduloTwoPI(angleError);
 
             if (m_computeDirection) {
                 switch (m_currentGoal.getCoordData().direction) {
@@ -70,6 +100,8 @@ void Control::applyControl() {
                     case Goal::ANY:
                         float angleError = angleToGoal - m_robotPose.getModuloAngle();
                         angleError       = moduloTwoPI(angleError);
+//                        Logging::println("angle error %f", angleError);
+//                        Logging::println("angle to goal %f", angleToGoal);
                         if (-M_PI * 0.5 < angleError && angleError < M_PI * 0.5) {
                             m_forwardDrive = true;
                         } else {
@@ -79,35 +111,47 @@ void Control::applyControl() {
                 }
                 m_computeDirection = false;
             }
+            angleToGoal = angleError + m_robotPose.getAbsoluteAngle();
 
             if (m_forwardDrive) {
                 m_angleSetpoint = angleToGoal;
                 m_distanceError = sqrtf(xError * xError + yError * yError);
             } else {
 
-                if (angleToGoal > M_PI * 0.5) {
-                    m_angleSetpoint = -M_PI;
-                } else {
-                    m_angleSetpoint = M_PI;
-                }
-                m_angleSetpoint += angleToGoal;
-                m_distanceError = -sqrtf(xError * xError + yError * yError);
-            }
-            m_angleSetpoint = unwrap(m_lastAngleSetpoint, m_angleSetpoint);
+//                if (angleToGoal > M_PI * 0.5) {
+//                    m_angleSetpoint = -M_PI;
+//                } else {
+//                    m_angleSetpoint = M_PI;
+//                }
+                m_angleSetpoint = angleToGoal;
+                m_distanceError = sqrtf(xError * xError + yError * yError);
 
-            if (fabs(m_angleSetpoint - m_robotPose.getAbsoluteAngle()) < ANGLE_PRECISION && fabs(m_distanceError) < DISTANCE_PRECISION && !m_currentGoal.isReached()) {
+            }
+//            m_angleSetpoint = unwrap(m_lastAngleSetpoint, m_angleSetpoint);
+//            Logging::println("angle setpoint %f", m_angleSetpoint);
+//            m_angleSetpoint = unwrap(m_angleSetpoint);
+//            Logging::println("angle setpoint %f", m_angleSetpoint);
+
+
+            if (fabs(m_distanceError) < DISTANCE_PRECISION && !m_currentGoal.isReached()) {
                 m_currentGoal.setReached(true);
             }
 
             m_angularSpeedSetpoint = m_anglePID.compute(m_angleSetpoint, m_robotPose.getAbsoluteAngle());
             m_lastAngleSetpoint    = m_angleSetpoint;
             //prevents motor saturation
+            m_distancePID.setMaxOutput(MAX_WHEEL_SPEED);
             float maxLinearSpeed = MAX_WHEEL_SPEED - fabsf(m_angularSpeedSetpoint) * WHEEL_BASE * 0.5;
 
-            m_distancePID.setMaxOutput(maxLinearSpeed);
+//            m_distancePID.setMaxOutput(maxLinearSpeed);
+//            m_distancePID.setMaxOutput(MAX_WHEEL_SPEED);
+
             m_linearSpeedSetpoint = m_distancePID.compute(m_distanceError, 0.);
+            Logging::println("spd setpoint %f", m_linearSpeedSetpoint);
+
             if (m_distanceError < COMPUTE_DIRECTION_THRESHOLD) {
                 m_computeDirection = true;
+                m_currentGoal.setCoordDirection(Goal::ANY);
             }
             break;
         }
@@ -141,12 +185,30 @@ void Control::applyControl() {
         }
     }
 
+    linearAccl = (m_linearSpeedSetpoint - lastLinearSpeedSetpoint)/MOTOR_CONTROL_LOOP_DT;
+    if (linearAccl > MAX_LINEAR_ACCL) {
+        m_linearSpeedSetpoint = lastLinearSpeedSetpoint + MAX_LINEAR_ACCL * MOTOR_CONTROL_LOOP_DT;
+    }
+//    angularAccl = (m_angularSpeedSetpoint - lastAngularSpeedSetpoint)/MOTOR_CONTROL_LOOP_DT;
+//    if (angularAccl > MAX_ANGULAR_ACCL) {
+//        m_angularSpeedSetpoint = lastAngularSpeedSetpoint + MAX_ANGULAR_ACCL * MOTOR_CONTROL_LOOP_DT;
+//    } else if (angularAccl < -MAX_ANGULAR_ACCL) {
+//        m_angularSpeedSetpoint = lastAngularSpeedSetpoint - MAX_ANGULAR_ACCL * MOTOR_CONTROL_LOOP_DT;
+//    }
+
+
     leftSpeedSetpoint  = m_linearSpeedSetpoint - m_angularSpeedSetpoint * WHEEL_BASE * 0.5;
     rightSpeedSetpoint = m_linearSpeedSetpoint + m_angularSpeedSetpoint * WHEEL_BASE * 0.5;
 
 set_speeds:
-    m_motorControl.motorSetSpeed(Peripherals::LEFT_MOTOR, leftSpeedSetpoint);
-    m_motorControl.motorSetSpeed(Peripherals::RIGHT_MOTOR, rightSpeedSetpoint);
+    if(m_currentGoal.isReached()) {
+        m_motorControl.resetMotor(Peripherals::LEFT_MOTOR);
+        m_motorControl.resetMotor(Peripherals::RIGHT_MOTOR);
+    } else {
+        m_motorControl.motorSetSpeed(Peripherals::LEFT_MOTOR, leftSpeedSetpoint);
+        m_motorControl.motorSetSpeed(Peripherals::RIGHT_MOTOR, rightSpeedSetpoint);
+    }
+
     m_motorControl.update();
 }
 
@@ -154,6 +216,32 @@ void Control::setCurrentGoal(Goal goal) {
     m_currentGoal      = goal;
     m_computeDirection = true;
     m_currentGoal.print();
+    m_motorControl.resetMotor(Peripherals::LEFT_MOTOR);
+    m_motorControl.resetMotor(Peripherals::RIGHT_MOTOR);
+    m_distancePID.reset();
+    m_anglePID.reset();
+    Goal::GoalType goalType = m_currentGoal.getType();
+
+    t = 0;
+    if (goalType == Goal::ANGLE) {
+        m_anglePID.set(ANGLE_KP, 0., 0., 0., MOTOR_CONTROL_LOOP_FREQ);
+        float goalValue = m_currentGoal.getAngleData().angle + m_currentGoal.getAngleData().turns * 2 * M_PI;
+        float initialValue = m_robotPose.getAbsoluteAngle();
+
+        if (initialValue <= goalValue) {
+            direction = 1;
+        } else {
+            direction = -1;
+        }
+        initialPos = m_robotPose.getAbsoluteAngle();
+        goalPos = fabsf(initialPos - goalValue);
+
+    } else if (goalType == Goal::COORD) {
+        m_anglePID.set(5., 0., 0., 0., MOTOR_CONTROL_LOOP_FREQ);
+    }
+    // else if (goalType == Goal::DISTANCE) {
+    //     computePeriods(distancePeak, T);
+    // }
 }
 
 Goal Control::getCurrentGoal() {
@@ -167,7 +255,7 @@ void Control::setAngleKp(float kp) {
 }
 
 void Control::setDistanceKp(float kp) {
-    m_distancePID.set(kp, 0., 0.);
+    m_distancePID.set(kp, DISTANCE_KI, 0.);
     m_motorControl.resetMotor(Peripherals::LEFT_MOTOR);
     m_motorControl.resetMotor(Peripherals::RIGHT_MOTOR);
 }

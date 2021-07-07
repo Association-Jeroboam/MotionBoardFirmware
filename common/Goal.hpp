@@ -80,6 +80,8 @@ public:
 
     uint32_t getID();
 
+    inline void setCoordDirection(enum Direction dir) { m_data.coordData.direction = dir;};
+
     void setReached(bool reached);
 
     bool isReached();

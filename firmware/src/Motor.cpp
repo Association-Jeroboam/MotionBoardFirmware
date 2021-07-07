@@ -60,4 +60,5 @@ float Motor::getDrivenDistance() {
 
 void Motor::reset() {
     m_speedPID.reset();
+    m_speedSetpoint = 0.;
 }

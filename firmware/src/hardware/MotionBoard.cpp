@@ -136,9 +136,6 @@ int16_t Board::IO::getEncoderCount(Peripherals::Encoder encoder) {
             qeiSetCount(&RIGHT_ENCODER_DRIVER, 0);
             break;
     }
-    if (encoderCount != 0) {
-        Logging::println("[Board] encoder %u cnt %i", encoder, encoderCount);
-    }
     return encoderCount;
 }
 

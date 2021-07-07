@@ -54,15 +54,15 @@ CANConfig const canConfig = {
 #define MOTOR_RIGHT_DIR_PIN_MODE PAL_MODE_OUTPUT_PUSHPULL
 
 #define PWM_COUNTING_FREQUENCY 1000000
-#define PWM_OUTPUT_FREQUENCY 10000
+#define PWM_OUTPUT_FREQUENCY 20000
 
 __extension__ const PWMChannelConfig channelConf{
     .mode     = PWM_OUTPUT_ACTIVE_HIGH,
     .callback = NULL,
 };
 
-constexpr uint8_t MOTOR_LEFT_CHANNEL  = 2;
-constexpr uint8_t MOTOR_RIGHT_CHANNEL = 0;
+constexpr uint8_t MOTOR_LEFT_CHANNEL  = 0;
+constexpr uint8_t MOTOR_RIGHT_CHANNEL = 2;
 
 __extension__ const PWMConfig pwmMotorConfig{
     .frequency = PWM_COUNTING_FREQUENCY,
@@ -79,8 +79,8 @@ __extension__ const PWMConfig pwmMotorConfig{
     .dier = 0,
 };
 
-#define LEFT_ENCODER_DRIVER QEID3
-#define RIGHT_ENCODER_DRIVER QEID2
+#define LEFT_ENCODER_DRIVER QEID2
+#define RIGHT_ENCODER_DRIVER QEID3
 
 #define ENCODER_LEFT_CHAN1_LINE PAL_LINE(GPIOB, 4U)
 #define ENCODER_LEFT_CHAN2_LINE PAL_LINE(GPIOA, 7U)
