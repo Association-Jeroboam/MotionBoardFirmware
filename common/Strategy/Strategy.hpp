@@ -24,45 +24,77 @@ typedef union {
 } EventData;
 
 struct Action {
-    Event     event;
-    EventData eventData;
-    bool      end = false;
+    Event                    event;
+    std::array<EventData, 2> eventData;
+    bool                     end = false;
 };
 
 using StrategyType = const std::array<Action, 4>;
 
 StrategyType matchStrategy = {
     (Action){
-        .event              = Event::DoGetBuoy,
-        .eventData.buoyData = {
-            .x = 500,
-            .y = 0},
-    },
-    (Action){
-        .event              = Event::DoGetBuoy,
-        .eventData.buoyData = {.x = 500, .y = 500},
-    },
-    (Action){
-        .event              = Event::DoGetBuoy,
-        .eventData.buoyData = {.x = 0, .y = 500},
-    },
-    (Action){
-        .event              = Event::DoGetBuoy,
-        .eventData.buoyData = {.x = 0, .y = 0},
-    },
+        .event     = Event::DoGetBuoy,
+        .eventData = {
+            (EventData){
+                .buoyData = {
+                    .x = 500,
+                    .y = 0,
+                }},
+            (EventData){.buoyData = {
+                            .x = -500,
+                            .y = 0,
+                        }},
+        }},
+    (Action){.event = Event::DoGetBuoy, .eventData = {
+                                            (EventData){.buoyData = {
+                                                            .x = 500,
+                                                            .y = 500,
+                                                        }},
+                                            (EventData){.buoyData = {
+                                                            .x = -500,
+                                                            .y = -500,
+                                                        }},
+                                        }},
+    (Action){.event = Event::DoGetBuoy, .eventData = {
+                                            (EventData){.buoyData = {
+                                                            .x = 0,
+                                                            .y = 500,
+                                                        }},
+                                            (EventData){.buoyData = {
+                                                            .x = 0,
+                                                            .y = -500,
+                                                        }},
+                                        }},
+    (Action){.event = Event::DoGetBuoy, .eventData = {
+                                            (EventData){.buoyData = {
+                                                            .x = 0,
+                                                            .y = 0,
+                                                        }},
+                                            (EventData){.buoyData = {
+                                                            .x = 0,
+                                                            .y = 0,
+                                                        }},
+                                        }},
 };
 
 StrategyType approvalStrategy = {
     (Action){
-        .event              = Event::DoGetBuoy,
-        .eventData.buoyData = {
-            .x = 666,
-            .y = 666},
-    },
-    (Action){
-        .event              = Event::DoLightHouse,
-        .eventData.testData = 3.14,
-    },
+        .event     = Event::DoGetBuoy,
+        .eventData = {
+            (EventData){
+                .buoyData = {
+                    .x = 666,
+                    .y = 666,
+                }},
+            (EventData){.buoyData = {
+                            .x = -666,
+                            .y = -666,
+                        }},
+        }},
+    (Action){.event = Event::DoLightHouse, .eventData = {
+                                               (EventData){.testData = 3.14},
+                                               (EventData){.testData = -3.14},
+                                           }},
     (Action){
         .end = true,
     },
@@ -97,7 +129,7 @@ class Strategy : public HierarchicalStateMachine {
         }
 
         nextEvent = (Event*)&(currentStrategy->at(nextActionIndex).event);
-        eventData = (EventData*)&currentStrategy->at(nextActionIndex).eventData;
+        eventData = (EventData*)&currentStrategy->at(nextActionIndex).eventData.at(currentSide ? 1 : 0);
         bool end  = currentStrategy->at(nextActionIndex).end;
 
         if (end) {

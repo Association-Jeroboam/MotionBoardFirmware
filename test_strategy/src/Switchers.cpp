@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 bool Switchers::getSide() {
-    return false;
+    return true;
 }
 
 uint8_t Switchers::getStrategy() {
