@@ -48,6 +48,7 @@ void Control::applyControl() {
     float lastAngularSpeedSetpoint = m_angularSpeedSetpoint;
     float linearAccl;
     float angularAccl;
+    m_motorControl.setDisable(m_emergencyStop);
 
     switch (m_currentGoal.getType()) {
         case Goal::ANGLE: {
@@ -147,8 +148,8 @@ void Control::applyControl() {
 //            m_distancePID.setMaxOutput(MAX_WHEEL_SPEED);
 
             m_linearSpeedSetpoint = m_distancePID.compute(m_distanceError, 0.);
-            Logging::println("spd setpoint %f", m_linearSpeedSetpoint);
-
+//            Logging::println("spd setpoint %f", m_linearSpeedSetpoint);
+//
             if (m_distanceError < COMPUTE_DIRECTION_THRESHOLD) {
                 m_computeDirection = true;
                 m_currentGoal.setCoordDirection(Goal::ANY);
@@ -201,7 +202,9 @@ void Control::applyControl() {
     rightSpeedSetpoint = m_linearSpeedSetpoint + m_angularSpeedSetpoint * WHEEL_BASE * 0.5;
 
 set_speeds:
-    if(m_currentGoal.isReached()) {
+    if(m_currentGoal.isReached() || m_emergencyStop) {
+        m_motorControl.motorSetSpeed(Peripherals::LEFT_MOTOR, 0.);
+        m_motorControl.motorSetSpeed(Peripherals::RIGHT_MOTOR, 0.);
         m_motorControl.resetMotor(Peripherals::LEFT_MOTOR);
         m_motorControl.resetMotor(Peripherals::RIGHT_MOTOR);
     } else {
@@ -298,4 +301,10 @@ ControlData Control::getData() {
 
 RobotPose Control::getRobotPose() {
     return m_robotPose;
+}
+
+void Control::setEmergency(bool emergency) {
+
+    m_emergencyStop = emergency;
+    Logging::println("emgy %u", m_emergencyStop);
 }

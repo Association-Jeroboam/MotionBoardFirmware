@@ -33,7 +33,6 @@ void ControlThread::main() {
     AvoidanceThread::instance()->registerMask(&m_avoidanceListener, AvoidanceEvent);
     Board::Events::startControlLoop(MOTOR_CONTROL_LOOP_FREQ);
 
-
     while (!shouldTerminate()) {
         eventmask_t event = waitOneEvent(AvoidanceEvent | BoardEvent);
 
@@ -82,10 +81,13 @@ void ControlThread::main() {
             eventflags_t flags = m_avoidanceListener.getAndClearFlags();
             if(flags & RobotDetected) {
                 Logging::println("[ControlThread] Robot detected");
+                control.setEmergency(true);
+                control.setCurrentGoal(Goal());
             }
 
             if(flags & WayCleared) {
                 Logging::println("[ControlThread] Way cleared");
+                control.setEmergency(false);
             }
         }
     }

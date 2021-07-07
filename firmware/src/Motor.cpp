@@ -12,11 +12,17 @@ Motor::Motor(Peripherals::Encoder encoder,
                                   m_encoder(encoder),
                                   m_motor(motor) {
     m_drivenDistance = 0.;
+    m_disabled = false;
 }
 
 void Motor::updateControl() {
     updateMeasure();
-    float command = m_speedPID.compute(m_speedSetpoint, m_speed);
+    float command;
+    if(m_disabled) {
+        command = 0.;
+    } else {
+        command = m_speedPID.compute(m_speedSetpoint, m_speed);
+    }
     Board::IO::setMotorDutyCycle(m_motor, command);
     if (m_encoder == Peripherals::LEFT_ENCODER) {
         DataStreamer::instance()->setEntry(leftPWMEnum, command);
@@ -61,4 +67,8 @@ float Motor::getDrivenDistance() {
 void Motor::reset() {
     m_speedPID.reset();
     m_speedSetpoint = 0.;
+}
+
+void Motor::setDisable(bool disable) {
+    m_disabled = disable;
 }

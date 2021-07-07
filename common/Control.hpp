@@ -43,6 +43,8 @@ class Control {
 
     void reset();
 
+    void setEmergency(bool emergency);
+
     ControlData getData();
 
   private:
@@ -53,6 +55,7 @@ class Control {
     PID m_distancePID;
     PID m_anglePID;
     float goalPos;
+    bool m_emergencyStop;
 
     float direction    = 1;
     float initialPos   = 0;
