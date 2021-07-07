@@ -28,7 +28,6 @@ void StrategyThread::main() {
     Board::Events::eventRegister(&m_boardListener, BoardEvent);
 
     Strategy::instance()->setControl(ControlThread::instance()->getControl());
-    Strategy::instance()->start();
     Board::Events::startStartMatchTimer(3000);
     Logging::println("[StrategyThread] init %p", this);
 

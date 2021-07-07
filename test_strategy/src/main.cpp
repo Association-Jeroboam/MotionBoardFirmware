@@ -3,11 +3,9 @@
 #include <string>
 
 #include "Control.hpp"
-#include "HierarchicalStateMachine.hpp"
 #include "Strategy/Events.hpp"
 #include "Strategy/Strategy.hpp"
 
-using namespace eHSM;
 
 Strategy* stateMachine;
 Control   control;
@@ -21,7 +19,6 @@ int main() {
     stateMachine = Strategy::instance();
     stateMachine->setControl(&control);
 
-    stateMachine->start();
     fireEvent(StartMatch, "StartMatch");
     fireEvent(MoveOk, "MoveOk");
     fireEvent(CanMove, "CanMove");
