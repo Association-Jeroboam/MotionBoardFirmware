@@ -42,13 +42,13 @@ constexpr float WHEEL_LEFT_RADIUS  = 28.25 * WHEEL_DISTANCE_FACTOR;  //[mm] Theo
 constexpr float WHEEL_RIGHT_RADIUS = 28.25 / WHEEL_RADIUS_FACTOR * WHEEL_DISTANCE_FACTOR;  //[mm] Theorical 28.25
 constexpr float WHEEL_BASE         = 266.; //[mm] Theorical 266
 
-constexpr float LEFT_MOTOR_KP      = 0.0045; //TODO: Change me!
-constexpr float LEFT_MOTOR_KI      = 0.0015; //TODO: Change me!
+constexpr float LEFT_MOTOR_KP      = 0.003; //TODO: Change me!
+constexpr float LEFT_MOTOR_KI      = 0.006; //TODO: Change me!
 constexpr float LEFT_MOTOR_KD      = 0.0; //TODO: Change me!
 constexpr float LEFT_MOTOR_BIAS    = 0.15; //TODO: Change me!
 
-constexpr float RIGHT_MOTOR_KP      = 0.0025; //TODO: Change me!
-constexpr float RIGHT_MOTOR_KI      = 0.0005; //TODO: Change me!
+constexpr float RIGHT_MOTOR_KP      = 0.003; //TODO: Change me!
+constexpr float RIGHT_MOTOR_KI      = 0.006; //TODO: Change me!
 constexpr float RIGHT_MOTOR_KD      = 0.0; //TODO: Change me!
 constexpr float RIGHT_MOTOR_BIAS    = 0.15; //TODO: Change me!
 
