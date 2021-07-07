@@ -37,9 +37,9 @@ constexpr float RIGHT_MOTOR_KI   = 0.03;
 constexpr float RIGHT_MOTOR_KD   = 0.0;
 constexpr float RIGHT_MOTOR_BIAS = 0.1;
 
-constexpr float INITIAL_X_POS = 0.;
-constexpr float INITIAL_Y_POS = 0.;
-constexpr float INITIAL_ANGLE = 0.;
+constexpr float INITIAL_X_POS = 800.;
+constexpr float INITIAL_Y_POS = 200.;
+constexpr float INITIAL_ANGLE = M_PI/2;
 
 constexpr float DISTANCE_KP = 2.;
 constexpr float ANGLE_KP    = 5.;

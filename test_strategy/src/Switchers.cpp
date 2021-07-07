@@ -6,5 +6,5 @@ bool Switchers::getSide() {
 }
 
 uint8_t Switchers::getStrategy() {
-    return 0;
+    return 1;
 }

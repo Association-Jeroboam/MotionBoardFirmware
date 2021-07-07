@@ -88,7 +88,7 @@ void AvoidanceThread::filterPoints() {
         }
 
         Point robotFrame = Point::polarToCartesian(angle, distance);
-        Point mapFrame   = Point::mapToRobot(robotFrame, ControlThread::instance()->getControl()->getRobotPose());
+        Point mapFrame   = Point::mapToRobot(robotFrame, *ControlThread::instance()->getControl()->getRobotPose());
 
         if( mapFrame.x() < 0.        ||
             mapFrame.x() > MAP_MAX_X ||

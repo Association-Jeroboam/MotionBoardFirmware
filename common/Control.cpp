@@ -299,8 +299,8 @@ ControlData Control::getData() {
     return data;
 }
 
-RobotPose Control::getRobotPose() {
-    return m_robotPose;
+RobotPose* Control::getRobotPose() {
+    return &m_robotPose;
 }
 
 void Control::setEmergency(bool emergency) {

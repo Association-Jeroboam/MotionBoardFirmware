@@ -3,14 +3,14 @@
 const Pos Strategy::positions[2][2] = {
     // Pos1
     {
-        (Pos){ .x = 100, .y = 0 },
-        (Pos){ .x = 100, .y = 1000 },
+        (Pos){ .x = 800, .y = 1200 },
+        (Pos){ .x = 800, .y = SIMY(1200) },
     },
 
     // Pos2
     {
-        (Pos){ .x = 100, .y = 0 },
-        (Pos){ .x = 100, .y = 1000 },
+        (Pos){ .x = 1700, .y = 1065 },
+        (Pos){ .x = 100, .y = SIMY(1065) },
     },
 };
 

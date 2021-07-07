@@ -116,7 +116,7 @@ bool Goal::isReached(){
 void Goal::print() {
     switch (m_type) {
         case ANGLE:
-            Logging::println("Angle Goal: ang %.f turns %li", m_data.angleData.angle, m_data.angleData.turns);
+            Logging::println("Angle Goal: ang %f turns %li", m_data.angleData.angle, m_data.angleData.turns);
             break;
         case COORD:
             Logging::println("Coord Goal: x %f y %f dir %u", m_data.coordData.x, m_data.coordData.y, m_data.coordData.direction);
