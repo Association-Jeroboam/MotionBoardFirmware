@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cmath>
+
 #include "Goal.hpp"
 #include "MotorControl.hpp"
 #include "PID.h"
@@ -51,6 +53,10 @@ class Control {
 
     PID m_distancePID;
     PID m_anglePID;
+
+    float t            = 0;
+    float anglePeak[4] = {0, M_PI, M_PI, M_PI};
+    float T[4]         = {0, 0, 0, 0};
 
     float m_linearSpeed;
     float m_linearSpeedSetpoint;

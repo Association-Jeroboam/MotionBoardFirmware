@@ -2,6 +2,7 @@
 #include "LocalMath.hpp"
 #include "Logging.hpp"
 #include "MotionBoard.hpp"
+#include "MotionPlanning.hpp"
 #include "Parameters.hpp"
 #include "Peripherals.hpp"
 #include <cmath>
@@ -44,7 +45,8 @@ void Control::applyControl() {
 
     switch (m_currentGoal.getType()) {
         case Goal::ANGLE: {
-            m_angleSetpoint        = m_currentGoal.getAngleData().angle + m_currentGoal.getAngleData().turns * 2 * M_PI;
+            t += MOTOR_CONTROL_LOOP_DT;
+            m_angleSetpoint        = getSetpoint(anglePeak, T, t);
             m_angularSpeedSetpoint = m_anglePID.compute(m_angleSetpoint, m_robotPose.getAbsoluteAngle());
             m_linearSpeedSetpoint  = 0.;
 
@@ -154,6 +156,17 @@ void Control::setCurrentGoal(Goal goal) {
     m_currentGoal      = goal;
     m_computeDirection = true;
     m_currentGoal.print();
+
+    Goal::GoalType goalType = m_currentGoal.getType();
+
+    t = 0;
+    if (goalType == Goal::ANGLE) {
+        anglePeak[0] = m_currentGoal.getAngleData().angle + m_currentGoal.getAngleData().turns * 2 * M_PI;
+        computePeriods(anglePeak, T);
+    }
+    // else if (goalType == Goal::DISTANCE) {
+    //     computePeriods(distancePeak, T);
+    // }
 }
 
 Goal Control::getCurrentGoal() {
