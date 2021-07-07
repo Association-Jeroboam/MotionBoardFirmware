@@ -9,8 +9,8 @@ const Pos Strategy::positions[2][2] = {
 
     // Pos2
     {
-        (Pos){ .x = 1700, .y = 1065 },
-        (Pos){ .x = 100, .y = SIMY(1065) },
+        (Pos){ .x = 1700, .y = 1200 },
+        (Pos){ .x = 100, .y = SIMY(1200) },
     },
 };
 

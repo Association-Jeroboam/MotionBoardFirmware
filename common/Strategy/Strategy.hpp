@@ -84,7 +84,7 @@ class Strategy {
 
                 // Start right
                 if (side == 1) {
-                    robotPose->setPose(robotPose->getX(), SIMY(robotPose->getY()), robotPose->getAbsoluteAngle());
+                    robotPose->setPose(robotPose->getX(), SIMY(robotPose->getY()), -robotPose->getAbsoluteAngle());
                 }
 
                 Pos targetPos = positions[0][side];
@@ -136,6 +136,22 @@ class Strategy {
                 // TODO goal angle
                 Logging::println("Turn to: %f", targetAngle);
                 break;
+            }
+
+            case TURN_TO_POS1: {
+                if (event != MoveOk)
+                    return;
+
+                currentState = GO_TO_POS1;
+                Logging::println("New state: %s", stateToStr(currentState));
+
+                Pos targetPos = positions[1][side];
+                Logging::println("target pos x: %f y: %f", targetPos.x, targetPos.y);
+                Goal goal(targetPos.x, targetPos.y, Goal::COORD);
+                
+                this->control->setCurrentGoal(goal);
+                Logging::println("Go to: %f %f", targetPos.x, targetPos.y);
+
             }
         }
     }
