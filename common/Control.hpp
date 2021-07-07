@@ -24,9 +24,9 @@ class Control {
 
     void update();
 
-    void updateState();
+    void updateState(float dl, float dr, float left_speed, float right_speed);
 
-    void applyControl();
+    void applyControl(float dl, float dr);
 
     void setCurrentGoal(Goal goal);
 
@@ -34,9 +34,11 @@ class Control {
 
     RobotPose getRobotPose();
 
-    void setAngleKp(float kp);
+    void setAnglePID(float kp, float ki, float kd);
+    void setDistancePID(float kp, float ki, float kd);
 
-    void setDistanceKp(float kp);
+    void setAngularSpeedPID(float kp, float ki, float kd);
+    void setLinearSpeedPID(float kp, float ki, float kd);
 
     void setMotorPID(Peripherals::Motor motor, float p, float i, float d);
 
@@ -52,13 +54,23 @@ class Control {
     PID m_distancePID;
     PID m_anglePID;
 
+    PID m_linear_velPID;
+    PID m_angular_velPID;
+
     float m_linearSpeed;
     float m_linearSpeedSetpoint;
+    float m_lastLinearSpeedSetpoint;
+
     float m_angularSpeed;
     float m_angularSpeedSetpoint;
+    float m_lastAngularSpeedSetpoint;
+
     float m_angleSetpoint;
     float m_lastAngleSetpoint;
-    float m_distanceError;
-    bool  m_forwardDrive;
-    bool  m_computeDirection;
+
+    float m_distanceSetpoint;
+    float m_lastDistanceSetpoint;
+
+    float m_currentAngle;
+    float m_currentDistance;
 };

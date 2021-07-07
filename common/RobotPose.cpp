@@ -1,7 +1,7 @@
-#include <cmath>
-#include "LocalMath.hpp"
 #include "RobotPose.hpp"
+#include "LocalMath.hpp"
 #include "Parameters.hpp"
+#include <cmath>
 
 RobotPose::RobotPose(float x, float y, float angle) : m_x(x), m_y(y), m_angle(angle) {
     m_turns = 0;
@@ -9,14 +9,13 @@ RobotPose::RobotPose(float x, float y, float angle) : m_x(x), m_y(y), m_angle(an
 
 void RobotPose::update(float dl, float dr) {
     float dDistance = (dr + dl) * 0.5;
-    float dAngle = (dr - dl) / WHEEL_BASE;
+    float dAngle    = (dr - dl) / WHEEL_BASE;
 
     m_x += dDistance * cosf(m_angle + dAngle * 0.5);
     m_y += dDistance * sinf(m_angle + dAngle * 0.5);
 
     m_angle += dAngle;
     restrainAngle();
-
 }
 
 void RobotPose::setPose(float x, float y) {
@@ -61,4 +60,8 @@ void RobotPose::restrainAngle() {
             m_turns--;
         }
     }
+}
+
+float RobotPose::getDistance() {
+    return sqrtf(m_x * m_x + m_y * m_y);
 }

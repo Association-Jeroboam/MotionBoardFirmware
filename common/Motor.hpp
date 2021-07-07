@@ -12,11 +12,9 @@ class Motor {
 
     void updateControl();
 
+    void updateMeasure();
+
     void setSpeed(float speed);
-
-    void setPID(float p, float i, float d, float bias, float frequency);
-
-    void setPID(float p, float i, float d);
 
     void setWheelRadius(float wheelRadius);
 
@@ -27,13 +25,10 @@ class Motor {
     void reset();
 
   private:
-    float                      m_speedSetpoint; // [mm/s]
+    float                      m_speedSetpoint; // [pwm]
     float                      m_speed;         // [mm/s]
     float                      m_drivenDistance;
     float                      m_wheelRadius;
-    PID                        m_speedPID;
     const Peripherals::Encoder m_encoder;
     const Peripherals::Motor   m_motor;
-
-    void updateMeasure();
 };

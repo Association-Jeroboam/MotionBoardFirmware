@@ -3,8 +3,7 @@
 #include <cstdint>
 
 class RobotPose {
-public:
-
+  public:
     RobotPose(float x, float y, float angle);
 
     void update(float dl, float dr);
@@ -17,18 +16,19 @@ public:
 
     float getY();
 
+    float getDistance();
+
     float getAbsoluteAngle();
 
     float getModuloAngle();
 
     int32_t getTurns();
 
-private:
-
+  private:
     void restrainAngle();
 
-    float m_x;
-    float m_y;
-    float m_angle;
+    float   m_x;
+    float   m_y;
+    float   m_angle;
     int32_t m_turns;
 };

@@ -2,15 +2,11 @@
 
 #include <cstdint>
 
-
 class Goal {
-public:
-
+  public:
     enum GoalType {
-        ANGLE,
-        COORD,
+        POLAR,
         CIRCULAR,
-        SPEED,
         PWM,
         NO_GOAL,
     };
@@ -21,26 +17,16 @@ public:
         ANY,
     };
 
-    typedef struct angleData {
+    typedef struct polarData {
         float   angle;
         int32_t turns;
-    } angleData_t;
-
-    typedef struct coordData {
-        float x;
-        float y;
-        enum Direction direction;
-    } coordData_t;
+        float   distance;
+    } polarData_t;
 
     typedef struct circularData {
         float angularSpeed;
         float linearSpeed;
     } circularData_t;
-
-    typedef struct speedData {
-        float leftSpeed;
-        float rightSpeed;
-    } speedData_t;
 
     typedef struct pwmData {
         float leftPWM;
@@ -49,16 +35,10 @@ public:
     } pwmData_t;
 
     typedef union goalData {
-        angleData_t angleData;
-        coordData_t coordData;
+        polarData_t    polarData;
         circularData_t circularData;
-        speedData_t speedData;
-        pwmData_t   pwmData;
+        pwmData_t      pwmData;
     } goalData_t;
-
-    Goal(float angle, int32_t turns);
-
-    Goal(float x, float y, enum Direction direction);
 
     Goal(float input0, float input1, enum GoalType type);
 
@@ -68,13 +48,9 @@ public:
 
     enum GoalType getType();
 
-    angleData_t getAngleData();
-
-    coordData_t getCoordData();
+    polarData_t getPolarData();
 
     circularData_t getCircularData();
-
-    speedData_t getSpeedData();
 
     pwmData_t getPWMData();
 
@@ -86,7 +62,7 @@ public:
 
     void print();
 
-private:
+  private:
     enum GoalType m_type;
     goalData_t    m_data;
     uint32_t      m_ID;

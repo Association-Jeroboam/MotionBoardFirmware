@@ -7,11 +7,11 @@ class MotorControl {
   public:
     MotorControl();
 
-    void update();
+    void updateControl();
+
+    void updateMeasure();
 
     void motorSetSpeed(Peripherals::Motor motor, float speed);
-
-    void motorSetPID(Peripherals::Motor motor, float p, float i, float d);
 
     float getMotorDrivenDistance(Peripherals::Motor motor);
 

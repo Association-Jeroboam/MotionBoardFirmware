@@ -16,12 +16,13 @@ Motor::Motor(Peripherals::Encoder encoder,
 
 void Motor::updateControl() {
     updateMeasure();
-    float command = m_speedPID.compute(m_speedSetpoint, m_speed);
-    Board::IO::setMotorDutyCycle(m_motor, command);
+
+    Board::IO::setMotorDutyCycle(m_motor, m_speedSetpoint);
+
     if (m_encoder == Peripherals::LEFT_ENCODER) {
-        DataStreamer::instance()->setEntry(leftPWMEnum, command);
+        DataStreamer::instance()->setEntry(leftPWMEnum, m_speedSetpoint);
     } else if (m_encoder == Peripherals::RIGHT_ENCODER) {
-        DataStreamer::instance()->setEntry(rightPWMEnum, command);
+        DataStreamer::instance()->setEntry(rightPWMEnum, m_speedSetpoint);
     }
 }
 
@@ -29,15 +30,7 @@ void Motor::updateMeasure() {
     int16_t encoderCount = Board::IO::getEncoderCount(m_encoder);
     float   drivenAngle  = float(encoderCount) * (1. / ENCODER_TICK_PER_TURN) * GEAR_RATIO * 2. * M_PI;
     m_speed              = drivenAngle * MOTOR_CONTROL_LOOP_FREQ * m_wheelRadius;
-    m_drivenDistance += drivenAngle * m_wheelRadius;
-}
-
-void Motor::setPID(float p, float i, float d, float bias, float frequency) {
-    m_speedPID.set(p, i, d, bias, frequency);
-}
-
-void Motor::setPID(float p, float i, float d) {
-    m_speedPID.set(p, i, d);
+    m_drivenDistance     = drivenAngle * m_wheelRadius;
 }
 
 void Motor::setSpeed(float speed) {
@@ -53,11 +46,9 @@ float Motor::getSpeed() {
 }
 
 float Motor::getDrivenDistance() {
-    float distance   = m_drivenDistance;
-    m_drivenDistance = 0.;
-    return distance;
+    return m_drivenDistance;
 }
 
 void Motor::reset() {
-    m_speedPID.reset();
+    m_speedSetpoint = 0;
 }
