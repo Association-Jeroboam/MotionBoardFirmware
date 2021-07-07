@@ -54,7 +54,7 @@ CANConfig const canConfig = {
 #define MOTOR_RIGHT_DIR_PIN_MODE PAL_MODE_OUTPUT_PUSHPULL
 
 #define PWM_COUNTING_FREQUENCY 1000000
-#define PWM_OUTPUT_FREQUENCY 10000
+#define PWM_OUTPUT_FREQUENCY 20000
 
 __extension__ const PWMChannelConfig channelConf{
     .mode     = PWM_OUTPUT_ACTIVE_HIGH,
