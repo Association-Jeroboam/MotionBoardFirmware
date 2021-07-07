@@ -162,6 +162,15 @@ void Control::setCurrentGoal(Goal goal) {
     t = 0;
     if (goalType == Goal::ANGLE) {
         anglePeak[0] = m_currentGoal.getAngleData().angle + m_currentGoal.getAngleData().turns * 2 * M_PI;
+
+        if (m_robotPose.getAbsoluteAngle() <= anglePeak[0]) {
+            direction = 1;
+        } else {
+            direction = -1;
+        }
+
+        initialPos = m_robotPose.getAbsoluteAngle();
+
         computePeriods(anglePeak, T);
     }
     // else if (goalType == Goal::DISTANCE) {
