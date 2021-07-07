@@ -46,7 +46,7 @@ void Control::applyControl() {
     switch (m_currentGoal.getType()) {
         case Goal::ANGLE: {
             t += MOTOR_CONTROL_LOOP_DT;
-            m_angleSetpoint        = getSetpoint(anglePeak, T, t);
+            m_angleSetpoint        = initialPos + direction * getSetpoint(anglePeak, T, t);
             m_angularSpeedSetpoint = m_anglePID.compute(m_angleSetpoint, m_robotPose.getAbsoluteAngle());
             m_linearSpeedSetpoint  = 0.;
 
@@ -156,18 +156,21 @@ void Control::setCurrentGoal(Goal goal) {
     m_currentGoal      = goal;
     m_computeDirection = true;
     m_currentGoal.print();
-
+    m_motorControl.resetMotor(Peripherals::LEFT_MOTOR);
+    m_motorControl.resetMotor(Peripherals::RIGHT_MOTOR);
     Goal::GoalType goalType = m_currentGoal.getType();
 
     t = 0;
     if (goalType == Goal::ANGLE) {
-        anglePeak[0] = m_currentGoal.getAngleData().angle + m_currentGoal.getAngleData().turns * 2 * M_PI;
+        float goalValue = m_currentGoal.getAngleData().angle + m_currentGoal.getAngleData().turns * 2 * M_PI;
+        float initialValue = m_robotPose.getAbsoluteAngle();
 
-        if (m_robotPose.getAbsoluteAngle() <= anglePeak[0]) {
+        if (initialValue <= goalValue) {
             direction = 1;
         } else {
             direction = -1;
         }
+        anglePeak[0] = fabsf(goalValue - initialValue);
 
         initialPos = m_robotPose.getAbsoluteAngle();
 

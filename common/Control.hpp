@@ -1,7 +1,6 @@
 #pragma once
 
-#include <cmath>
-
+#include "LocalMath.hpp"
 #include "Goal.hpp"
 #include "MotorControl.hpp"
 #include "PID.h"
