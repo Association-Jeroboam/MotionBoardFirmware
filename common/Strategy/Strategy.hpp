@@ -26,6 +26,7 @@ typedef union {
 struct Action {
     Event     event;
     EventData eventData;
+    bool      end = false;
 };
 
 using StrategyType = const std::array<Action, 4>;
@@ -62,6 +63,9 @@ StrategyType approvalStrategy = {
         .event              = Event::DoLightHouse,
         .eventData.testData = 3.14,
     },
+    (Action){
+        .end = true,
+    },
 };
 
 const std::array<StrategyType*, 2> strategies = {&matchStrategy, &approvalStrategy};
@@ -85,7 +89,7 @@ class Strategy : public HierarchicalStateMachine {
         uint8_t nextActionIndex = currentActionIndex++;
 
         if (nextActionIndex >= currentStrategy->size()) {
-            Logging::println("[Strategy] Strategy ended. %i", nextActionIndex);
+            Logging::println("[Strategy] Strategy ended.", nextActionIndex);
 
             nextEvent = nullptr;
             eventData = nullptr;
@@ -94,6 +98,13 @@ class Strategy : public HierarchicalStateMachine {
 
         nextEvent = (Event*)&(currentStrategy->at(nextActionIndex).event);
         eventData = (EventData*)&currentStrategy->at(nextActionIndex).eventData;
+        bool end  = currentStrategy->at(nextActionIndex).end;
+
+        if (end) {
+            Logging::println("[Strategy] Strategy ended.", nextActionIndex);
+            currentActionIndex = currentStrategy->size();
+            return;
+        }
 
         char eventStr[15];
 
