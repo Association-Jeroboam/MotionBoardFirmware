@@ -10,7 +10,6 @@ enum ControlThreadFlags {
 };
 
 class ControlThread : public chibios_rt::BaseStaticThread<CONTROL_THREAD_WA>,
-                      public chibios_rt::EventListener,
                       public chibios_rt::EventSource {
   public:
     static ControlThread* instance();
@@ -20,6 +19,8 @@ class ControlThread : public chibios_rt::BaseStaticThread<CONTROL_THREAD_WA>,
   private:
     ControlThread();
     static ControlThread s_instance;
+    chibios_rt::EventListener m_boardListener;
+    chibios_rt::EventListener m_avoidanceListener;
 
     void    updateDataStreamer();
     bool    moveOkFired;

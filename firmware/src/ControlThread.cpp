@@ -20,7 +20,7 @@ ControlThread* ControlThread::instance() {
     return &s_instance;
 }
 
-ControlThread::ControlThread() : BaseStaticThread<CONTROL_THREAD_WA>(), EventListener(), EventSource(), moveOkFired(true) {
+ControlThread::ControlThread() : BaseStaticThread<CONTROL_THREAD_WA>(), EventSource(), moveOkFired(true) {
 }
 
 void ControlThread::main() {
@@ -29,15 +29,16 @@ void ControlThread::main() {
 
     static uint16_t toggleCounter = 0;
 
-    Board::Events::eventRegister(this, BoardEvent);
-    AvoidanceThread::instance()->registerMask(this, AvoidanceEvent);
+    Board::Events::eventRegister(&m_boardListener, BoardEvent);
+    AvoidanceThread::instance()->registerMask(&m_avoidanceListener, AvoidanceEvent);
     Board::Events::startControlLoop(MOTOR_CONTROL_LOOP_FREQ);
 
 
     while (!shouldTerminate()) {
         eventmask_t event = waitOneEvent(AvoidanceEvent | BoardEvent);
-        eventflags_t flags = getAndClearFlags();
+
         if( event && BoardEvent) {
+            eventflags_t flags = m_boardListener.getAndClearFlags();
             if (flags & Board::Events::RUN_MOTOR_CONTROL) {
 
                 control.update();
@@ -78,6 +79,7 @@ void ControlThread::main() {
         }
 
         if(event & AvoidanceEvent) {
+            eventflags_t flags = m_avoidanceListener.getAndClearFlags();
             if(flags & RobotDetected) {
                 Logging::println("[ControlThread] Robot detected");
             }

@@ -24,7 +24,7 @@ void AvoidanceThread::main() {
         RPLidarMeasurement * point;
         chFifoReceiveObjectTimeout(&m_pointQueue, (void **)&point, TIME_INFINITE);
 
-        float angle    = LIDAR_ANGLE_OFFSET - point->angle;
+        float angle = LIDAR_ANGLE_OFFSET - point->angle;
         if(angle < 0. || angle > 360.) {
             angle = fabsf(fmodf(angle, 360.));
         }
@@ -74,6 +74,8 @@ void AvoidanceThread::filterPoints() {
     ClusterBuffer buffer(3);
     uint16_t dropCount = 0;
     uint16_t loops = 0;
+    bool previousRobotDetected = m_robotDetected;
+    m_robotDetected = false;
     for (uint16_t i = 0; i < m_sampleCount + CLUSTER_BUFFER_SIZE - 1; i++) {
         uint16_t index = i % m_sampleCount;
         float angle = m_scan[index][ANGLE];
@@ -98,8 +100,15 @@ void AvoidanceThread::filterPoints() {
         buffer.addPoint(robotFrame, true);
         Point clusterPos = buffer.getClusterPos();
         if (clusterPos.x() != 0. && clusterPos.y() != 0.){
+            m_robotDetected = true;
             Logging::println("[Avoidance] Cluster detected! %.2f %.2f", clusterPos.x(), clusterPos.y());
             break;
         }
+    }
+
+    if(!previousRobotDetected && m_robotDetected) {
+        this->broadcastFlags(RobotDetected);
+    } else if(previousRobotDetected & !m_robotDetected) {
+        this->broadcastFlags(WayCleared);
     }
 }
