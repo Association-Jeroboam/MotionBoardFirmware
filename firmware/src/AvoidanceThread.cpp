@@ -12,7 +12,7 @@ AvoidanceThread* AvoidanceThread::instance() {
     return &s_instance;
 }
 
-AvoidanceThread::AvoidanceThread(): BaseStaticThread<AVOIDANCE_THREAD_WA>(){
+AvoidanceThread::AvoidanceThread(): BaseStaticThread<AVOIDANCE_THREAD_WA>(),EventSource(), m_robotDetected(false){
     chFifoObjectInit(&m_pointQueue, sizeof(m_dataBuffer[0]), AVOIDANCE_POINTS_QUEUE_LEN,  m_dataBuffer, m_msgBuffer);
 }
 
