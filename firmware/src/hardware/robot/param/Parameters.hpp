@@ -19,7 +19,7 @@ constexpr uint16_t PWM_MAX_DUTY_CYCLE_VALUE = 10000;
 constexpr float GEAR_RATIO     = 1.;
 constexpr float GEAR_RATIO_INV = 1.;
 
-constexpr float MAX_WHEEL_SPEED    = 00.; //[mm/s] //TODO: Change me!
+constexpr float MAX_WHEEL_SPEED    = 400.; //[mm/s] //TODO: Change me!
 constexpr float MAX_ANGULAR_SPEED  = 2 * M_PI; //TODO: Change me!
 
 constexpr float COMPUTE_DIRECTION_THRESHOLD = 10.; //[mm] //TODO: Change me!
