@@ -10,7 +10,7 @@ constexpr float circularTimeout = 2.;
 
 Control::Control() : m_robotPose(INITIAL_X_POS, INITIAL_Y_POS, INITIAL_ANGLE) {
     m_distancePID.set(DISTANCE_KP, DISTANCE_KI, 0., 0., MOTOR_CONTROL_LOOP_FREQ);
-    m_anglePID.set(ANGLE_KP, 0., 0., 0., MOTOR_CONTROL_LOOP_FREQ);
+    m_anglePID.set(ANGLE_KP, 0., ANGLE_KD, 0., MOTOR_CONTROL_LOOP_FREQ);
     m_distancePID.setMaxOutput(MAX_WHEEL_SPEED);
     m_distancePID.setMaxIntegral(MAX_WHEEL_SPEED);
     m_anglePID.setMaxIntegral(0.7*MAX_ANGULAR_SPEED);
@@ -210,7 +210,7 @@ void Control::setCurrentGoal(Goal goal) {
 
     t = 0;
     if (goalType == Goal::ANGLE) {
-        m_anglePID.set(ANGLE_KP, 0., 0., 0., MOTOR_CONTROL_LOOP_FREQ);
+        m_anglePID.set(ANGLE_KP, 0., ANGLE_KD, 0., MOTOR_CONTROL_LOOP_FREQ);
         float goalValue = m_currentGoal.getAngleData().angle + m_currentGoal.getAngleData().turns * 2 * M_PI;
         float initialValue = m_robotPose.getAbsoluteAngle();
 
@@ -223,7 +223,7 @@ void Control::setCurrentGoal(Goal goal) {
         goalPos = fabsf(initialPos - goalValue);
 
     } else if (goalType == Goal::COORD) {
-        m_anglePID.set(5., 0., 0., 0., MOTOR_CONTROL_LOOP_FREQ);
+        float xError      = m_currentGoal.getCoordData().x - m_robotPose.getX();
     }
     // else if (goalType == Goal::DISTANCE) {
     //     computePeriods(distancePeak, T);

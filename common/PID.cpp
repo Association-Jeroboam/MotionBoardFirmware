@@ -71,7 +71,7 @@ float PID::compute(float setpoint, float input) {
         I_part = -m_maxIntegral;
     }
 
-    m_output = P_part + I_part + D_part;
+    m_output = P_part + I_part - D_part;
 
     //nothing happens if m_output == 0
     if (m_output > 0) {

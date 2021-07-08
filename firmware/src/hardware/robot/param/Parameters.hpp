@@ -23,11 +23,12 @@ constexpr float MAX_WHEEL_SPEED    = 400.; //[mm/s] //TODO: Change me!
 constexpr float MAX_ANGULAR_SPEED  = 3/2*M_PI; //TODO: Change me!
 constexpr float MAX_LINEAR_ACCL    = 800.; //[mm/s^2]
 constexpr float MAX_ANGULAR_ACCL    = 2*M_PI; //[mm/s^2]
+constexpr float MAX_WHEEL_ACCL     = 10000.; // [mm/s]œ
 
 constexpr float COMPUTE_DIRECTION_THRESHOLD = 10.; //[mm] //TODO: Change me!
 
-constexpr float ANGLE_PRECISION = 0.04; //[rad]
-constexpr float DISTANCE_PRECISION = 5;  //[mm]
+constexpr float ANGLE_PRECISION = 0.02; //[rad]
+constexpr float DISTANCE_PRECISION = 2;  //[mm]
 
 constexpr float LIDAR_ANGLE_OFFSET = -M_PI/2.; // [rad]
 constexpr float LIDAR_X_OFFSET = 0.; // [mm]

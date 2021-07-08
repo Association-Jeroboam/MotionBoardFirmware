@@ -85,23 +85,24 @@ constexpr float WHEEL_LEFT_RADIUS  = 28.25 * WHEEL_DISTANCE_FACTOR;  //[mm] Theo
 constexpr float WHEEL_RIGHT_RADIUS = 28.25 / WHEEL_RADIUS_FACTOR * WHEEL_DISTANCE_FACTOR;  //[mm] Theorical 28.25
 constexpr float WHEEL_BASE         = 266.; //[mm] Theorical 266
 
-constexpr float LEFT_MOTOR_KP      = 0.005; //TODO: Change me!
-constexpr float LEFT_MOTOR_KI      = 0.001; //TODO: Change me!
+constexpr float LEFT_MOTOR_KP      = 0.004; //TODO: Change me!
+constexpr float LEFT_MOTOR_KI      = 0.0007; //TODO: Change me!
 constexpr float LEFT_MOTOR_KD      = 0.0; //TODO: Change me!
 constexpr float LEFT_MOTOR_BIAS    = 0.15; //TODO: Change me!
 
-constexpr float RIGHT_MOTOR_KP      = 0.005; //TODO: Change me!
-constexpr float RIGHT_MOTOR_KI      = 0.001; //TODO: Change me!
+constexpr float RIGHT_MOTOR_KP      = 0.003; //TODO: Change me!
+constexpr float RIGHT_MOTOR_KI      = 0.0008; //TODO: Change me!
 constexpr float RIGHT_MOTOR_KD      = 0.0; //TODO: Change me!
 constexpr float RIGHT_MOTOR_BIAS    = 0.15; //TODO: Change me!
 
 constexpr float INITIAL_X_POS       = 800.; //TODO: Change me!
 constexpr float INITIAL_Y_POS       = 200.; //TODO: Change me!
-constexpr float INITIAL_ANGLE       = M_PI/2; //TODO: Change me!
+constexpr float INITIAL_ANGLE       = 0; //TODO: Change me!
 
-constexpr float DISTANCE_KP         = 2; //TODO: Change me!
-constexpr float DISTANCE_KI         = 0.05; //TODO: Change me!
-constexpr float ANGLE_KP            = 5; //TODO: Change me!
+constexpr float DISTANCE_KP         = 3; //TODO: Change me!
+constexpr float DISTANCE_KI         = 0.0; //TODO: Change me!
+constexpr float ANGLE_KP            = 3; //TODO: Change me!
+constexpr float ANGLE_KD            = 0; //TODO: Change me!
 
 #define MOTOR_LEFT_FORWARD   PAL_LOW
 #define MOTOR_LEFT_BACKWARD  PAL_HIGH
