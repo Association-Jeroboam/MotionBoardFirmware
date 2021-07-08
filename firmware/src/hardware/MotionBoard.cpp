@@ -20,27 +20,7 @@ static chibios_rt::EventSource eventSource;
 CanTxThread canTxThread;
 CanRxThread canRxThread;
 
-__extension__ const QEIConfig leftEncoderConf{
-    .mode        = QEI_MODE_QUADRATURE,
-    .resolution  = QEI_BOTH_EDGES,
-    .dirinv      = QEI_DIRINV_TRUE,
-    .overflow    = QEI_OVERFLOW_WRAP,
-    .min         = 0,
-    .max         = SHRT_MAX,
-    .notify_cb   = NULL,
-    .overflow_cb = NULL,
-};
 
-__extension__ const QEIConfig rightEncoderConf{
-    .mode        = QEI_MODE_QUADRATURE,
-    .resolution  = QEI_BOTH_EDGES,
-    .dirinv      = QEI_DIRINV_FALSE,
-    .overflow    = QEI_OVERFLOW_WRAP,
-    .min         = 0,
-    .max         = SHRT_MAX,
-    .notify_cb   = NULL,
-    .overflow_cb = NULL,
-};
 
 __extension__ const GPTConfig intervalTimerConfig{
     .frequency = CONTROL_LOOP_TIMER_COUNTING_FREQUENCY,
