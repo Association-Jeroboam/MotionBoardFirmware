@@ -21,14 +21,14 @@
 __extension__ const SerialConfig lidarSDConfig{
     .speed = 115200,
     .cr1   = 0,
-    .cr2   = USART_CR2_STOP1_BITS,
+    .cr2   = USART_CR2_STOP1_BITS | USART_CR2_SWAP,
     .cr3   = 0};
 
 #define CAN_DRIVER CAND1
-#define CAN_TX_PIN PAL_LINE(GPIOA, 12U)
-#define CAN_TX_PIN_MODE PAL_MODE_ALTERNATE(9)
-#define CAN_RX_PIN PAL_LINE(GPIOA, 11U)
-#define CAN_RX_PIN_MODE PAL_MODE_ALTERNATE(9)
+#define CAN_TX_PIN      PAL_LINE(GPIOA, 11U)
+#define CAN_TX_PIN_MODE PAL_MODE_ALTERNATE(7)
+#define CAN_RX_PIN      PAL_LINE(GPIOA, 12U)
+#define CAN_RX_PIN_MODE PAL_MODE_ALTERNATE(7)
 
 CANConfig const canConfig = {
     .NBTP  = 0x2070C01,

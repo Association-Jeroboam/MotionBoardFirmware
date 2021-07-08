@@ -17,6 +17,8 @@ class MotorControl {
 
     float getMotorSpeed(Peripherals::Motor motor);
 
+    void setDisable(bool disable);
+
     void resetMotor(Peripherals::Motor motor);
 
   private:

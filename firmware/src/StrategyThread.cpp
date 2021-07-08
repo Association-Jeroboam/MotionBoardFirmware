@@ -5,6 +5,12 @@
 #include "MotionBoard.hpp"
 #include <new>
 
+enum StrategyThreadEvent {
+    ComEvent     = 1 << 0,
+    BoardEvent   = 1 << 1,
+    ControlEvent = 1 << 2,
+};
+
 using namespace chibios_rt;
 
 StrategyThread StrategyThread::s_instance;
@@ -22,7 +28,6 @@ void StrategyThread::main() {
     Board::Events::eventRegister(&m_boardListener, BoardEvent);
 
     Strategy::instance()->setControl(ControlThread::instance()->getControl());
-    Strategy::instance()->start();
     Board::Events::startStartMatchTimer(3000);
     Logging::println("[StrategyThread] init %p", this);
 

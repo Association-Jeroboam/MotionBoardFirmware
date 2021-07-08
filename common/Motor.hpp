@@ -20,6 +20,8 @@ class Motor {
 
     void setWheelRadius(float wheelRadius);
 
+    void setDisable(bool disable);
+
     float getSpeed();
 
     float getDrivenDistance();
@@ -34,6 +36,7 @@ class Motor {
     PID                        m_speedPID;
     const Peripherals::Encoder m_encoder;
     const Peripherals::Motor   m_motor;
+    bool m_disabled;
 
     void updateMeasure();
 };

@@ -10,5 +10,6 @@ COMMONCPPSRC += $(SOURCEDIR)/QuickSort.cpp
 COMMONCPPSRC += $(SOURCEDIR)/AvoidanceThread.cpp
 COMMONCPPSRC += $(SOURCEDIR)/ClusterBuffer.cpp
 COMMONCPPSRC += $(SOURCEDIR)/Point.cpp
+COMMONCPPSRC += $(SOURCEDIR)/Switchers.cpp
 
 include $(SOURCEDIR)/$(TARGET_TYPE)/target.mk

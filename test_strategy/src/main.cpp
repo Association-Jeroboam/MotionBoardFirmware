@@ -3,14 +3,14 @@
 #include <string>
 
 #include "Control.hpp"
-#include "HierarchicalStateMachine.hpp"
 #include "Strategy/Events.hpp"
 #include "Strategy/Strategy.hpp"
+#include "LocalMath.hpp"
 
-using namespace eHSM;
 
 Strategy* stateMachine;
 Control   control;
+RobotPose* robotPose;
 
 void fireEvent(Event event, const char* eventName) {
     printf("\n[EVENT] %s\n", eventName);
@@ -20,13 +20,21 @@ void fireEvent(Event event, const char* eventName) {
 int main() {
     stateMachine = Strategy::instance();
     stateMachine->setControl(&control);
+    robotPose = control.getRobotPose();
 
-    stateMachine->start();
+    robotPose->setPose(800, 200, M_PI/2);
+
     fireEvent(StartMatch, "StartMatch");
     fireEvent(MoveOk, "MoveOk");
-    fireEvent(CanMove, "CanMove");
+
+    robotPose->setPose(800, 1200, M_PI/2);
+
     fireEvent(MoveOk, "MoveOk");
-    fireEvent(CanMove, "CanMove");
+    fireEvent(MoveOk, "MoveOk");
+    fireEvent(MoveOk, "MoveOk");
+    fireEvent(MoveOk, "MoveOk");
+    fireEvent(MoveOk, "MoveOk");
+    fireEvent(MoveOk, "MoveOk");
     fireEvent(CompassOk, "CompassOk");
     fireEvent(StartFunnyAction, "StartFunnyAction");
     fireEvent(EndMatch, "EndMatch");

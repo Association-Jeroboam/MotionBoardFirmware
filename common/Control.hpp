@@ -33,7 +33,7 @@ class Control {
 
     Goal getCurrentGoal();
 
-    RobotPose getRobotPose();
+    RobotPose* getRobotPose();
 
     void setAngleKp(float kp);
 
@@ -43,16 +43,20 @@ class Control {
 
     void reset();
 
+    void setEmergency(bool emergency);
+
     ControlData getData();
+
+    RobotPose    m_robotPose;
 
   private:
     MotorControl m_motorControl;
     Goal         m_currentGoal;
-    RobotPose    m_robotPose;
 
     PID m_distancePID;
     PID m_anglePID;
     float goalPos;
+    bool m_emergencyStop;
 
     float direction    = 1;
     float initialPos   = 0;

@@ -34,3 +34,7 @@ void Control::reset() {
 
 ControlData Control::getData() {
 }
+
+RobotPose* Control::getRobotPose() {
+    return &m_robotPose;
+}

@@ -129,7 +129,6 @@ LDSCRIPT= $(STARTUPLD)/STM32G431xB.ld
 # Project files
 include $(COMMONDIR)/common.mk
 include $(FIRMWAREDIR)/firmware.mk
-include $(ROOTDIR)/libs/common_libs.mk
 
 # C sources that can be compiled in ARM or THUMB mode depending on the global
 # setting.

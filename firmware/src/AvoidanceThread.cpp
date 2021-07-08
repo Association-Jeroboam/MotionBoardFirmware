@@ -12,7 +12,7 @@ AvoidanceThread* AvoidanceThread::instance() {
     return &s_instance;
 }
 
-AvoidanceThread::AvoidanceThread(): BaseStaticThread<AVOIDANCE_THREAD_WA>(){
+AvoidanceThread::AvoidanceThread(): BaseStaticThread<AVOIDANCE_THREAD_WA>(),EventSource(), m_robotDetected(false){
     chFifoObjectInit(&m_pointQueue, sizeof(m_dataBuffer[0]), AVOIDANCE_POINTS_QUEUE_LEN,  m_dataBuffer, m_msgBuffer);
 }
 
@@ -24,7 +24,7 @@ void AvoidanceThread::main() {
         RPLidarMeasurement * point;
         chFifoReceiveObjectTimeout(&m_pointQueue, (void **)&point, TIME_INFINITE);
 
-        float angle    = LIDAR_ANGLE_OFFSET - point->angle;
+        float angle = LIDAR_ANGLE_OFFSET - point->angle;
         if(angle < 0. || angle > 360.) {
             angle = fabsf(fmodf(angle, 360.));
         }
@@ -74,9 +74,12 @@ void AvoidanceThread::filterPoints() {
     ClusterBuffer buffer(3);
     uint16_t dropCount = 0;
     uint16_t loops = 0;
-    for (uint16_t i = 0; i < m_sampleCount; i++) {
-        float angle = m_scan[i][ANGLE];
-        float distance = m_scan[i][DISTANCE];
+    bool previousRobotDetected = m_robotDetected;
+    m_robotDetected = false;
+    for (uint16_t i = 0; i < m_sampleCount + CLUSTER_BUFFER_SIZE - 1; i++) {
+        uint16_t index = i % m_sampleCount;
+        float angle = m_scan[index][ANGLE];
+        float distance = m_scan[index][DISTANCE];
         loops++;
         if( distance < LIDAR_MIN_DISTANCE || distance > LIDAR_MAX_DISTANCE) {
             buffer.addPoint(Point(0,0), false);
@@ -85,7 +88,7 @@ void AvoidanceThread::filterPoints() {
         }
 
         Point robotFrame = Point::polarToCartesian(angle, distance);
-        Point mapFrame   = Point::mapToRobot(robotFrame, ControlThread::instance()->getControl()->getRobotPose());
+        Point mapFrame   = Point::mapToRobot(robotFrame, *ControlThread::instance()->getControl()->getRobotPose());
 
         if( mapFrame.x() < 0.        ||
             mapFrame.x() > MAP_MAX_X ||
@@ -97,8 +100,15 @@ void AvoidanceThread::filterPoints() {
         buffer.addPoint(robotFrame, true);
         Point clusterPos = buffer.getClusterPos();
         if (clusterPos.x() != 0. && clusterPos.y() != 0.){
+            m_robotDetected = true;
             Logging::println("[Avoidance] Cluster detected! %.2f %.2f", clusterPos.x(), clusterPos.y());
             break;
         }
+    }
+
+    if(!previousRobotDetected && m_robotDetected) {
+        this->broadcastFlags(RobotDetected);
+    } else if(previousRobotDetected & !m_robotDetected) {
+        this->broadcastFlags(WayCleared);
     }
 }

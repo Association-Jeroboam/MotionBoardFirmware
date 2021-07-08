@@ -4,12 +4,19 @@
 #include "hal.h"
 #include "RPLidar.h"
 
-constexpr uint16_t AVOIDANCE_THREAD_WA = 0x200;
+constexpr uint16_t AVOIDANCE_THREAD_WA = 0x400;
 
 constexpr uint16_t AVOIDANCE_POINTS_QUEUE_LEN  = 20;
 constexpr uint16_t SCAN_SIZE = 360;
 
-class AvoidanceThread : public chibios_rt::BaseStaticThread<AVOIDANCE_THREAD_WA> {
+enum AvoidanceFlags {
+    RobotDetected = 1 << 0,
+    WayCleared    = 1 << 1,
+};
+
+class AvoidanceThread : public chibios_rt::BaseStaticThread<AVOIDANCE_THREAD_WA>,
+                        public chibios_rt::EventSource
+{
   public:
     static AvoidanceThread * instance();
     bool sendPoint(const RPLidarMeasurement* point);
@@ -31,5 +38,6 @@ class AvoidanceThread : public chibios_rt::BaseStaticThread<AVOIDANCE_THREAD_WA>
 
     float              m_scan[SCAN_SIZE][2];
     uint16_t           m_sortingStack[SCAN_SIZE];
+    bool               m_robotDetected;
 
 };

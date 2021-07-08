@@ -80,3 +80,8 @@ void MotorControl::resetMotor(Peripherals::Motor motor) {
             break;
     }
 }
+
+void MotorControl::setDisable(bool disable){
+    m_leftMotor.setDisable(disable);
+    m_rightMotor.setDisable(disable);
+}

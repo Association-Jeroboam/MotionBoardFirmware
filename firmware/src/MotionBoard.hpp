@@ -9,6 +9,7 @@
 namespace Board {
 void init();
 
+
 namespace IO {
 
 void    initDrivers();
@@ -16,7 +17,9 @@ void    initPWM();
 void    initEncoders();
 void    initTimers();
 void    initGPIO();
+
 bool    getSide();
+bool    getStart();
 uint8_t getStrategy();
 
 void deinitPWM();

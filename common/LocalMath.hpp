@@ -2,6 +2,9 @@
 
 // see: https://stackoverflow.com/questions/59329442/xcode-expected-unqualified-id
 #undef M_PI
+
+#define SIMY(y) 3000.0 - y
+
 constexpr float M_PI = 3.141592653589793238462643383279502884;
 
 inline float moduloTwoPI(float angle) {

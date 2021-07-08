@@ -21,7 +21,7 @@ constexpr float GEAR_RATIO_INV = 1.;
 
 constexpr float MAX_WHEEL_SPEED    = 400.; //[mm/s] //TODO: Change me!
 constexpr float MAX_ANGULAR_SPEED  = M_PI; //TODO: Change me!
-constexpr float MAX_LINEAR_ACCL    = 400.; //[mm/s^2]
+constexpr float MAX_LINEAR_ACCL    = 800.; //[mm/s^2]
 constexpr float MAX_ANGULAR_ACCL    = 3/2*M_PI; //[mm/s^2]
 
 constexpr float COMPUTE_DIRECTION_THRESHOLD = 10.; //[mm] //TODO: Change me!
@@ -33,7 +33,7 @@ constexpr float LIDAR_ANGLE_OFFSET = -M_PI/2.; // [rad]
 constexpr float LIDAR_X_OFFSET = 0.; // [mm]
 constexpr float LIDAR_Y_OFFSET = 0.; // [mm]
 constexpr float LIDAR_MIN_DISTANCE = 160.; // [mm]
-constexpr float LIDAR_MAX_DISTANCE = 350.; // [mm]
+constexpr float LIDAR_MAX_DISTANCE = 500.; // [mm]
 
 constexpr float MAP_MAX_X = 2000.;
 constexpr float MAP_MAX_Y = 3000.;
