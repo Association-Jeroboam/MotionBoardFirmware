@@ -288,4 +288,6 @@ void Control::setEmergency(bool emergency) {
 
     m_emergencyStop = emergency;
     Logging::println("emgy %u", m_emergencyStop);
+    m_anglePID.reset();
+    m_distancePID.reset();
 }
