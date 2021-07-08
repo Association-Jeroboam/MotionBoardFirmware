@@ -148,7 +148,10 @@ void Control::applyControl() {
             m_angularSpeedSetpoint = m_currentGoal.getCircularData().angularSpeed;
             m_linearSpeedSetpoint  = m_currentGoal.getCircularData().linearSpeed;
             if ( t > circularTimeout ){
+                Logging::println("timeout");
                 m_currentGoal.setReached(true);
+                m_angularSpeedSetpoint = 0;
+                m_linearSpeedSetpoint  = 0;
             }
             break;
         }

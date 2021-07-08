@@ -280,6 +280,8 @@ class Strategy {
             case LIGHTHOUSE: {
                 // TODO : bourrage
                 Logging::println("TODO : bourrage");
+                Goal goal(0., 50., Goal::CIRCULAR);
+                this->control->setCurrentGoal(goal);
             }
 
             case WAIT_FUNNY_ACTION: {
