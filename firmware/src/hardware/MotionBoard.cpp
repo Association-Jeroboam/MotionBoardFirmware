@@ -104,6 +104,9 @@ void Board::IO::initGPIO() {
     palSetLineMode(EMGCY_STOP_PIN, EMGCY_STOP_PIN_MODE);
     palEnableLineEvent(EMGCY_STOP_PIN, PAL_EVENT_MODE_BOTH_EDGES);
     palSetLineCallback(EMGCY_STOP_PIN, gpioEmergencyStopCb, NULL);
+
+    palSetLineMode(BRAKE_PIN, BRAKE_PIN_MODE);
+    palSetLine(BRAKE_PIN);
 }
 
 bool Board::IO::getSide() {
@@ -112,6 +115,19 @@ bool Board::IO::getSide() {
 
 bool Board::IO::getStart() {
     return (palReadLine(START_PIN) == PAL_HIGH);
+}
+
+void Board::IO::setBrake(Peripherals::Motor motor, bool brake){
+    static bool leftBrake = false;
+    static bool rightBrake = false;
+    if(motor == Peripherals::LEFT_MOTOR) {
+        leftBrake = brake;
+    } else {
+        rightBrake = brake;
+    }
+
+
+    palWriteLine(BRAKE_PIN, (leftBrake || rightBrake) ? PAL_LOW : PAL_HIGH);
 }
 
 uint8_t Board::IO::getStrategy() {
