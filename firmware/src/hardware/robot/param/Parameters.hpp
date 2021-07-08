@@ -26,8 +26,8 @@ constexpr float MAX_ANGULAR_ACCL    = 2*M_PI; //[mm/s^2]
 
 constexpr float COMPUTE_DIRECTION_THRESHOLD = 10.; //[mm] //TODO: Change me!
 
-constexpr float ANGLE_PRECISION = 0.02; //[rad]
-constexpr float DISTANCE_PRECISION = 1;  //[mm]
+constexpr float ANGLE_PRECISION = 0.04; //[rad]
+constexpr float DISTANCE_PRECISION = 5;  //[mm]
 
 constexpr float LIDAR_ANGLE_OFFSET = -M_PI/2.; // [rad]
 constexpr float LIDAR_X_OFFSET = 0.; // [mm]
@@ -38,6 +38,6 @@ constexpr float LIDAR_MAX_DISTANCE = 500.; // [mm]
 constexpr float MAP_MAX_X = 2000.;
 constexpr float MAP_MAX_Y = 3000.;
 
-constexpr uint32_t COMPASS_TIMEOUT = 25;
-constexpr uint32_t FLAG_TIMEOUT = 95;
-constexpr uint32_t MATCH_TIMEOUT = 100;
+constexpr uint32_t COMPASS_TIMEOUT = 5;
+constexpr uint32_t FLAG_TIMEOUT = 10;
+constexpr uint32_t MATCH_TIMEOUT = 15;
