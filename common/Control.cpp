@@ -68,7 +68,7 @@ void Control::applyControl() {
             }
 
 
-            float coeff = 1 / (1 + expf(-rotDir * 3.*(t-2.5)));
+            float coeff = 1 / (1 + expf(-rotDir * 4.*(t-2.5)));
             m_angleSetpoint        = (a - b) * coeff + b;
 
             m_angularSpeedSetpoint = m_anglePID.compute(m_angleSetpoint, m_robotPose.getAbsoluteAngle());
