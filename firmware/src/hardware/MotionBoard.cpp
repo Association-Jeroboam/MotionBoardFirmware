@@ -14,8 +14,16 @@ static void controlLoopTimerCallback(GPTDriver* gptp);
 static void startMatchTimerCallback(GPTDriver* gptp);
 static void gpioStartMatchCb(void* arg);
 static void gpioEmergencyStopCb(void* arg);
+static void endMatchCb(virtual_timer_t *vtp, void *p);
 
 static chibios_rt::EventSource eventSource;
+chibios_rt::Timer matchTimer;
+enum timerState {
+    COMPASS,
+    FLAG,
+    END_MATCH,
+};
+timerState matchTimerState;
 
 CanTxThread canTxThread;
 CanRxThread canRxThread;
@@ -197,7 +205,9 @@ static void startMatchTimerCallback(GPTDriver* gptp) {
 
 static void gpioStartMatchCb(void* arg) {
     palDisableLineEvent(START_PIN);
+    matchTimerState = COMPASS;
     eventSource.broadcastFlagsI(Board::Events::START_MATCH);
+    matchTimer.setI(TIME_S2I(COMPASS_TIMEOUT), endMatchCb, nullptr);
 }
 
 static void gpioEmergencyStopCb(void* arg) {
@@ -208,6 +218,31 @@ static void gpioEmergencyStopCb(void* arg) {
     }
 }
 
+static void endMatchCb(virtual_timer_t *vtp, void *p){
+    uint32_t flag = 0;
+    uint32_t nextTimeout = 0;
+    switch (matchTimerState) {
+        case COMPASS:
+            flag = Board::Events::COMPASS_TIMEOUT;
+            matchTimerState = FLAG;
+            nextTimeout = FLAG_TIMEOUT - COMPASS_TIMEOUT;
+            matchTimer.setI(TIME_S2I(nextTimeout), endMatchCb, nullptr);
+            break;
+        case FLAG:
+            flag = Board::Events::FLAG_TIMEOUT;
+            matchTimerState = END_MATCH;
+            nextTimeout = MATCH_TIMEOUT - FLAG_TIMEOUT;
+            matchTimer.setI(TIME_S2I(nextTimeout), endMatchCb, nullptr);
+            break;
+        case END_MATCH:
+            flag = Board::Events::END_MATCH;
+
+            break;
+    }
+    eventSource.broadcastFlagsI(flag);
+}
+
 void Board::Events::eventRegister(chibios_rt::EventListener* elp, eventmask_t event) {
     eventSource.registerMask(elp, event);
 }
+

@@ -54,6 +54,9 @@ enum eventFlags {
     START_MATCH       = 1 << 2,
     EMERGENCY_STOP    = 1 << 3,
     EMERGENCY_CLEARED = 1 << 4,
+    END_MATCH         = 1 << 5,
+    COMPASS_TIMEOUT   = 1 << 6,
+    FLAG_TIMEOUT      = 1 << 7,
 };
 
 void eventRegister(chibios_rt::EventListener* elp, eventmask_t event);

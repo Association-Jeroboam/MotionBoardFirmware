@@ -37,3 +37,7 @@ constexpr float LIDAR_MAX_DISTANCE = 500.; // [mm]
 
 constexpr float MAP_MAX_X = 2000.;
 constexpr float MAP_MAX_Y = 3000.;
+
+constexpr uint32_t COMPASS_TIMEOUT = 25;
+constexpr uint32_t FLAG_TIMEOUT = 95;
+constexpr uint32_t MATCH_TIMEOUT = 100;
