@@ -45,6 +45,8 @@ class Control {
 
     void setEmergency(bool emergency);
 
+    inline bool getEmergency() { return m_emergencyStop;};
+
     ControlData getData();
 
     RobotPose    m_robotPose;

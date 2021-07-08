@@ -101,7 +101,7 @@ void AvoidanceThread::filterPoints() {
         Point clusterPos = buffer.getClusterPos();
         if (clusterPos.x() != 0. && clusterPos.y() != 0.){
             m_robotDetected = true;
-            Logging::println("[Avoidance] Cluster detected! %.2f %.2f", clusterPos.x(), clusterPos.y());
+//            Logging::println("[Avoidance] Cluster detected! %.2f %.2f", clusterPos.x(), clusterPos.y());
             break;
         }
     }

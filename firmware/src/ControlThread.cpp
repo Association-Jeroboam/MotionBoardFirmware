@@ -82,7 +82,6 @@ void ControlThread::main() {
             if(flags & RobotDetected) {
                 Logging::println("[ControlThread] Robot detected");
                 control.setEmergency(true);
-                control.setCurrentGoal(Goal());
             }
 
             if(flags & WayCleared) {

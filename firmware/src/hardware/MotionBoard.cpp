@@ -20,27 +20,7 @@ static chibios_rt::EventSource eventSource;
 CanTxThread canTxThread;
 CanRxThread canRxThread;
 
-__extension__ const QEIConfig leftEncoderConf{
-    .mode        = QEI_MODE_QUADRATURE,
-    .resolution  = QEI_BOTH_EDGES,
-    .dirinv      = QEI_DIRINV_TRUE,
-    .overflow    = QEI_OVERFLOW_WRAP,
-    .min         = 0,
-    .max         = SHRT_MAX,
-    .notify_cb   = NULL,
-    .overflow_cb = NULL,
-};
 
-__extension__ const QEIConfig rightEncoderConf{
-    .mode        = QEI_MODE_QUADRATURE,
-    .resolution  = QEI_BOTH_EDGES,
-    .dirinv      = QEI_DIRINV_FALSE,
-    .overflow    = QEI_OVERFLOW_WRAP,
-    .min         = 0,
-    .max         = SHRT_MAX,
-    .notify_cb   = NULL,
-    .overflow_cb = NULL,
-};
 
 __extension__ const GPTConfig intervalTimerConfig{
     .frequency = CONTROL_LOOP_TIMER_COUNTING_FREQUENCY,
@@ -104,6 +84,9 @@ void Board::IO::initGPIO() {
     palSetLineMode(EMGCY_STOP_PIN, EMGCY_STOP_PIN_MODE);
     palEnableLineEvent(EMGCY_STOP_PIN, PAL_EVENT_MODE_BOTH_EDGES);
     palSetLineCallback(EMGCY_STOP_PIN, gpioEmergencyStopCb, NULL);
+
+    palSetLineMode(BRAKE_PIN, BRAKE_PIN_MODE);
+    palSetLine(BRAKE_PIN);
 }
 
 bool Board::IO::getSide() {
@@ -112,6 +95,19 @@ bool Board::IO::getSide() {
 
 bool Board::IO::getStart() {
     return (palReadLine(START_PIN) == PAL_HIGH);
+}
+
+void Board::IO::setBrake(Peripherals::Motor motor, bool brake){
+    static bool leftBrake = false;
+    static bool rightBrake = false;
+    if(motor == Peripherals::LEFT_MOTOR) {
+        leftBrake = brake;
+    } else {
+        rightBrake = brake;
+    }
+
+
+    palWriteLine(BRAKE_PIN, (leftBrake || rightBrake) ? PAL_LOW : PAL_HIGH);
 }
 
 uint8_t Board::IO::getStrategy() {

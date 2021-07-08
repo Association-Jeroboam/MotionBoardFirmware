@@ -2,6 +2,7 @@
 #include "ch.h"
 #include "hal.h"
 #include <inttypes.h>
+#include <climits>
 
 #ifdef WHITE_ROBOT
 
@@ -30,10 +31,49 @@ constexpr float DISTANCE_KP         = 1.5; //TODO: Change me!
 constexpr float DISTANCE_KI         = 0.05; //TODO: Change me!
 constexpr float ANGLE_KP            = 2; //TODO: Change me!
 
-#define MOTOR_LEFT_FORWARD   PAL_LOW
-#define MOTOR_LEFT_BACKWARD  PAL_HIGH
-#define MOTOR_RIGHT_FORWARD  PAL_HIGH
-#define MOTOR_RIGHT_BACKWARD PAL_LOW
+#define MOTOR_LEFT_FORWARD   PAL_HIGH
+#define MOTOR_LEFT_BACKWARD  PAL_LOW
+#define MOTOR_RIGHT_FORWARD  PAL_LOW
+#define MOTOR_RIGHT_BACKWARD PAL_HIGH
+
+#define LEFT_ENCODER_DRIVER QEID3
+#define RIGHT_ENCODER_DRIVER QEID2
+
+__extension__ const QEIConfig leftEncoderConf{
+    .mode        = QEI_MODE_QUADRATURE,
+    .resolution  = QEI_BOTH_EDGES,
+    .dirinv      = QEI_DIRINV_TRUE,
+    .overflow    = QEI_OVERFLOW_WRAP,
+    .min         = 0,
+    .max         = SHRT_MAX,
+    .notify_cb   = NULL,
+    .overflow_cb = NULL,
+};
+
+__extension__ const QEIConfig rightEncoderConf{
+    .mode        = QEI_MODE_QUADRATURE,
+    .resolution  = QEI_BOTH_EDGES,
+    .dirinv      = QEI_DIRINV_FALSE,
+    .overflow    = QEI_OVERFLOW_WRAP,
+    .min         = 0,
+    .max         = SHRT_MAX,
+    .notify_cb   = NULL,
+    .overflow_cb = NULL,
+};
+
+constexpr uint8_t MOTOR_LEFT_CHANNEL  = 2;
+constexpr uint8_t MOTOR_RIGHT_CHANNEL = 0;
+
+#define MOTOR_LEFT_P_CHAN_LINE PAL_LINE(GPIOA, 10U)
+#define MOTOR_RIGHT_P_CHAN_LINE PAL_LINE(GPIOA, 8U)
+
+#define MOTOR_LEFT_P_CHAN_LINE_MODE PAL_MODE_ALTERNATE(6)
+#define MOTOR_RIGHT_P_CHAN_LINE_MODE PAL_MODE_ALTERNATE(6)
+
+#define MOTOR_LEFT_DIR_PIN PAL_LINE(GPIOB, 3U)
+#define MOTOR_LEFT_DIR_PIN_MODE PAL_MODE_OUTPUT_PUSHPULL
+#define MOTOR_RIGHT_DIR_PIN PAL_LINE(GPIOA, 15U)
+#define MOTOR_RIGHT_DIR_PIN_MODE PAL_MODE_OUTPUT_PUSHPULL
 
 
 #elif defined(BRUT_ROBOT)
@@ -67,6 +107,45 @@ constexpr float ANGLE_KP            = 5; //TODO: Change me!
 #define MOTOR_LEFT_BACKWARD  PAL_HIGH
 #define MOTOR_RIGHT_FORWARD  PAL_HIGH
 #define MOTOR_RIGHT_BACKWARD PAL_LOW
+
+#define LEFT_ENCODER_DRIVER QEID3
+#define RIGHT_ENCODER_DRIVER QEID2
+
+__extension__ const QEIConfig leftEncoderConf{
+    .mode        = QEI_MODE_QUADRATURE,
+    .resolution  = QEI_BOTH_EDGES,
+    .dirinv      = QEI_DIRINV_TRUE,
+    .overflow    = QEI_OVERFLOW_WRAP,
+    .min         = 0,
+    .max         = SHRT_MAX,
+    .notify_cb   = NULL,
+    .overflow_cb = NULL,
+};
+
+__extension__ const QEIConfig rightEncoderConf{
+    .mode        = QEI_MODE_QUADRATURE,
+    .resolution  = QEI_BOTH_EDGES,
+    .dirinv      = QEI_DIRINV_FALSE,
+    .overflow    = QEI_OVERFLOW_WRAP,
+    .min         = 0,
+    .max         = SHRT_MAX,
+    .notify_cb   = NULL,
+    .overflow_cb = NULL,
+};
+
+constexpr uint8_t MOTOR_LEFT_CHANNEL  = 2;
+constexpr uint8_t MOTOR_RIGHT_CHANNEL = 0;
+
+#define MOTOR_LEFT_P_CHAN_LINE PAL_LINE(GPIOA, 10U)
+#define MOTOR_RIGHT_P_CHAN_LINE PAL_LINE(GPIOA, 8U)
+
+#define MOTOR_LEFT_P_CHAN_LINE_MODE PAL_MODE_ALTERNATE(6)
+#define MOTOR_RIGHT_P_CHAN_LINE_MODE PAL_MODE_ALTERNATE(6)
+
+#define MOTOR_LEFT_DIR_PIN PAL_LINE(GPIOB, 3U)
+#define MOTOR_LEFT_DIR_PIN_MODE PAL_MODE_OUTPUT_PUSHPULL
+#define MOTOR_RIGHT_DIR_PIN PAL_LINE(GPIOA, 15U)
+#define MOTOR_RIGHT_DIR_PIN_MODE PAL_MODE_OUTPUT_PUSHPULL
 
 #else
 #error "Define a robot!"

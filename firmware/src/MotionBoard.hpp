@@ -21,6 +21,7 @@ void    initGPIO();
 bool    getSide();
 bool    getStart();
 uint8_t getStrategy();
+void setBrake(Peripherals::Motor motor, bool brake);
 
 void deinitPWM();
 
