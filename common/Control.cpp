@@ -13,7 +13,7 @@ Control::Control() : m_robotPose(INITIAL_X_POS, INITIAL_Y_POS, INITIAL_ANGLE) {
     m_anglePID.set(ANGLE_KP, 0., 0., 0., MOTOR_CONTROL_LOOP_FREQ);
     m_distancePID.setMaxOutput(MAX_WHEEL_SPEED);
     m_distancePID.setMaxIntegral(MAX_WHEEL_SPEED);
-    m_anglePID.setMaxIntegral(MAX_ANGULAR_SPEED);
+    m_anglePID.setMaxIntegral(0.7*MAX_ANGULAR_SPEED);
     m_anglePID.setMaxOutput(MAX_ANGULAR_SPEED);
     m_linearSpeed          = 0.;
     m_linearSpeedSetpoint  = 0.;
@@ -55,28 +55,15 @@ void Control::applyControl() {
     switch (m_currentGoal.getType()) {
         case Goal::ANGLE: {
             t += MOTOR_CONTROL_LOOP_DT;
-            float finalAngle        = (m_currentGoal.getAngleData().angle + m_currentGoal.getAngleData().turns * 2 * M_PI);
+            m_angleSetpoint  = (m_currentGoal.getAngleData().angle + m_currentGoal.getAngleData().turns * 2 * M_PI);
             float rotDir;
             float a;
             float b;
-            if(finalAngle >= initialPos) {
-                rotDir = 1.;
-                a = finalAngle;
-                b = initialPos;
-            } else {
-                rotDir = -1;
-                a = initialPos;
-                b = finalAngle;
-            }
-
-
-            float coeff = 1 / (1 + expf(-rotDir * 4.*(t-2.5)));
-            m_angleSetpoint        = (a - b) * coeff + b;
 
             m_angularSpeedSetpoint = m_anglePID.compute(m_angleSetpoint, m_robotPose.getAbsoluteAngle());
             m_linearSpeedSetpoint  = 0.;
 
-            if (fabs(finalAngle - m_robotPose.getAbsoluteAngle()) < ANGLE_PRECISION && !m_currentGoal.isReached()) {
+            if (fabs(m_angleSetpoint - m_robotPose.getAbsoluteAngle()) < ANGLE_PRECISION && !m_currentGoal.isReached()) {
                 m_currentGoal.setReached(true);
             }
 
@@ -120,7 +107,8 @@ void Control::applyControl() {
                } else {
                    m_angleSetpoint = M_PI;
                }
-               m_angleSetpoint += angleToGoal;
+                      m_distanceError = -sqrtf(xError * xError + yError * yError);
+        m_angleSetpoint += angleToGoal;
                m_distanceError = -sqrtf(xError * xError + yError * yError);
 
             }
@@ -182,13 +170,15 @@ void Control::applyControl() {
     linearAccl = (m_linearSpeedSetpoint - lastLinearSpeedSetpoint)/MOTOR_CONTROL_LOOP_DT;
     if (linearAccl > MAX_LINEAR_ACCL) {
         m_linearSpeedSetpoint = lastLinearSpeedSetpoint + MAX_LINEAR_ACCL * MOTOR_CONTROL_LOOP_DT;
+    } else if (linearAccl < -MAX_LINEAR_ACCL) {
+        m_linearSpeedSetpoint = lastLinearSpeedSetpoint - MAX_LINEAR_ACCL * MOTOR_CONTROL_LOOP_DT;
     }
-//    angularAccl = (m_angularSpeedSetpoint - lastAngularSpeedSetpoint)/MOTOR_CONTROL_LOOP_DT;
-//    if (angularAccl > MAX_ANGULAR_ACCL) {
-//        m_angularSpeedSetpoint = lastAngularSpeedSetpoint + MAX_ANGULAR_ACCL * MOTOR_CONTROL_LOOP_DT;
-//    } else if (angularAccl < -MAX_ANGULAR_ACCL) {
-//        m_angularSpeedSetpoint = lastAngularSpeedSetpoint - MAX_ANGULAR_ACCL * MOTOR_CONTROL_LOOP_DT;
-//    }
+    angularAccl = (m_angularSpeedSetpoint - lastAngularSpeedSetpoint)/MOTOR_CONTROL_LOOP_DT;
+    if (angularAccl > MAX_ANGULAR_ACCL) {
+        m_angularSpeedSetpoint = lastAngularSpeedSetpoint + MAX_ANGULAR_ACCL * MOTOR_CONTROL_LOOP_DT;
+    } else if (angularAccl < -MAX_ANGULAR_ACCL) {
+        m_angularSpeedSetpoint = lastAngularSpeedSetpoint - MAX_ANGULAR_ACCL * MOTOR_CONTROL_LOOP_DT;
+    }
 
 
     leftSpeedSetpoint  = m_linearSpeedSetpoint - m_angularSpeedSetpoint * WHEEL_BASE * 0.5;

@@ -20,6 +20,7 @@ void Motor::updateControl() {
     float command;
     if(m_disabled) {
         command = 0.;
+        m_speedPID.reset();
     } else {
         command = m_speedPID.compute(m_speedSetpoint, m_speed);
     }
