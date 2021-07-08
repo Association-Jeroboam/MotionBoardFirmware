@@ -43,6 +43,20 @@ void StrategyThread::main() {
                 Logging::println("[StrategyThread] StartMatch");
                 Strategy::instance()->dispatch(StartMatch);
             }
+
+            if (flags & Board::Events::END_MATCH) {
+                Logging::println("[StrategyThread] EndMatch");
+                Strategy::instance()->dispatch(EndMatch);
+            }
+
+            if (flags & Board::Events::COMPASS_TIMEOUT) {
+                Logging::println("[StrategyThread] Compass");
+                Strategy::instance()->dispatch(CompassOk);
+            }
+            if (flags & Board::Events::FLAG_TIMEOUT) {
+                Logging::println("[StrategyThread] Flag");
+                Strategy::instance()->dispatch(StartFunnyAction);
+            }
         }
         if (event & ControlEvent) {
             eventflags_t flags = m_controlListener.getAndClearFlags();
