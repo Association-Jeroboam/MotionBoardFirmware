@@ -74,7 +74,7 @@ class Strategy {
                 if (event != StartMatch)
                     return;
 
-                currentState = TURN_TO_POS0;
+                currentState = GO_TO_POS0;
                 Logging::println("New state: %s", stateToStr(currentState));
 
                 side = Switchers::getSide() ? 1 : 0;
@@ -84,19 +84,31 @@ class Strategy {
 
                 // Start right
                 if (side == 1) {
+                    Logging::println("side 1");
                     robotPose->setPose(robotPose->getX(), SIMY(robotPose->getY()), -robotPose->getAbsoluteAngle());
+                } else {
+                    Logging::println("side 0");
                 }
+
+//                Pos targetPos = positions[0][side];
+//                Logging::println("target pos x: %f y: %f", targetPos.x, targetPos.y);
+//
+//                float targetAngle = atan2(targetPos.y - robotPose->getY(), targetPos.x - robotPose->getX());
+//
+//                Goal goal(targetAngle, Goal::ANGLE);
+//                this->control->setCurrentGoal(goal);
+//
+//                // TODO goal angle
+//                Logging::println("Turn to: %f", targetAngle);
+                currentState = GO_TO_POS0;
+                Logging::println("New state: %s", stateToStr(currentState));
 
                 Pos targetPos = positions[0][side];
                 Logging::println("target pos x: %f y: %f", targetPos.x, targetPos.y);
+                Goal goal(targetPos.x, targetPos.y, Goal::COORD);
 
-                float targetAngle = atan2(targetPos.y - robotPose->getY(), targetPos.x - robotPose->getX());
-
-                Goal goal(targetAngle, Goal::ANGLE);
                 this->control->setCurrentGoal(goal);
-
-                // TODO goal angle
-                Logging::println("Turn to: %f", targetAngle);
+                Logging::println("Go to: %f %f", targetPos.x, targetPos.y);
                 break;
             }
 

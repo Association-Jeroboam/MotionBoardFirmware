@@ -66,12 +66,9 @@ void Control::applyControl() {
                 a = initialPos;
                 b = finalAngle;
             }
-//            float rotDir = finalAngle >= initialPos ? 1 : - 1;
-            Logging::println("final angle %f", finalAngle);
 
 
             float coeff = 1 / (1 + expf(-rotDir * 3.*(t-2.5)));
-//            m_angleSetpoint        = (finalAngle + initialPos) / (1 + expf(-rotDir * 4.*(t-2.))) - finalAngle;
             m_angleSetpoint        = (a - b) * coeff + b;
 
             m_angularSpeedSetpoint = m_anglePID.compute(m_angleSetpoint, m_robotPose.getAbsoluteAngle());
@@ -101,8 +98,6 @@ void Control::applyControl() {
                     case Goal::ANY:
                         float angleError = angleToGoal - m_robotPose.getModuloAngle();
                         angleError       = moduloTwoPI(angleError);
-//                        Logging::println("angle error %f", angleError);
-//                        Logging::println("angle to goal %f", angleToGoal);
                         if (-M_PI * 0.5 < angleError && angleError < M_PI * 0.5) {
                             m_forwardDrive = true;
                         } else {
@@ -119,20 +114,10 @@ void Control::applyControl() {
                 m_distanceError = sqrtf(xError * xError + yError * yError);
             } else {
 
-//                if (angleToGoal > M_PI * 0.5) {
-//                    m_angleSetpoint = -M_PI;
-//                } else {
-//                    m_angleSetpoint = M_PI;
-//                }
                 m_angleSetpoint = angleToGoal;
                 m_distanceError = sqrtf(xError * xError + yError * yError);
 
             }
-//            m_angleSetpoint = unwrap(m_lastAngleSetpoint, m_angleSetpoint);
-//            Logging::println("angle setpoint %f", m_angleSetpoint);
-//            m_angleSetpoint = unwrap(m_angleSetpoint);
-//            Logging::println("angle setpoint %f", m_angleSetpoint);
-
 
             if (fabs(m_distanceError) < DISTANCE_PRECISION && !m_currentGoal.isReached()) {
                 m_currentGoal.setReached(true);
@@ -144,12 +129,8 @@ void Control::applyControl() {
             m_distancePID.setMaxOutput(MAX_WHEEL_SPEED);
             float maxLinearSpeed = MAX_WHEEL_SPEED - fabsf(m_angularSpeedSetpoint) * WHEEL_BASE * 0.5;
 
-//            m_distancePID.setMaxOutput(maxLinearSpeed);
-//            m_distancePID.setMaxOutput(MAX_WHEEL_SPEED);
-
             m_linearSpeedSetpoint = m_distancePID.compute(m_distanceError, 0.);
-//            Logging::println("spd setpoint %f", m_linearSpeedSetpoint);
-//
+
             if (m_distanceError < COMPUTE_DIRECTION_THRESHOLD) {
                 m_computeDirection = true;
                 m_currentGoal.setCoordDirection(Goal::ANY);

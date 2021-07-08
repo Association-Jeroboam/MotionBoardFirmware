@@ -2,6 +2,7 @@
 #include "LocalMath.hpp"
 #include "RobotPose.hpp"
 #include "Parameters.hpp"
+#include "Logging.hpp"
 
 RobotPose::RobotPose(float x, float y, float angle) : m_x(x), m_y(y), m_angle(angle) {
     m_turns = 0;
@@ -29,6 +30,7 @@ void RobotPose::setPose(float x, float y, float angle) {
     m_turns = 0;
     restrainAngle();
     setPose(x, y);
+	Logging::println("set pose %f %f %f", x, y, angle);
 }
 
 float RobotPose::getX() {
