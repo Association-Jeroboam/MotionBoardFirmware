@@ -99,7 +99,7 @@ constexpr float INITIAL_X_POS       = 800.; //TODO: Change me!
 constexpr float INITIAL_Y_POS       = 200.; //TODO: Change me!
 constexpr float INITIAL_ANGLE       = M_PI/2; //TODO: Change me!
 
-constexpr float DISTANCE_KP         = 2.; //TODO: Change me!
+constexpr float DISTANCE_KP         = 4.; //TODO: Change me!
 constexpr float DISTANCE_KI         = 0.05; //TODO: Change me!
 constexpr float ANGLE_KP            = 8; //TODO: Change me!
 

@@ -23,20 +23,20 @@
 const Pose Strategy::positions[3][2] = {
     // Pos0
     {
-        (Pose){ .x = 250, .y = 150 },
-        (Pose){ .x = 250, .y = SIMY(150) },
+        (Pose){ .x = 250, .y = 175 },
+        (Pose){ .x = 250, .y = SIMY(175) },
     },
 
     // Pos1
     {
         (Pose){ .x = 250, .y = 150, .theta = 0.001 },
-        (Pose){ .x = 250, .y = SIMY(150), .theta = -0.001 },
+        (Pose){ .x = 250, .y = SIMY(175), .theta = -0.001 },
     },
 
     // Pos2
     {
-        (Pose){ .x = 70, .y = 150 },
-        (Pose){ .x = 70, .y = SIMY(150) },
+        (Pose){ .x = 70, .y = 175 },
+        (Pose){ .x = 70, .y = SIMY(175) },
     },
 };
 const float Strategy::startX = 655;

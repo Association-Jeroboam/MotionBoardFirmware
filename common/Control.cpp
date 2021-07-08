@@ -6,6 +6,8 @@
 #include "Peripherals.hpp"
 #include <cmath>
 
+constexpr float circularTimeout = 2.;
+
 Control::Control() : m_robotPose(INITIAL_X_POS, INITIAL_Y_POS, INITIAL_ANGLE) {
     m_distancePID.set(DISTANCE_KP, DISTANCE_KI, 0., 0., MOTOR_CONTROL_LOOP_FREQ);
     m_anglePID.set(ANGLE_KP, 0., 0., 0., MOTOR_CONTROL_LOOP_FREQ);
@@ -113,12 +115,13 @@ void Control::applyControl() {
                 m_angleSetpoint = angleToGoal;
                 m_distanceError = sqrtf(xError * xError + yError * yError);
             } else {
-               if (angleToGoal > M_PI * 0.5) {
+               if (angleToGoal > 0) {
                    m_angleSetpoint = -M_PI;
                } else {
                    m_angleSetpoint = M_PI;
                }
-                m_distanceError = sqrtf(xError * xError + yError * yError);
+               m_angleSetpoint += angleToGoal;
+               m_distanceError = -sqrtf(xError * xError + yError * yError);
 
             }
 
@@ -141,9 +144,12 @@ void Control::applyControl() {
             break;
         }
         case Goal::CIRCULAR: {
-
+            t += MOTOR_CONTROL_LOOP_DT;
             m_angularSpeedSetpoint = m_currentGoal.getCircularData().angularSpeed;
             m_linearSpeedSetpoint  = m_currentGoal.getCircularData().linearSpeed;
+            if ( t > circularTimeout ){
+                m_currentGoal.setReached(true);
+            }
             break;
         }
         case Goal::SPEED: {
