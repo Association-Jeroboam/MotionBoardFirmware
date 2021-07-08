@@ -9,13 +9,15 @@
 
 enum State {
     WAIT_FOR_MATCH,
-    TURN_TO_POS0,
     GO_TO_POS0,
-    TURN_TO_POS1,
+    TURN_IN_POS0,
     GO_TO_POS1,
-    TURN_TO_POS2,
-    GO_TO_POS2,
     LIGHTHOUSE,
+    GO_TO_POS2,
+    TURN_IN_POS2,
+    GO_TO_POS3,
+    TURN_IN_POS3,
+    GO_TO_POS4,
     WAIT_FUNNY_ACTION,
     END_MATCH
 };
@@ -39,18 +41,22 @@ inline const char* stateToStr(State state) {
     switch (state) {
         case WAIT_FOR_MATCH:
             return "WaitForMatch";
-        case TURN_TO_POS0:
-            return "TurnToPos0";
         case GO_TO_POS0:
             return "GoToPos0";
-        case TURN_TO_POS1:
-            return "TurnToPos1";
+        case TURN_IN_POS0:
+            return "TurnInPos0";
         case GO_TO_POS1:
             return "GoToPos1";
-        case TURN_TO_POS2:
-            return "TurnToPos2";
+        case TURN_IN_POS2:
+            return "TurnInPos2";
         case GO_TO_POS2:
             return "GoToPos2";
+        case TURN_IN_POS3:
+            return "TurnInPos3";
+        case GO_TO_POS3:
+            return "GoToPos3";
+        case GO_TO_POS4:
+            return "GoToPos4";
         case WAIT_FUNNY_ACTION:
             return "WaitFunnyAction";
         case END_MATCH:
@@ -78,7 +84,7 @@ class Strategy {
 
   public:
     static Strategy* instance();
-    static const Pose positions[3][2];
+    static const Pose positions[8][2];
     static const float startX;
     static const float startY;
     static const float startAngle;
@@ -256,7 +262,7 @@ class Strategy {
                 break;
             }
 
-            case TURN_TO_POS1: {
+            case TURN_IN_POS0: {
                 float targetAngle = positions[1][side].theta;
                 Logging::println("target angle: %f", targetAngle);
 
@@ -266,7 +272,7 @@ class Strategy {
                 break;
             }
 
-            case GO_TO_POS2: {
+            case GO_TO_POS1: {
                 Pose targetPos = positions[2][side];
                 Logging::println("target pos x: %f y: %f", targetPos.x, targetPos.y);
 
@@ -283,6 +289,60 @@ class Strategy {
                 Goal goal(0., 50., Goal::CIRCULAR);
                 this->control->setCurrentGoal(goal);
             }
+
+            case GO_TO_POS2: {
+                Pose targetPos = positions[3][side];
+                Logging::println("target pos x: %f y: %f", targetPos.x, targetPos.y);
+
+                Goal goal(targetPos.x, targetPos.y, Goal::Direction::FORWARD);
+                this->control->setCurrentGoal(goal);
+                Logging::println("Go to: %f %f", targetPos.x, targetPos.y);
+
+                break;
+            }
+
+            case TURN_IN_POS2: {
+                float targetAngle = positions[4][side].theta;
+                Logging::println("target angle: %f", targetAngle);
+
+                Goal goal(targetAngle, Goal::ANGLE);
+                this->control->setCurrentGoal(goal);
+
+                break;
+            }
+
+            case GO_TO_POS3: {
+                Pose targetPos = positions[5][side];
+                Logging::println("target pos x: %f y: %f", targetPos.x, targetPos.y);
+
+                Goal goal(targetPos.x, targetPos.y);
+                this->control->setCurrentGoal(goal);
+                Logging::println("Go to: %f %f", targetPos.x, targetPos.y);
+
+                break;
+            }
+
+            case TURN_IN_POS3: {
+                float targetAngle = positions[6][side].theta;
+                Logging::println("target angle: %f", targetAngle);
+
+                Goal goal(targetAngle, Goal::ANGLE);
+                this->control->setCurrentGoal(goal);
+
+                break;
+            }
+
+            case GO_TO_POS4: {
+                Pose targetPos = positions[7][side];
+                Logging::println("target pos x: %f y: %f", targetPos.x, targetPos.y);
+
+                Goal goal(targetPos.x, targetPos.y);
+                this->control->setCurrentGoal(goal);
+                Logging::println("Go to: %f %f", targetPos.x, targetPos.y);
+
+                break;
+            }
+
 
             case WAIT_FUNNY_ACTION: {
                 Logging::println("Waiting for funny action...");
@@ -314,7 +374,7 @@ class Strategy {
 
             case GO_TO_POS0: {
                 if (event == MoveOk) {
-                   return setNewState(TURN_TO_POS1);
+                   return setNewState(TURN_IN_POS0);
                 }
 
                 if (event == EndMatch) {
@@ -324,7 +384,32 @@ class Strategy {
                 break;
             }
 
-            case TURN_TO_POS1: {
+            case TURN_IN_POS0: {
+                if (event == MoveOk) {
+                   return setNewState(GO_TO_POS1);
+                }
+
+                if (event == EndMatch) {
+                    return setNewState(END_MATCH);
+                }
+
+                break;
+            }
+
+            case GO_TO_POS1: {
+                if (event == MoveOk) {
+                   return setNewState(LIGHTHOUSE);
+                }
+
+                if (event == EndMatch) {
+                    return setNewState(END_MATCH);
+                }
+
+                break;
+            }
+
+
+            case LIGHTHOUSE: {
                 if (event == MoveOk) {
                    return setNewState(GO_TO_POS2);
                 }
@@ -338,7 +423,7 @@ class Strategy {
 
             case GO_TO_POS2: {
                 if (event == MoveOk) {
-                   return setNewState(LIGHTHOUSE);
+                   return setNewState(TURN_IN_POS2);
                 }
 
                 if (event == EndMatch) {
@@ -348,7 +433,43 @@ class Strategy {
                 break;
             }
 
-            case LIGHTHOUSE: {
+            case TURN_IN_POS2: {
+                if (event == MoveOk) {
+                   return setNewState(GO_TO_POS3);
+                }
+
+                if (event == EndMatch) {
+                    return setNewState(END_MATCH);
+                }
+
+                break;
+            }
+
+            case GO_TO_POS3: {
+                if (event == MoveOk) {
+                   return setNewState(TURN_IN_POS3);
+                }
+
+                if (event == EndMatch) {
+                    return setNewState(END_MATCH);
+                }
+
+                break;
+            }
+
+            case TURN_IN_POS3: {
+                if (event == MoveOk) {
+                   return setNewState(GO_TO_POS4);
+                }
+
+                if (event == EndMatch) {
+                    return setNewState(END_MATCH);
+                }
+
+                break;
+            }
+
+            case GO_TO_POS4: { 
                 if (event == MoveOk) {
                    return setNewState(WAIT_FUNNY_ACTION);
                 }
