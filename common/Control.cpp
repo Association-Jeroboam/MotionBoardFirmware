@@ -113,8 +113,11 @@ void Control::applyControl() {
                 m_angleSetpoint = angleToGoal;
                 m_distanceError = sqrtf(xError * xError + yError * yError);
             } else {
-
-                m_angleSetpoint = angleToGoal;
+               if (angleToGoal > M_PI * 0.5) {
+                   m_angleSetpoint = -M_PI;
+               } else {
+                   m_angleSetpoint = M_PI;
+               }
                 m_distanceError = sqrtf(xError * xError + yError * yError);
 
             }

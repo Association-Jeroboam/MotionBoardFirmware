@@ -1,18 +1,47 @@
 #include "Strategy/Strategy.hpp"
+#include "LocalMath.hpp"
 
-const Pos Strategy::positions[2][2] = {
+// Homologation
+// const Pos Strategy::positions[2][2] = {
+//     // Pos1
+//     {
+//         (Pose){ .x = 800, .y = 1200 },
+//         (Pose){ .x = 800, .y = SIMY(1200) },
+//     },
+
+//     // Pos2
+//     {
+//         (Pose){ .x = 1700, .y = 1200 },
+//         (Pose){ .x = 1700, .y = SIMY(1200) },
+//     },
+// };
+// const float Strategy::startX = 800;
+// const float Strategy::startY = 200;
+// const float Strategy::startAngle = M_PI/2;
+
+// Match
+const Pose Strategy::positions[3][2] = {
+    // Pos0
+    {
+        (Pose){ .x = 250, .y = 150 },
+        (Pose){ .x = 250, .y = SIMY(150) },
+    },
+
     // Pos1
     {
-        (Pos){ .x = 800, .y = 1200 },
-        (Pos){ .x = 800, .y = SIMY(1200) },
+        (Pose){ .x = 250, .y = 150, .theta = 0.001 },
+        (Pose){ .x = 250, .y = SIMY(150), .theta = -0.001 },
     },
 
     // Pos2
     {
-        (Pos){ .x = 1700, .y = 1200 },
-        (Pos){ .x = 1700, .y = SIMY(1200) },
+        (Pose){ .x = 70, .y = 150 },
+        (Pose){ .x = 70, .y = SIMY(150) },
     },
 };
+const float Strategy::startX = 655;
+const float Strategy::startY = 175;
+const float Strategy::startAngle = M_PI;
 
 Strategy Strategy::s_instance;
 
