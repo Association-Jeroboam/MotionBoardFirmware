@@ -95,6 +95,26 @@ class Strategy {
         control = control_;
     }
 
+
+    void go_to_pos(Pose targetPos, bool backward) {
+        RobotPose* robotPose = this->control->getRobotPose();        
+        Logging::println("target pos x: %f y: %f", targetPos.x, targetPos.y);
+        float dx = targetPos.x - robotPose->getX();
+        float dy = targetPos.y - robotPose->getY();
+        float distance = -backward * sqrtf(dx*dx + dy*dy);
+        // Marche arrière
+        Goal goal(distance);
+        this->control->setCurrentGoal(goal);
+        Logging::println("Go to distance: %f", distance);
+    }
+
+    void turn(float targetAngle) {
+        Logging::println("target angle: %f", targetAngle);
+        Goal goal(targetAngle, 0);
+        this->control->setCurrentGoal(goal);
+    }
+
+
     // Match
     void setNewState(State newState) {
         RobotPose* robotPose = this->control->getRobotPose();
@@ -119,42 +139,20 @@ class Strategy {
 
 
                 Pose targetPos = positions[0][side];
-                Logging::println("target pos x: %f y: %f", targetPos.x, targetPos.y);
-
-                float dx = targetPos.x - robotPose->getX();
-                float dy = targetPos.y - robotPose->getY();
-                float distance = sqrtf(dx*dx + dy*dy);
-
-                Goal goal(distance);
-                this->control->setCurrentGoal(goal);
-                Logging::println("Go to distance: %f", distance);
+                go_to_pos(targetPos,0);
 
                 break;
             }
 
             case TURN_IN_POS0: {
                 float targetAngle = positions[1][side].theta;
-                Logging::println("target angle: %f", targetAngle);
-
-                            Goal goal(targetAngle, 0);
-                this->control->setCurrentGoal(goal);
-
+                turn(targetAngle);
                 break;
             }
 
             case GO_TO_POS1: {
                 Pose targetPos = positions[2][side];
-                Logging::println("target pos x: %f y: %f", targetPos.x, targetPos.y);
-
-                float dx = targetPos.x - robotPose->getX();
-                float dy = targetPos.y - robotPose->getY();
-                float distance = -sqrtf(dx*dx + dy*dy);
-
-                // Marche arrière
-                Goal goal(distance);
-                this->control->setCurrentGoal(goal);
-                Logging::println("Go to distance: %f", distance);
-
+                go_to_pos(targetPos, 1);
                 break;
             }
 
@@ -167,103 +165,49 @@ class Strategy {
 
             case GO_TO_POS2: {
                 Pose targetPos = positions[3][side];
-                Logging::println("target pos x: %f y: %f", targetPos.x, targetPos.y);
-
-                float dx = targetPos.x - robotPose->getX();
-                float dy = targetPos.y - robotPose->getY();
-                float distance = sqrtf(dx*dx + dy*dy);
-
-                Goal goal(distance);
-                this->control->setCurrentGoal(goal);
-                Logging::println("Go to distance: %f", distance);
-
+                go_to_pos(targetPos, 0);
                 break;
             }
 
             case TURN_IN_POS2: {
                 float targetAngle = positions[4][side].theta;
-                Logging::println("target angle: %f", targetAngle);
-
-                            Goal goal(targetAngle, 0);
-                this->control->setCurrentGoal(goal);
-
+                turn(targetAngle);
                 break;
             }
 
             case GO_TO_POS3: {
                 Pose targetPos = positions[5][side];
-                Logging::println("target pos x: %f y: %f", targetPos.x, targetPos.y);
-
-                float dx = targetPos.x - robotPose->getX();
-                float dy = targetPos.y - robotPose->getY();
-                float distance = sqrtf(dx*dx + dy*dy);
-
-                Goal goal(distance);
-                this->control->setCurrentGoal(goal);
-                Logging::println("Go to distance: %f", distance);
-
+                go_to_pos(targetPos, 0);
                 break;
             }
 
             case TURN_IN_POS3: {
                 float targetAngle = positions[6][side].theta;
-                Logging::println("target angle: %f", targetAngle);
-
-                            Goal goal(targetAngle, 0);
-                this->control->setCurrentGoal(goal);
-
+                turn(targetAngle);
                 break;
             }
 
             case GO_TO_POS4: {
                 Pose targetPos = positions[7][side];
-                Logging::println("target pos x: %f y: %f", targetPos.x, targetPos.y);
-
-                float dx = targetPos.x - robotPose->getX();
-                float dy = targetPos.y - robotPose->getY();
-                float distance = sqrtf(dx*dx + dy*dy);
-
-                Goal goal(distance);
-                this->control->setCurrentGoal(goal);
-                Logging::println("Go to distance: %f", distance);
+                go_to_pos(targetPos, 0);
                 break;
             }
 
             case GO_TO_POS5: {
                 Pose targetPos = positions[8][side];
-                Logging::println("target pos x: %f y: %f", targetPos.x, targetPos.y);
-
-                float dx = targetPos.x - robotPose->getX();
-                float dy = targetPos.y - robotPose->getY();
-                float distance = -sqrtf(dx*dx + dy*dy);
-
-                Goal goal(distance);
-                this->control->setCurrentGoal(goal);
-                Logging::println("Go to distance: %f", distance);
+                go_to_pos(targetPos, 1);
                 break;
             }
 
             case TURN_IN_POS5: {
                 float targetAngle = positions[9][side].theta;
-                Logging::println("target angle: %f", targetAngle);
-
-                            Goal goal(targetAngle, 0);
-                this->control->setCurrentGoal(goal);
-
+                turn(targetAngle);
                 break;
             }
 
             case GO_TO_POS6: {
                 Pose targetPos = positions[10][side];
-                Logging::println("target pos x: %f y: %f", targetPos.x, targetPos.y);
-
-                float dx = targetPos.x - robotPose->getX();
-                float dy = targetPos.y - robotPose->getY();
-                float distance = sqrtf(dx*dx + dy*dy);
-
-                Goal goal(distance);
-                this->control->setCurrentGoal(goal);
-                Logging::println("Go to distance: %f", distance);
+                go_to_pos(targetPos, 0);
                 break;
             }
 
