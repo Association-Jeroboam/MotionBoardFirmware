@@ -34,7 +34,7 @@ constexpr float LIDAR_ANGLE_OFFSET = -M_PI/2.; // [rad]
 constexpr float LIDAR_X_OFFSET = 0.; // [mm]
 constexpr float LIDAR_Y_OFFSET = 0.; // [mm]
 constexpr float LIDAR_MIN_DISTANCE = 160.; // [mm]
-constexpr float LIDAR_MAX_DISTANCE = 500.; // [mm]
+constexpr float LIDAR_MAX_DISTANCE = 450.; // [mm]
 
 constexpr float MAP_MIN_X = 50.;
 constexpr float MAP_MAX_X = 1950.;
