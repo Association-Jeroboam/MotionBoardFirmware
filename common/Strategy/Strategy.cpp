@@ -92,37 +92,37 @@ Strategy::Strategy() {
 
         // Pos6
         {
-            (Pose){ .x = 450, .y = 1700 },
-            (Pose){ .x = 450, .y = SIMY(1700) },
+            (Pose){ .x = 600, .y = 1700 },
+            (Pose){ .x = 600, .y = SIMY(1700) },
 
         },
 
         // Turn6
         {
-            (Pose){ .x = 450, .y = 1700, .theta = -M_PI/2 -0.0001},
-            (Pose){ .x = 450, .y = SIMY(1700), .theta = M_PI/2 + 0.001},
+            (Pose){ .x = 600, .y = 1700, .theta = -M_PI/2 +0.0001},
+            (Pose){ .x = 600, .y = SIMY(1700), .theta = M_PI/2 - 0.001},
         },
 
 
         // Pos7
         {
-            (Pose){ .x = 450, .y = 200 },
-            (Pose){ .x = 450, .y = SIMY(250) },
+            (Pose){ .x = 600, .y = 200 },
+            (Pose){ .x = 600, .y = SIMY(250) },
 
         },
 
-        // Turn7
+/*        // Turn7
         {
-            (Pose){ .x = 450, .y = 700, .theta = M_PI/4 },
-            (Pose){ .x = 450, .y = SIMY(700), .theta = -M_PI/4 },
+            (Pose){ .x = 600, .y = 700, .theta = M_PI/4 },
+            (Pose){ .x = 600, .y = SIMY(700), .theta = -M_PI/4 },
         },
 
         // Pos8
         {
-            (Pose){ .x = 700, .y = 200 },
-            (Pose){ .x = 700, .y = SIMY(200) },
+            (Pose){ .x = 600, .y = 200 },
+            (Pose){ .x = 600, .y = SIMY(200) },
 
-        }
+        }*/
 
     };
 

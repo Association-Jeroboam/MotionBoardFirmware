@@ -74,6 +74,10 @@ inline const char* stateToStr(State state) {
             return "TurnInPos6";
         case GO_TO_POS7:
             return "GoToPos7";
+        case TURN_IN_POS_7:
+            return "TurnInPos7";
+        case GO_TO_POS8:
+            return "GoToPos8";
         case WAIT_FUNNY_ACTION:
             return "WaitFunnyAction";
         case END_MATCH:
@@ -242,6 +246,9 @@ class Strategy {
             }
             case TURN_IN_POS_7: {
                 float targetAngle = positions[13][side].theta;
+                //turn(targetAngle);
+                //break;
+ 
                 float target;
                 if(side == 0) {
                     target = -M_PI / 4;
@@ -444,10 +451,7 @@ class Strategy {
 
             case GO_TO_POS7: { 
                 if (event == MoveOk) {
-                    if( side == 1) {
-                        return setNewState(WAIT_FUNNY_ACTION);
-                    }
-                   return setNewState(TURN_IN_POS_7);
+                    return setNewState(WAIT_FUNNY_ACTION);
                 }
 
                 if (event == EndMatch) {
@@ -458,7 +462,7 @@ class Strategy {
             }
             case TURN_IN_POS_7: {
                 if (event == MoveOk) {
-                    return setNewState(GO_TO_POS8);
+                    return setNewState(WAIT_FUNNY_ACTION);
                 }
 
                 if (event == EndMatch) {

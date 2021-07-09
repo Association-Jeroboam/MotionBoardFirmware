@@ -41,6 +41,9 @@ int main() {
     fireEvent(MoveOk, "MoveOk");
     fireEvent(MoveOk, "MoveOk");
     fireEvent(MoveOk, "MoveOk");
+    fireEvent(MoveOk, "MoveOk");
+    fireEvent(MoveOk, "MoveOk");
+    fireEvent(MoveOk, "MoveOk");
     fireEvent(StartFunnyAction, "StartFunnyAction");
     fireEvent(EndMatch, "EndMatch");
     fireEvent(EmergencyStop, "EmergencyStop");
