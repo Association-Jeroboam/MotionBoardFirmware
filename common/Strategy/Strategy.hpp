@@ -9,36 +9,41 @@
 
 enum State {
     WAIT_FOR_MATCH,
-    GO_TO_POS0,
-    TURN_IN_POS0,
-    GO_TO_POS1,
+    ANGLE_GOAL,
+    DISTANCE_GOAL,
     LIGHTHOUSE,
-    GO_TO_POS2,
-    TURN_IN_POS2,
-    GO_TO_POS3,
-    TURN_IN_POS3,
-    GO_TO_POS4,
-    GO_TO_POS5,
-    TURN_IN_POS5,
-    GO_TO_POS6,
-    TURN_IN_POS6,
-    GO_TO_POS7,
-    TURN_IN_POS_7,
-    GO_TO_POS8,
     WAIT_FUNNY_ACTION,
     END_MATCH
+};
+
+enum ActionType {
+    GO_TO_XY,
+    TURN_TO,
+    DO_LIGHTHOUSE
+};
+
+struct Pos {
+    float x;
+    float y;
+};
+
+struct Action {
+    ActionType actionType;
+    Pos pos;
+    bool backward;
+    float theta;
 };
 
 inline const char* eventToStr(Event event) {
     switch (event) {
         case StartMatch:
-            return "StartMatch";
+            return "StartMatchEvent";
         case MoveOk:
-            return "MoveOk";
+            return "MoveOkEvent";
         case StartFunnyAction:
-            return "StartFunnyAction";
+            return "StartFunnyActionEvent";
         case EndMatch:
-            return "EndMatch";
+            return "EndMatchEvent";
         default:
             return "UnknownEvent";
     }
@@ -47,53 +52,37 @@ inline const char* eventToStr(Event event) {
 inline const char* stateToStr(State state) {
     switch (state) {
         case WAIT_FOR_MATCH:
-            return "WaitForMatch";
-        case GO_TO_POS0:
-            return "GoToPos0";
-        case TURN_IN_POS0:
-            return "TurnInPos0";
-        case GO_TO_POS1:
-            return "GoToPos1";
-        case TURN_IN_POS2:
-            return "TurnInPos2";
-        case GO_TO_POS2:
-            return "GoToPos2";
-        case TURN_IN_POS3:
-            return "TurnInPos3";
-        case GO_TO_POS3:
-            return "GoToPos3";
-        case GO_TO_POS4:
-            return "GoToPos4";
-        case GO_TO_POS5:
-            return "GoToPos5";
-        case TURN_IN_POS5:
-            return "TurnInPos5";
-        case GO_TO_POS6:
-            return "GoToPos6";
-        case TURN_IN_POS6:
-            return "TurnInPos6";
-        case GO_TO_POS7:
-            return "GoToPos7";
-        case TURN_IN_POS_7:
-            return "TurnInPos7";
-        case GO_TO_POS8:
-            return "GoToPos8";
+            return "WaitForMatchState";
+        case ANGLE_GOAL:
+            return "AngleGoalState";
+        case DISTANCE_GOAL:
+            return "DistanceGoalState";
         case WAIT_FUNNY_ACTION:
-            return "WaitFunnyAction";
+            return "WaitFunnyActionState";
         case END_MATCH:
-            return "EndMatch";
+            return "EndMatchState";
         case LIGHTHOUSE:
-            return "Lighthouse";
+            return "LighthouseState";
         default:
             return "UnknownState";
     }
 }
 
-struct Pose {
-    float x;
-    float y;
-    float theta;
-};
+inline const char* actionToStr(Action action) {
+    switch (action.actionType) {
+        case GO_TO_XY:
+            return "GoToXYAction";
+        case ANGLE_GOAL:
+            return "AngleGoalAction";
+        case DISTANCE_GOAL:
+            return "DistanceGoalAction";
+        case LIGHTHOUSE:
+            return "LighthouseAction";
+        default:
+            return "UnknownState";
+    }
+}
+
 
 class Strategy {
   private:
@@ -103,7 +92,7 @@ class Strategy {
   public:
     Strategy();
     static Strategy* instance();
-    Pose positions[13][2];
+    Action actions[13][2];
     static const float startX;
     static const float startY;
     static const float startAngle;
@@ -114,17 +103,18 @@ class Strategy {
     }
 
 
-    void go_to_pos(Pose targetPos, bool backward) {
+    void go_to_pos(Pos targetPos, bool backward) {
         RobotPose* robotPose = this->control->getRobotPose();        
-        Logging::println("target pos x: %f y: %f", targetPos.x, targetPos.y);
+        Logging::println("Target pos x: %f y: %f", targetPos.x, targetPos.y);
         float dx = targetPos.x - robotPose->getX();
         float dy = targetPos.y - robotPose->getY();
 
         float distance = sqrtf(dx*dx + dy*dy);
+
         if (backward) {
             distance = -distance;
         }
-        // Marche arrière
+
         Goal goal(distance);
         this->control->setCurrentGoal(goal);
         Logging::println("Go to distance: %f", distance);
@@ -145,133 +135,59 @@ class Strategy {
         Logging::println("New state: %s", stateToStr(currentState));
 
         switch (currentState) {
-            case GO_TO_POS0: {
-                side = Switchers::getSide() ? 1 : 0;
-                Logging::println("Loaded side %i", side);
+            case State::ANGLE_GOAL: {
+                Action currentAction = actions[currentActionIndex][side];
 
+                float currentAngle = robotPose->getAbsoluteAngle();
+                float targetAngle;
+                
+                if (currentAction.actionType == ActionType::TURN_TO) {
+                    targetAngle = currentAction.theta;
+                } else if (currentAction.actionType == ActionType::GO_TO_XY) {
+                    float dy = currentAction.pos.y - robotPose->getY();
+                    float dx = currentAction.pos.x - robotPose->getX();
+                    targetAngle = atan2f(dy, dx);
 
-                // Start right
-                if (side == 1) {
-                    robotPose->setPose(startX, SIMY(startY), -startAngle);
-                    Logging::println("side right, init pos: %f %f %f", robotPose->getX(), robotPose->getY(), robotPose->getAbsoluteAngle());
+                    if (currentAction.backward) {
+                        targetAngle = constrainAngle(targetAngle + M_PI);
+                    }
                 } else {
-                    robotPose->setPose(startX, startY, startAngle);
-                    Logging::println("side left, init pos: %f %f %f", robotPose->getX(), robotPose->getY(), robotPose->getAbsoluteAngle());
+                    Logging::println("Impossible 2");
+                    return;
                 }
 
+                Logging::println("current: %f target: %f", currentAngle, targetAngle);
 
-                Pose targetPos = positions[0][side];
-                go_to_pos(targetPos,0);
+                // 5 deg
+                if (angleDistance(currentAngle, targetAngle)  >= 0.09) {
+                    return turn(targetAngle);
+                } 
 
+                Logging::println("Angle already reached");
+                setNewState(State::DISTANCE_GOAL);;
                 break;
             }
 
-            case TURN_IN_POS0: {
-                float targetAngle = positions[1][side].theta;
-                turn(targetAngle);
+            case State::DISTANCE_GOAL: {
+                Pos targetPos = actions[currentActionIndex][side].pos;
+                bool backward = actions[currentActionIndex][side].backward;
+                go_to_pos(targetPos, backward);
                 break;
             }
 
-            case GO_TO_POS1: {
-                Pose targetPos = positions[2][side];
-                go_to_pos(targetPos, 1);
-                break;
-            }
-
-            case LIGHTHOUSE: {
-                Logging::println("TODO : bourrage");
+            case State::LIGHTHOUSE: {
                 Goal goal(0., -150., Goal::CIRCULAR);
                 this->control->setCurrentGoal(goal);
                 break;
             }
 
-            case GO_TO_POS2: {
-                Pose targetPos = positions[3][side];
-                go_to_pos(targetPos, 0);
-                break;
-            }
-
-            case TURN_IN_POS2: {
-                float targetAngle = positions[4][side].theta;
-                turn(targetAngle);
-                break;
-            }
-
-            case GO_TO_POS3: {
-                Pose targetPos = positions[5][side];
-                go_to_pos(targetPos, 0);
-                break;
-            }
-
-            case TURN_IN_POS3: {
-                float targetAngle = positions[6][side].theta;
-                turn(targetAngle);
-                break;
-            }
-
-            case GO_TO_POS4: {
-                Pose targetPos = positions[7][side];
-                go_to_pos(targetPos, 0);
-                break;
-            }
-
-            case GO_TO_POS5: {
-                Pose targetPos = positions[8][side];
-                go_to_pos(targetPos, 1);
-                break;
-            }
-
-            case TURN_IN_POS5: {
-                float targetAngle = positions[9][side].theta;
-                turn(targetAngle);
-                break;
-            }
-
-            case GO_TO_POS6: {
-                Pose targetPos = positions[10][side];
-                go_to_pos(targetPos, false);
-                break;
-            }
-
-            case TURN_IN_POS6: {
-                float targetAngle = positions[11][side].theta;
-                turn(targetAngle);
-                break;
-            }
-
-            case GO_TO_POS7: {
-                Pose targetPos = positions[12][side];
-                go_to_pos(targetPos, 0);
-                break;
-            }
-            case TURN_IN_POS_7: {
-                float targetAngle = positions[13][side].theta;
-                //turn(targetAngle);
-                //break;
- 
-                float target;
-                if(side == 0) {
-                    target = -M_PI / 4;
-                } else {
-                    target = M_PI/2;
-                }
-                turn(target);
-                break;
-            }
-
-            case GO_TO_POS8: {
-                Pose targetPos = positions[14][side];
-                go_to_pos(targetPos, 0);
-                break;
-            }
-
-            case WAIT_FUNNY_ACTION: {
+            case State::WAIT_FUNNY_ACTION: {
                 Logging::println("Waiting for funny action...");
 
                 break;
             }
 
-            case END_MATCH: {
+            case State::END_MATCH: {
                 Goal goal;
                 this->control->setCurrentGoal(goal);
                 Logging::println("End match : Goal set to NO_GOAL");
@@ -280,210 +196,108 @@ class Strategy {
             }
         }
     }
+
+    void doNextAction() {
+        currentActionIndex++;
+        Logging::println("Do action %i", currentActionIndex);
+
+        if (currentActionIndex >= actionNumber) {
+            Logging::println("No more action, end match");
+            return setNewState(END_MATCH);
+        }
+
+        Action currentAction = actions[currentActionIndex][side];
+        Logging::println(actionToStr(currentAction));
+
+        switch (currentAction.actionType) {
+            case GO_TO_XY: {
+                setNewState(ANGLE_GOAL);
+                break;
+            }
+            case TURN_TO: {
+                setNewState(ANGLE_GOAL);
+                break;
+            }
+            case DO_LIGHTHOUSE: {
+                setNewState(LIGHTHOUSE);
+                break;
+            }
+        }
+
+    }
+
     void dispatch(Event event) {
         Logging::println("Current state: %s", stateToStr(currentState));
         Logging::println("Event dispatched: %s\n----------------------------------------------------------------------------\n", eventToStr(event));
+
+        RobotPose* robotPose = this->control->getRobotPose();
+
         switch (currentState) {
-            case WAIT_FOR_MATCH: {
+            case State::WAIT_FOR_MATCH: {
                 if (event == StartMatch) {
-                    return setNewState(GO_TO_POS0);
+                    side = Switchers::getSide() ? 1 : 0;
+
+                    // Start right
+                    if (side == 1) {
+                        robotPose->setPose(startX, SIMY(startY), -startAngle);
+                        Logging::println("side right, init pos: %f %f %f", robotPose->getX(), robotPose->getY(), robotPose->getAbsoluteAngle());
+                    } else {
+                        robotPose->setPose(startX, startY, startAngle);
+                        Logging::println("side left, init pos: %f %f %f", robotPose->getX(), robotPose->getY(), robotPose->getAbsoluteAngle());
+                    }
+
+                    return doNextAction();
                 }
                 
                 break;
             }
 
-            case GO_TO_POS0: {
-                if (event == MoveOk) {
-                   return setNewState(TURN_IN_POS0);
-                }
-
+            case State::ANGLE_GOAL: {
                 if (event == EndMatch) {
                     return setNewState(END_MATCH);
+                }
+
+                Action currentAction = actions[currentActionIndex][side];
+                if (event == MoveOk) {
+                    // XY action, after rotation go to target
+                    if (currentAction.actionType == GO_TO_XY) {
+                        return setNewState(DISTANCE_GOAL);
+                    }
+
+                    // turn action, after rotation do next action
+                    if (currentAction.actionType == TURN_TO) {
+                        return doNextAction();
+                    }
+
+                    Logging::println("Impossible");
                 }
 
                 break;
             }
 
-            case TURN_IN_POS0: {
-                if (event == MoveOk) {
-                   return setNewState(GO_TO_POS1);
-                }
-
+            case State::DISTANCE_GOAL: {
                 if (event == EndMatch) {
                     return setNewState(END_MATCH);
                 }
 
-                break;
-            }
-
-            case GO_TO_POS1: {
                 if (event == MoveOk) {
-                   return setNewState(LIGHTHOUSE);
-                }
-
-                if (event == EndMatch) {
-                    return setNewState(END_MATCH);
+                    return doNextAction();
                 }
 
                 break;
             }
-
 
             case LIGHTHOUSE: {
-                if (event == MoveOk) {
-                   return setNewState(GO_TO_POS2);
-                }
-
                 if (event == EndMatch) {
                     return setNewState(END_MATCH);
                 }
 
-                break;
-            }
-
-            case GO_TO_POS2: {
                 if (event == MoveOk) {
-                   return setNewState(TURN_IN_POS2);
-                }
-
-                if (event == EndMatch) {
-                    return setNewState(END_MATCH);
+                   return doNextAction();
                 }
 
                 break;
             }
-
-            case TURN_IN_POS2: {
-                if (event == MoveOk) {
-                   return setNewState(GO_TO_POS3);
-                }
-
-                if (event == EndMatch) {
-                    return setNewState(END_MATCH);
-                }
-
-                break;
-            }
-
-            case GO_TO_POS3: {
-                if (event == MoveOk) {
-                   return setNewState(TURN_IN_POS3);
-                }
-
-                if (event == EndMatch) {
-                    return setNewState(END_MATCH);
-                }
-
-                break;
-            }
-
-            case TURN_IN_POS3: {
-                if (event == MoveOk) {
-                   return setNewState(GO_TO_POS4);
-                }
-
-                if (event == EndMatch) {
-                    return setNewState(END_MATCH);
-                }
-
-                break;
-            }
-
-            case GO_TO_POS4: { 
-                if (event == MoveOk) {
-                   return setNewState(GO_TO_POS5);
-                }
-
-                if (event == EndMatch) {
-                    return setNewState(END_MATCH);
-                }
-
-                break;
-            }
-
-            case GO_TO_POS5: { 
-                if (event == MoveOk) {
-                   return setNewState(TURN_IN_POS5);
-                }
-
-                if (event == EndMatch) {
-                    return setNewState(END_MATCH);
-                }
-
-                break;
-            }
-
-            case TURN_IN_POS5: { 
-                if (event == MoveOk) {
-                   return setNewState(GO_TO_POS6);
-                }
-
-                if (event == EndMatch) {
-                    return setNewState(END_MATCH);
-                }
-
-                break;
-            }
-
-            case GO_TO_POS6: { 
-                if (event == MoveOk) {
-                   return setNewState(TURN_IN_POS6);
-                }
-
-                if (event == EndMatch) {
-                    return setNewState(END_MATCH);
-                }
-
-                break;
-            }
-
-            case TURN_IN_POS6: { 
-                if (event == MoveOk) {
-                   return setNewState(GO_TO_POS7);
-                }
-
-                if (event == EndMatch) {
-                    return setNewState(END_MATCH);
-                }
-
-                break;
-            }
-
-            case GO_TO_POS7: { 
-                if (event == MoveOk) {
-                    return setNewState(WAIT_FUNNY_ACTION);
-                }
-
-                if (event == EndMatch) {
-                    return setNewState(END_MATCH);
-                }
-
-                break;
-            }
-            case TURN_IN_POS_7: {
-                if (event == MoveOk) {
-                    return setNewState(WAIT_FUNNY_ACTION);
-                }
-
-                if (event == EndMatch) {
-                    return setNewState(END_MATCH);
-                }
-
-                break;
-            }
-
-            case GO_TO_POS8: {
-                if (event == MoveOk) {
-                    return setNewState(WAIT_FUNNY_ACTION);
-                }
-
-                if (event == EndMatch) {
-                    return setNewState(END_MATCH);
-                }
-
-                break;
-            }
-
 
             case WAIT_FUNNY_ACTION: {
                 if (event == StartFunnyAction) {
@@ -503,4 +317,6 @@ class Strategy {
     State currentState;
     Control* control;
     uint8_t side;
+    int16_t currentActionIndex;
+    size_t actionNumber;
 };

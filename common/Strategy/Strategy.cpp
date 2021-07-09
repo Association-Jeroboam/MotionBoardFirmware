@@ -23,110 +23,72 @@
 // Match
 
 Strategy::Strategy() {
+    currentActionIndex = -1;
+    actionNumber = 10;
     currentState = WAIT_FOR_MATCH;
-    Pose test[][2] = {
+    Action test[10][2] = {
         // Pos0
         {
-            (Pose){ .x = 300, .y = 230 },
-            (Pose){ .x = 300, .y = SIMY(230) },
+            (Action){ actionType: GO_TO_XY, pos: (Pos){ x: 300, y: 230 }, backward: false },
+            (Action){ actionType: GO_TO_XY, pos: (Pos){ x: 300, y: SIMY(230) }, backward: false },
         },
 
         // turn0
         {
-            (Pose){ .x = 300, .y = 230, .theta = 0.001 },
-            (Pose){ .x = 300, .y = SIMY(230), .theta = -0.001 },
+            (Action){ actionType: TURN_TO, pos: (Pos){ x: 300, y: 230 }, backward: false, theta: 0.001 },
+            (Action){ actionType: TURN_TO, pos: (Pos){ x: 300, y: SIMY(230) }, backward: false, theta: -0.001 },
         },
 
         // Pos1
         {
-            (Pose){ .x = 120, .y = 230 },
-            (Pose){ .x = 120, .y = SIMY(230) },
+            (Action){ actionType: GO_TO_XY, pos: (Pos) { x: 120, y: 230 }, backward: true },
+            (Action){ actionType: GO_TO_XY, pos: (Pos) { x: 120, y: SIMY(230) }, backward: true },
+        },
+
+        // Lighthouse
+        {
+            (Action) { actionType: DO_LIGHTHOUSE },
+            (Action) { actionType: DO_LIGHTHOUSE },
         },
 
         // Pos2
         {
-            (Pose){ .x = 300, .y = 230 },
-            (Pose){ .x = 300, .y = SIMY(230) },
+            (Action){ actionType: GO_TO_XY, pos: (Pos) { x: 300, y: 230 }, backward: false },
+            (Action){ actionType: GO_TO_XY, pos: (Pos) { x: 300, y: SIMY(230) }, backward: false },
         },
-
-        // turn2
-        {
-            (Pose){ .x = 300, .y = 230, .theta = atan2f(1700-230, 1500-300) },
-            (Pose){ .x = 300, .y = SIMY(230), .theta = -atan2f(1700-230, 1500-300) },
-        },
-
 
         // Pos3
         {
-            (Pose){ .x = 1500, .y = 1700 },
-            (Pose){ .x = 1500, .y = SIMY(1700) },
-        },
-
-
-        // turn3
-        {
-            (Pose){ .x = 1500, .y = 1700, .theta = 0.0001 },
-            (Pose){ .x = 1500, .y = SIMY(1700), .theta = -0.0001 },
+            (Action){ actionType: GO_TO_XY, pos: (Pos) { x: 1500, y: 1700 }, backward: false },
+            (Action){ actionType: GO_TO_XY, pos: (Pos) { x: 1500, y: SIMY(1700) }, backward: false },
         },
 
         // Pos4
         {
-            (Pose){ .x = 1700, .y = 1700 },
-            (Pose){ .x = 1700, .y = SIMY(1700) },
-
+            (Action){ actionType: GO_TO_XY, pos: (Pos) { x: 1700, y: 1700 }, backward: false },
+            (Action){ actionType: GO_TO_XY, pos: (Pos) { x: 1700, y: SIMY(1700) }, backward: false },
         },
-        //pos5
+
+        // Pos5
         {
-            (Pose){ .x = 1500, .y = 1700 },
-            (Pose){ .x = 1500, .y = SIMY(1700) },
-
+            (Action){ actionType: GO_TO_XY, pos: (Pos) { x: 1500, y: 1700 }, backward: true },
+            (Action){ actionType: GO_TO_XY, pos: (Pos) { x: 1500, y: SIMY(1700) }, backward: true },
         },
-        //turn5
-        {
-            (Pose){ .x = 1500, .y = 1700 , .theta = M_PI},
-            (Pose){ .x = 1500, .y = SIMY(1700), .theta = -M_PI },
-
-        },
-
-
 
         // Pos6
         {
-            (Pose){ .x = 600, .y = 1700 },
-            (Pose){ .x = 600, .y = SIMY(1700) },
-
+            (Action){ actionType: GO_TO_XY, pos: (Pos) { x: 600, y: 1700 }, backward: false },
+            (Action){ actionType: GO_TO_XY, pos: (Pos) { x: 600, y: SIMY(1700) }, backward: false },
         },
-
-        // Turn6
-        {
-            (Pose){ .x = 600, .y = 1700, .theta = -M_PI/2 +0.0001},
-            (Pose){ .x = 600, .y = SIMY(1700), .theta = M_PI/2 - 0.001},
-        },
-
 
         // Pos7
         {
-            (Pose){ .x = 600, .y = 200 },
-            (Pose){ .x = 600, .y = SIMY(250) },
-
+            (Action){ actionType: GO_TO_XY, pos: (Pos) { x: 600, y: 200 }, backward: false },
+            (Action){ actionType: GO_TO_XY, pos: (Pos) { x: 600, y: SIMY(200) }, backward: false },
         },
-
-/*        // Turn7
-        {
-            (Pose){ .x = 600, .y = 700, .theta = M_PI/4 },
-            (Pose){ .x = 600, .y = SIMY(700), .theta = -M_PI/4 },
-        },
-
-        // Pos8
-        {
-            (Pose){ .x = 600, .y = 200 },
-            (Pose){ .x = 600, .y = SIMY(200) },
-
-        }*/
-
     };
 
-    std::memcpy(positions,test, sizeof(positions));
+    std::memcpy(actions,test, sizeof(actions));
 }
 
 const float Strategy::startX = 655;

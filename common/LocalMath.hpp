@@ -1,5 +1,5 @@
 #pragma once
-
+#include <cmath>
 // see: https://stackoverflow.com/questions/59329442/xcode-expected-unqualified-id
 #undef M_PI
 
@@ -28,4 +28,19 @@ inline float unwrap(float previous_angle, float new_angle) {
     float d = new_angle - previous_angle;
     d       = d > M_PI ? d - 2 * M_PI : (d < -M_PI ? d + 2 * M_PI : d);
     return previous_angle + d;
+}
+
+inline  float angleDistance(float alpha, float beta) {
+    float phi = fmod(fabs(beta - alpha), 2*M_PI);       // This is either the distance or 360 - distance
+    float distance = phi > M_PI/2 ? 2*M_PI - phi : phi;
+    return distance;
+}
+
+inline float constrainAngle(float x){
+    x = fmod(x + M_PI, M_PI*2);
+
+    if (x < 0)
+        x += M_PI/2;
+
+    return x - M_PI;
 }

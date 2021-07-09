@@ -22,9 +22,24 @@ int main() {
     stateMachine->setControl(&control);
     robotPose = control.getRobotPose();
 
-    robotPose->setPose(800, 200, M_PI/2);
 
     fireEvent(StartMatch, "StartMatch");
+
+    fireEvent(MoveOk, "MoveOk");
+    robotPose->setPose(1700, -1700, M_PI);
+    fireEvent(MoveOk, "MoveOk");
+
+
+    robotPose->setPose(300, 230, 0.001);
+    fireEvent(MoveOk, "MoveOk");
+
+
+    robotPose->setPose(120, 230, 0.001);
+    fireEvent(MoveOk, "MoveOk");
+
+    robotPose->setPose(300, 230, 0.001);
+    fireEvent(MoveOk, "MoveOk");
+<<<<<<< HEAD
     fireEvent(MoveOk, "MoveOk");
     fireEvent(MoveOk, "MoveOk");
     fireEvent(MoveOk, "MoveOk");
@@ -39,11 +54,9 @@ int main() {
     fireEvent(MoveOk, "MoveOk");
     fireEvent(MoveOk, "MoveOk");
     fireEvent(MoveOk, "MoveOk");
-    fireEvent(MoveOk, "MoveOk");
-    fireEvent(MoveOk, "MoveOk");
-    fireEvent(MoveOk, "MoveOk");
-    fireEvent(MoveOk, "MoveOk");
-    fireEvent(MoveOk, "MoveOk");
+=======
+
+>>>>>>> wip: angles
     fireEvent(StartFunnyAction, "StartFunnyAction");
     fireEvent(EndMatch, "EndMatch");
     fireEvent(EmergencyStop, "EmergencyStop");
