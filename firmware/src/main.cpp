@@ -35,9 +35,13 @@ int main() {
 
     chThdCreateStatic(waShellThread, sizeof(waShellThread), NORMALPRIO,
                       shellThread, (void*)&shell_cfg);
+    enum pliersState state;
+    uint8_t i = 0;
+
     while (!chThdShouldTerminateX()) {
         Board::IO::toggleLED();
-        chThdSleepMilliseconds(2000);
+
+        chThdSleepMilliseconds(1000);
     }
 
     Logging::println("[main] Shutting down");
