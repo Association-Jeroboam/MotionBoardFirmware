@@ -7,6 +7,7 @@ class Goal {
 public:
 
     enum GoalType {
+        DISTANCE,
         ANGLE,
         COORD,
         CIRCULAR,
@@ -20,6 +21,10 @@ public:
         BACKWARD,
         ANY,
     };
+
+    typedef struct distanceData {
+        float distance;
+    } distanceData_t;
 
     typedef struct angleData {
         float   angle;
@@ -54,7 +59,10 @@ public:
         circularData_t circularData;
         speedData_t speedData;
         pwmData_t   pwmData;
+        distanceData_t  distanceData;
     } goalData_t;
+
+    Goal(float distance);
 
     Goal(float angle, int32_t turns);
 
@@ -67,6 +75,8 @@ public:
     Goal();
 
     enum GoalType getType();
+
+    distanceData_t  getDistanceData();
 
     angleData_t getAngleData();
 

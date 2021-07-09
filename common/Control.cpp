@@ -31,13 +31,13 @@ void Control::update() {
 }
 
 void Control::updateState() {
-    float dl = m_motorControl.getMotorDrivenDistance(Peripherals::LEFT_MOTOR);
-    float dr = m_motorControl.getMotorDrivenDistance(Peripherals::RIGHT_MOTOR);
+    m_dl = m_motorControl.getMotorDrivenDistance(Peripherals::LEFT_MOTOR);
+    m_dr = m_motorControl.getMotorDrivenDistance(Peripherals::RIGHT_MOTOR);
 
     float left_speed  = m_motorControl.getMotorSpeed(Peripherals::LEFT_MOTOR);
     float right_speed = m_motorControl.getMotorSpeed(Peripherals::RIGHT_MOTOR);
 
-    m_robotPose.update(dl, dr);
+    m_robotPose.update(m_dl, m_dr);
     m_linearSpeed  = (right_speed + left_speed) * 0.5;
     m_angularSpeed = (right_speed - left_speed) / WHEEL_BASE;
 }
@@ -53,6 +53,21 @@ void Control::applyControl() {
     m_motorControl.setDisable(m_emergencyStop);
 
     switch (m_currentGoal.getType()) {
+        case Goal::DISTANCE: {
+            float dDistance = (m_dl + m_dr) /2;
+            m_distance += dDistance;
+            m_distanceError = - 1 * (m_currentGoal.getDistanceData().distance - m_distance); // PK ???
+
+            m_angularSpeedSetpoint = m_anglePID.compute(m_angleSetpoint, m_robotPose.getAbsoluteAngle());
+            m_linearSpeedSetpoint = m_distancePID.compute(0, m_distanceError);
+
+            if (fabs(m_distanceError) < DISTANCE_PRECISION && !m_currentGoal.isReached()) {
+                m_currentGoal.setReached(true);
+            }
+
+            break;
+        }
+
         case Goal::ANGLE: {
             t += MOTOR_CONTROL_LOOP_DT;
             m_angleSetpoint  = (m_currentGoal.getAngleData().angle + m_currentGoal.getAngleData().turns * 2 * M_PI);
@@ -222,12 +237,12 @@ void Control::setCurrentGoal(Goal goal) {
         initialPos = m_robotPose.getAbsoluteAngle();
         goalPos = fabsf(initialPos - goalValue);
 
-    } else if (goalType == Goal::COORD) {
-        float xError      = m_currentGoal.getCoordData().x - m_robotPose.getX();
     }
-    // else if (goalType == Goal::DISTANCE) {
-    //     computePeriods(distancePeak, T);
-    // }
+    else if (goalType == Goal::DISTANCE) {
+        m_distance = 0;
+        m_distanceError = 0;
+         m_angleSetpoint = m_robotPose.getAbsoluteAngle();
+     }
 }
 
 Goal Control::getCurrentGoal() {
@@ -264,6 +279,9 @@ void Control::reset() {
     m_lastAngleSetpoint    = INITIAL_ANGLE;
     m_distanceError        = 0.;
     m_currentGoal          = Goal();
+    m_distance = 0;
+    m_dl = 0;
+    m_dr = 0;
 }
 
 ControlData Control::getData() {

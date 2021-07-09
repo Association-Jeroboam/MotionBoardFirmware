@@ -64,6 +64,10 @@ class Control {
     float initialPos   = 0;
     float t            = 0;
 
+    float m_distance;
+    float m_dl;
+    float m_dr;
+
     float m_linearSpeed;
     float m_linearSpeedSetpoint;
     float m_angularSpeed;

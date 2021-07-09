@@ -3,6 +3,15 @@
 
 uint32_t Goal::s_goalCount = 0;
 
+Goal::Goal(float distance){
+    m_type = DISTANCE;
+    m_data.distanceData.distance = distance;
+    m_ID = s_goalCount;
+    s_goalCount++;
+    m_reached = false;
+}
+
+
 Goal::Goal(float angle, int32_t turns){
     m_type = ANGLE;
     m_data.angleData.angle = angle;
@@ -79,6 +88,10 @@ Goal::Goal(){
 
 enum Goal::GoalType Goal::getType(){
     return m_type;
+}
+
+Goal::distanceData_t Goal::getDistanceData(){
+    return m_data.distanceData;
 }
 
 Goal::angleData_t Goal::getAngleData(){

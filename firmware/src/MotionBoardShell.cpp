@@ -172,6 +172,10 @@ static void cmd_control(BaseSequentialStream* chp, int argc, char* argv[]) {
             ControlThread::instance()->getControl()->setAngleKp(kp);
             return;
         } else if (!strcmp(argv[0], "distance") && argc == 2) {
+            float distance = atof(argv[1]);
+            Logging::println("distance %f", distance);
+            Goal goal(distance);
+            ControlThread::instance()->getControl()->setCurrentGoal(goal);
             return;
         } else if (!strcmp(argv[0], "distance_pid")) {
             float kp = atof(argv[1]);

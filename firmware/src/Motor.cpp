@@ -48,7 +48,6 @@ void Motor::setPID(float p, float i, float d) {
 }
 
 void Motor::setSpeed(float speed) {
-    m_lastSpeedSetpoint = m_speedSetpoint;
     if( speed > MAX_WHEEL_SPEED ) {
         speed = MAX_WHEEL_SPEED;
     } else if (speed < -MAX_WHEEL_SPEED) {
