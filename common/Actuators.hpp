@@ -42,4 +42,8 @@ namespace Actuators {
     }
 }
 
+namespace chibiTime {
+    void sleepMilliseconds(uint32_t milliseconds);
+}
+
 #endif /* __ACTUATORS_HPP__ */

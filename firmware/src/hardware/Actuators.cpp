@@ -173,3 +173,7 @@ void Actuators::Arms::deactivate(enum ID id) {
     Board::Com::CANBus::send(frame);
     chThdSleepMilliseconds(10);
 }
+
+void chibiTime::sleepMilliseconds(uint32_t milliseconds) {
+    chThdSleepMilliseconds(milliseconds);
+}
