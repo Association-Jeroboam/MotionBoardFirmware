@@ -78,24 +78,38 @@ Strategy::Strategy() {
 
         // Pos5
         {
-            (Pose){ .x = 1200, .y = 1800 },
-            (Pose){ .x = 1200, .y = SIMY(1800) },
+            (Pose){ .x = 200, .y = 1800 },
+            (Pose){ .x = 200, .y = SIMY(1800) },
 
         },
 
         // Turn5
         {
-            (Pose){ .x = 1200, .y = 1800, .theta = -M_PI/2 },
-            (Pose){ .x = 1200, .y = SIMY(1200), .theta = M_PI/2 },
+            (Pose){ .x = 200, .y = 1800, .theta = -M_PI/2 },
+            (Pose){ .x = 200, .y = SIMY(1800), .theta = M_PI/2 },
         },
 
 
         // Pos6
         {
-            (Pose){ .x = 1200, .y = 300 },
-            (Pose){ .x = 1200, .y = SIMY(300) },
+            (Pose){ .x = 200, .y = 700 },
+            (Pose){ .x = 200, .y = SIMY(700) },
+
+        },
+
+        // Turn6
+        {
+            (Pose){ .x = 200, .y = 700, .theta = -M_PI/4 },
+            (Pose){ .x = 200, .y = SIMY(700), .theta = M_PI/4 },
+        },
+
+        // Pos7
+        {
+            (Pose){ .x = 700, .y = 200 },
+            (Pose){ .x = 700, .y = SIMY(200) },
 
         }
+
     };
 
     std::memcpy(positions,test, sizeof(positions));

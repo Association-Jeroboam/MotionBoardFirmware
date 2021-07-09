@@ -19,8 +19,10 @@ enum State {
     TURN_IN_POS3,
     GO_TO_POS4,
     GO_TO_POS5,
-    GO_TO_POS6,
     TURN_IN_POS5,
+    GO_TO_POS6,
+    TURN_IN_POS6,
+    GO_TO_POS7,
     WAIT_FUNNY_ACTION,
     END_MATCH
 };
@@ -60,6 +62,16 @@ inline const char* stateToStr(State state) {
             return "GoToPos3";
         case GO_TO_POS4:
             return "GoToPos4";
+        case GO_TO_POS5:
+            return "GoToPos5";
+        case TURN_IN_POS5:
+            return "TurnInPos5";
+        case GO_TO_POS6:
+            return "GoToPos6";
+        case TURN_IN_POS6:
+            return "TurnInPos6";
+        case GO_TO_POS7:
+            return "GoToPos7";
         case WAIT_FUNNY_ACTION:
             return "WaitFunnyAction";
         case END_MATCH:
@@ -85,7 +97,7 @@ class Strategy {
   public:
     Strategy();
     static Strategy* instance();
-    Pose positions[11][2];
+    Pose positions[13][2];
     static const float startX;
     static const float startY;
     static const float startAngle;
@@ -211,6 +223,18 @@ class Strategy {
                 break;
             }
 
+            case TURN_IN_POS6: {
+                float targetAngle = positions[11][side].theta;
+                turn(targetAngle);
+                break;
+            }
+
+            case GO_TO_POS7: {
+                Pose targetPos = positions[12][side];
+                go_to_pos(targetPos, 0);
+                break;
+            }
+
 
             case WAIT_FUNNY_ACTION: {
                 Logging::println("Waiting for funny action...");
@@ -229,8 +253,7 @@ class Strategy {
     }
     void dispatch(Event event) {
         Logging::println("Current state: %s", stateToStr(currentState));
-        Logging::println("Event dispatched: %s\n", eventToStr(event));
-
+        Logging::println("Event dispatched: %s\n----------------------------------------------------------------------------\n", eventToStr(event));
         switch (currentState) {
             case WAIT_FOR_MATCH: {
                 if (event == StartMatch) {
@@ -375,7 +398,7 @@ class Strategy {
 
             case GO_TO_POS6: { 
                 if (event == MoveOk) {
-                   return setNewState(WAIT_FUNNY_ACTION);
+                   return setNewState(TURN_IN_POS6);
                 }
 
                 if (event == EndMatch) {
@@ -385,6 +408,29 @@ class Strategy {
                 break;
             }
 
+            case TURN_IN_POS6: { 
+                if (event == MoveOk) {
+                   return setNewState(GO_TO_POS7);
+                }
+
+                if (event == EndMatch) {
+                    return setNewState(END_MATCH);
+                }
+
+                break;
+            }
+
+            case GO_TO_POS7: { 
+                if (event == MoveOk) {
+                   return setNewState(WAIT_FUNNY_ACTION);
+                }
+
+                if (event == EndMatch) {
+                    return setNewState(END_MATCH);
+                }
+
+                break;
+            }
 
             case WAIT_FUNNY_ACTION: {
                 if (event == StartFunnyAction) {
