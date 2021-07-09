@@ -18,6 +18,9 @@ enum State {
     GO_TO_POS3,
     TURN_IN_POS3,
     GO_TO_POS4,
+    GO_TO_POS5,
+    GO_TO_POS6,
+    TURN_IN_POS5,
     WAIT_FUNNY_ACTION,
     END_MATCH
 };
@@ -76,15 +79,13 @@ struct Pose {
 
 class Strategy {
   private:
-    Strategy() {
-        currentState = WAIT_FOR_MATCH;
-    };
 
     static Strategy s_instance;
 
   public:
+    Strategy();
     static Strategy* instance();
-    static const Pose positions[8][2];
+    Pose positions[11][2];
     static const float startX;
     static const float startY;
     static const float startAngle;
@@ -94,144 +95,10 @@ class Strategy {
         control = control_;
     }
 
-    // Homologation
-    // void setNewState(State newState) {
-    //     currentState = newState;
-    //     Logging::println("New state: %s", stateToStr(currentState));
-
-    //     switch (currentState) {
-    //         case GO_TO_POS0: {
-    //             side = Switchers::getSide() ? 1 : 0;
-    //             Logging::println("Loaded side %i", side);
-
-    //             RobotPose* robotPose = this->control->getRobotPose();
-
-    //             // Start right
-    //             if (side == 1) {
-    //                 robotPose->setPose(startX, SIMY(startY), -startAngle);
-    //                 Logging::println("side right, init pos: %f %f %f", robotPose->getX(), robotPose->getY(), robotPose->getAbsoluteAngle());
-    //             } else {
-    //                 robotPose->setPose(startX, startY, startAngle);
-    //                 Logging::println("side left, init pos: %f %f %f", robotPose->getX(), robotPose->getY(), robotPose->getAbsoluteAngle());
-    //             }
-
-
-    //             Pose targetPos = positions[0][side];
-    //             Logging::println("target pos x: %f y: %f", targetPos.x, targetPos.y);
-
-    //             Goal goal(targetPos.x, targetPos.y, Goal::COORD);
-    //             this->control->setCurrentGoal(goal);
-    //             Logging::println("Go to: %f %f", targetPos.x, targetPos.y);
-
-    //             break;
-    //         }
-
-    //         case TURN_TO_POS1: {
-    //             Pose targetPos = positions[1][side];
-    //             Logging::println("target pos x: %f y: %f", targetPos.x, targetPos.y);
-
-    //             RobotPose* robotPose = this->control->getRobotPose();
-
-    //             float targetAngle = atan2(targetPos.y - robotPose->getY(), targetPos.x - robotPose->getX());
-    //             Goal goal(targetAngle, Goal::ANGLE);
-    //             this->control->setCurrentGoal(goal);
-    //             Logging::println("Turn to: %f", targetAngle);
-
-    //             break;
-    //         }
-
-    //         case GO_TO_POS1: {
-    //             Pose targetPos = positions[1][side];
-    //             Logging::println("target pos x: %f y: %f", targetPos.x, targetPos.y);
-
-    //             Goal goal(targetPos.x, targetPos.y, Goal::COORD);
-    //             this->control->setCurrentGoal(goal);
-    //             Logging::println("Go to: %f %f", targetPos.x, targetPos.y);
-
-    //             break;
-    //         }
-
-    //         case WAIT_FUNNY_ACTION: {
-    //             Logging::println("Waiting for funny action...");
-
-    //             break;
-    //         }
-
-    //         case END_MATCH: {
-    //             Goal goal;
-    //             this->control->setCurrentGoal(goal);
-    //             Logging::println("End match : Goal set to NO_GOAL");
-
-    //             break;
-    //         }
-    //     }
-    // }
-    // void dispatch(Event event) {
-    //     Logging::println("Current state: %s", stateToStr(currentState));
-    //     Logging::println("Event dispatched: %s\n", eventToStr(event));
-
-    //     switch (currentState) {
-    //         case WAIT_FOR_MATCH: {
-    //             if (event == StartMatch) {
-    //                 return setNewState(GO_TO_POS0);
-    //             }
-                
-    //             break;
-    //         }
-
-    //         case GO_TO_POS0: {
-    //             if (event == MoveOk) {
-    //                return setNewState(TURN_TO_POS1);
-    //             }
-
-    //             if (event == EndMatch) {
-    //                 return setNewState(END_MATCH);
-    //             }
-
-    //             break;
-    //         }
-
-    //         case TURN_TO_POS1: {
-    //             if (event == MoveOk) {
-    //                return setNewState(GO_TO_POS1);
-    //             }
-
-    //             if (event == EndMatch) {
-    //                 return setNewState(END_MATCH);
-    //             }
-
-    //             break;
-    //         }
-
-    //         case GO_TO_POS1: {
-    //             if (event == MoveOk) {
-    //                return setNewState(WAIT_FUNNY_ACTION);
-    //             }
-
-    //             if (event == EndMatch) {
-    //                 return setNewState(END_MATCH);
-    //             }
-
-    //             break;
-    //         }
-
-    //         case WAIT_FUNNY_ACTION: {
-    //             if (event == StartFunnyAction) {
-    //                // TODO : do funny action
-    //                Logging::println("Running funny action...");
-    //             }
-
-    //             if (event == EndMatch) {
-    //                 return setNewState(END_MATCH);
-    //             }
-
-    //             break;
-    //         }
-    //     }
-    // }
-
     // Match
     void setNewState(State newState) {
+        RobotPose* robotPose = this->control->getRobotPose();
+
         currentState = newState;
         Logging::println("New state: %s", stateToStr(currentState));
 
@@ -240,7 +107,6 @@ class Strategy {
                 side = Switchers::getSide() ? 1 : 0;
                 Logging::println("Loaded side %i", side);
 
-                RobotPose* robotPose = this->control->getRobotPose();
 
                 // Start right
                 if (side == 1) {
@@ -255,9 +121,13 @@ class Strategy {
                 Pose targetPos = positions[0][side];
                 Logging::println("target pos x: %f y: %f", targetPos.x, targetPos.y);
 
-                Goal goal(targetPos.x, targetPos.y, Goal::COORD);
+                float dx = targetPos.x - robotPose->getX();
+                float dy = targetPos.y - robotPose->getY();
+                float distance = sqrtf(dx*dx + dy*dy);
+
+                Goal goal(distance);
                 this->control->setCurrentGoal(goal);
-                Logging::println("Go to: %f %f", targetPos.x, targetPos.y);
+                Logging::println("Go to distance: %f", distance);
 
                 break;
             }
@@ -266,7 +136,7 @@ class Strategy {
                 float targetAngle = positions[1][side].theta;
                 Logging::println("target angle: %f", targetAngle);
 
-                Goal goal(targetAngle, Goal::ANGLE);
+                            Goal goal(targetAngle, 0);
                 this->control->setCurrentGoal(goal);
 
                 break;
@@ -276,27 +146,36 @@ class Strategy {
                 Pose targetPos = positions[2][side];
                 Logging::println("target pos x: %f y: %f", targetPos.x, targetPos.y);
 
-                Goal goal(targetPos.x, targetPos.y, Goal::Direction::BACKWARD);
+                float dx = targetPos.x - robotPose->getX();
+                float dy = targetPos.y - robotPose->getY();
+                float distance = -sqrtf(dx*dx + dy*dy);
+
+                // Marche arrière
+                Goal goal(distance);
                 this->control->setCurrentGoal(goal);
-                Logging::println("Go to: %f %f", targetPos.x, targetPos.y);
+                Logging::println("Go to distance: %f", distance);
 
                 break;
             }
 
             case LIGHTHOUSE: {
-                // TODO : bourrage
                 Logging::println("TODO : bourrage");
-                Goal goal(0., 50., Goal::CIRCULAR);
+                Goal goal(0., -150., Goal::CIRCULAR);
                 this->control->setCurrentGoal(goal);
+                break;
             }
 
             case GO_TO_POS2: {
                 Pose targetPos = positions[3][side];
                 Logging::println("target pos x: %f y: %f", targetPos.x, targetPos.y);
 
-                Goal goal(targetPos.x, targetPos.y, Goal::Direction::FORWARD);
+                float dx = targetPos.x - robotPose->getX();
+                float dy = targetPos.y - robotPose->getY();
+                float distance = sqrtf(dx*dx + dy*dy);
+
+                Goal goal(distance);
                 this->control->setCurrentGoal(goal);
-                Logging::println("Go to: %f %f", targetPos.x, targetPos.y);
+                Logging::println("Go to distance: %f", distance);
 
                 break;
             }
@@ -305,7 +184,7 @@ class Strategy {
                 float targetAngle = positions[4][side].theta;
                 Logging::println("target angle: %f", targetAngle);
 
-                Goal goal(targetAngle, Goal::ANGLE);
+                            Goal goal(targetAngle, 0);
                 this->control->setCurrentGoal(goal);
 
                 break;
@@ -315,9 +194,13 @@ class Strategy {
                 Pose targetPos = positions[5][side];
                 Logging::println("target pos x: %f y: %f", targetPos.x, targetPos.y);
 
-                Goal goal(targetPos.x, targetPos.y);
+                float dx = targetPos.x - robotPose->getX();
+                float dy = targetPos.y - robotPose->getY();
+                float distance = sqrtf(dx*dx + dy*dy);
+
+                Goal goal(distance);
                 this->control->setCurrentGoal(goal);
-                Logging::println("Go to: %f %f", targetPos.x, targetPos.y);
+                Logging::println("Go to distance: %f", distance);
 
                 break;
             }
@@ -326,7 +209,7 @@ class Strategy {
                 float targetAngle = positions[6][side].theta;
                 Logging::println("target angle: %f", targetAngle);
 
-                Goal goal(targetAngle, Goal::ANGLE);
+                            Goal goal(targetAngle, 0);
                 this->control->setCurrentGoal(goal);
 
                 break;
@@ -336,10 +219,51 @@ class Strategy {
                 Pose targetPos = positions[7][side];
                 Logging::println("target pos x: %f y: %f", targetPos.x, targetPos.y);
 
-                Goal goal(targetPos.x, targetPos.y);
-                this->control->setCurrentGoal(goal);
-                Logging::println("Go to: %f %f", targetPos.x, targetPos.y);
+                float dx = targetPos.x - robotPose->getX();
+                float dy = targetPos.y - robotPose->getY();
+                float distance = sqrtf(dx*dx + dy*dy);
 
+                Goal goal(distance);
+                this->control->setCurrentGoal(goal);
+                Logging::println("Go to distance: %f", distance);
+                break;
+            }
+
+            case GO_TO_POS5: {
+                Pose targetPos = positions[8][side];
+                Logging::println("target pos x: %f y: %f", targetPos.x, targetPos.y);
+
+                float dx = targetPos.x - robotPose->getX();
+                float dy = targetPos.y - robotPose->getY();
+                float distance = -sqrtf(dx*dx + dy*dy);
+
+                Goal goal(distance);
+                this->control->setCurrentGoal(goal);
+                Logging::println("Go to distance: %f", distance);
+                break;
+            }
+
+            case TURN_IN_POS5: {
+                float targetAngle = positions[9][side].theta;
+                Logging::println("target angle: %f", targetAngle);
+
+                            Goal goal(targetAngle, 0);
+                this->control->setCurrentGoal(goal);
+
+                break;
+            }
+
+            case GO_TO_POS6: {
+                Pose targetPos = positions[10][side];
+                Logging::println("target pos x: %f y: %f", targetPos.x, targetPos.y);
+
+                float dx = targetPos.x - robotPose->getX();
+                float dy = targetPos.y - robotPose->getY();
+                float distance = sqrtf(dx*dx + dy*dy);
+
+                Goal goal(distance);
+                this->control->setCurrentGoal(goal);
+                Logging::println("Go to distance: %f", distance);
                 break;
             }
 
@@ -471,6 +395,42 @@ class Strategy {
 
             case GO_TO_POS4: { 
                 if (event == MoveOk) {
+                   return setNewState(GO_TO_POS5);
+                }
+
+                if (event == EndMatch) {
+                    return setNewState(END_MATCH);
+                }
+
+                break;
+            }
+
+            case GO_TO_POS5: { 
+                if (event == MoveOk) {
+                   return setNewState(TURN_IN_POS5);
+                }
+
+                if (event == EndMatch) {
+                    return setNewState(END_MATCH);
+                }
+
+                break;
+            }
+
+            case TURN_IN_POS5: { 
+                if (event == MoveOk) {
+                   return setNewState(GO_TO_POS6);
+                }
+
+                if (event == EndMatch) {
+                    return setNewState(END_MATCH);
+                }
+
+                break;
+            }
+
+            case GO_TO_POS6: { 
+                if (event == MoveOk) {
                    return setNewState(WAIT_FUNNY_ACTION);
                 }
 
@@ -480,6 +440,7 @@ class Strategy {
 
                 break;
             }
+
 
             case WAIT_FUNNY_ACTION: {
                 if (event == StartFunnyAction) {

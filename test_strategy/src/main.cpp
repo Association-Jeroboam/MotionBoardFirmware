@@ -26,9 +26,12 @@ int main() {
 
     fireEvent(StartMatch, "StartMatch");
     fireEvent(MoveOk, "MoveOk");
-
-    robotPose->setPose(800, 1200, M_PI/2);
-
+    fireEvent(MoveOk, "MoveOk");
+    fireEvent(MoveOk, "MoveOk");
+    fireEvent(MoveOk, "MoveOk");
+    fireEvent(MoveOk, "MoveOk");
+    fireEvent(MoveOk, "MoveOk");
+    fireEvent(MoveOk, "MoveOk");
     fireEvent(MoveOk, "MoveOk");
     fireEvent(MoveOk, "MoveOk");
     fireEvent(MoveOk, "MoveOk");

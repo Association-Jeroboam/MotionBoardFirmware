@@ -63,7 +63,7 @@ void StrategyThread::main() {
             if (flags & GoalReached) {
                 Logging::println("[StrategyThread] MoveOk");
                 Strategy::instance()->dispatch(MoveOk);
-                Strategy::instance()->dispatch(CanMove);
+                // Strategy::instance()->dispatch(CanMove);
             }
         }
     }

@@ -225,7 +225,6 @@ void Control::setCurrentGoal(Goal goal) {
 
     t = 0;
     if (goalType == Goal::ANGLE) {
-        m_anglePID.set(ANGLE_KP, 0., ANGLE_KD, 0., MOTOR_CONTROL_LOOP_FREQ);
         float goalValue = m_currentGoal.getAngleData().angle + m_currentGoal.getAngleData().turns * 2 * M_PI;
         float initialValue = m_robotPose.getAbsoluteAngle();
 
@@ -282,6 +281,7 @@ void Control::reset() {
     m_distance = 0;
     m_dl = 0;
     m_dr = 0;
+    t = 0;
 }
 
 ControlData Control::getData() {
