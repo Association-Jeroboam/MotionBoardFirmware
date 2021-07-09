@@ -41,6 +41,6 @@ constexpr float MAP_MAX_X = 1950.;
 constexpr float MAP_MIN_Y = 50.;
 constexpr float MAP_MAX_Y = 2950.;
 
-constexpr uint32_t COMPASS_TIMEOUT = 100;
-constexpr uint32_t FLAG_TIMEOUT = 100;
+constexpr uint32_t COMPASS_TIMEOUT = 25;
+constexpr uint32_t FLAG_TIMEOUT = 95;
 constexpr uint32_t MATCH_TIMEOUT = 100;

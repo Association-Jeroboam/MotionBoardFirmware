@@ -487,7 +487,7 @@ class Strategy {
 
             case WAIT_FUNNY_ACTION: {
                 if (event == StartFunnyAction) {
-                   // TODO : do funny action
+                   Switchers::riseFlag();
                    Logging::println("Running funny action...");
                 }
 
