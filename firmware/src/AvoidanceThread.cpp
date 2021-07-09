@@ -90,9 +90,13 @@ void AvoidanceThread::filterPoints() {
         Point robotFrame = Point::polarToCartesian(angle, distance);
         Point mapFrame   = Point::mapToRobot(robotFrame, *ControlThread::instance()->getControl()->getRobotPose());
 
-        if( mapFrame.x() < 0.        ||
+        if( mapFrame.y() > 1000 && mapFrame.y() < 2000 && mapFrame.x() < 200) {
+            buffer.addPoint(Point(0,0), false);
+        }
+
+        if( mapFrame.x() < MAP_MIN_X ||
             mapFrame.x() > MAP_MAX_X ||
-            mapFrame.y() < 0.        ||
+            mapFrame.y() < MAP_MIN_Y ||
             mapFrame.y() > MAP_MAX_Y    ){
             buffer.addPoint(Point(0,0), false);
             continue;

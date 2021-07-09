@@ -23,6 +23,8 @@ enum State {
     GO_TO_POS6,
     TURN_IN_POS6,
     GO_TO_POS7,
+    TURN_IN_POS_7,
+    GO_TO_POS8,
     WAIT_FUNNY_ACTION,
     END_MATCH
 };
@@ -113,7 +115,11 @@ class Strategy {
         Logging::println("target pos x: %f y: %f", targetPos.x, targetPos.y);
         float dx = targetPos.x - robotPose->getX();
         float dy = targetPos.y - robotPose->getY();
-        float distance = -backward * sqrtf(dx*dx + dy*dy);
+
+        float distance = sqrtf(dx*dx + dy*dy);
+        if (backward) {
+            distance = -distance;
+        }
         // Marche arrière
         Goal goal(distance);
         this->control->setCurrentGoal(goal);
@@ -219,7 +225,7 @@ class Strategy {
 
             case GO_TO_POS6: {
                 Pose targetPos = positions[10][side];
-                go_to_pos(targetPos, 0);
+                go_to_pos(targetPos, false);
                 break;
             }
 
@@ -234,7 +240,23 @@ class Strategy {
                 go_to_pos(targetPos, 0);
                 break;
             }
+            case TURN_IN_POS_7: {
+                float targetAngle = positions[13][side].theta;
+                float target;
+                if(side == 0) {
+                    target = -M_PI / 4;
+                } else {
+                    target = M_PI/2;
+                }
+                turn(target);
+                break;
+            }
 
+            case GO_TO_POS8: {
+                Pose targetPos = positions[14][side];
+                go_to_pos(targetPos, 0);
+                break;
+            }
 
             case WAIT_FUNNY_ACTION: {
                 Logging::println("Waiting for funny action...");
@@ -422,7 +444,10 @@ class Strategy {
 
             case GO_TO_POS7: { 
                 if (event == MoveOk) {
-                   return setNewState(WAIT_FUNNY_ACTION);
+                    if( side == 1) {
+                        return setNewState(WAIT_FUNNY_ACTION);
+                    }
+                   return setNewState(TURN_IN_POS_7);
                 }
 
                 if (event == EndMatch) {
@@ -431,6 +456,30 @@ class Strategy {
 
                 break;
             }
+            case TURN_IN_POS_7: {
+                if (event == MoveOk) {
+                    return setNewState(GO_TO_POS8);
+                }
+
+                if (event == EndMatch) {
+                    return setNewState(END_MATCH);
+                }
+
+                break;
+            }
+
+            case GO_TO_POS8: {
+                if (event == MoveOk) {
+                    return setNewState(WAIT_FUNNY_ACTION);
+                }
+
+                if (event == EndMatch) {
+                    return setNewState(END_MATCH);
+                }
+
+                break;
+            }
+
 
             case WAIT_FUNNY_ACTION: {
                 if (event == StartFunnyAction) {

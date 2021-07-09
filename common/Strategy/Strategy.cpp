@@ -51,59 +51,73 @@ Strategy::Strategy() {
 
         // turn2
         {
-            (Pose){ .x = 300, .y = 230, .theta = atan2f(1800-230, 1500-300) },
-            (Pose){ .x = 300, .y = SIMY(230), .theta = -atan2f(1800-230, 1500-300) },
+            (Pose){ .x = 300, .y = 230, .theta = atan2f(1700-230, 1500-300) },
+            (Pose){ .x = 300, .y = SIMY(230), .theta = -atan2f(1700-230, 1500-300) },
         },
 
 
         // Pos3
         {
-            (Pose){ .x = 1500, .y = 1800 },
-            (Pose){ .x = 1500, .y = SIMY(1800) },
+            (Pose){ .x = 1500, .y = 1700 },
+            (Pose){ .x = 1500, .y = SIMY(1700) },
         },
 
 
         // turn3
         {
-            (Pose){ .x = 1500, .y = 1800, .theta = 0.0001 },
-            (Pose){ .x = 1500, .y = SIMY(1800), .theta = -0.0001 },
+            (Pose){ .x = 1500, .y = 1700, .theta = 0.0001 },
+            (Pose){ .x = 1500, .y = SIMY(1700), .theta = -0.0001 },
         },
 
         // Pos4
         {
-            (Pose){ .x = 1700, .y = 1800 },
-            (Pose){ .x = 1700, .y = SIMY(1800) },
+            (Pose){ .x = 1700, .y = 1700 },
+            (Pose){ .x = 1700, .y = SIMY(1700) },
 
         },
-
-        // Pos5
+        //pos5
         {
-            (Pose){ .x = 200, .y = 1800 },
-            (Pose){ .x = 200, .y = SIMY(1800) },
+            (Pose){ .x = 1500, .y = 1700 },
+            (Pose){ .x = 1500, .y = SIMY(1700) },
 
         },
-
-        // Turn5
+        //turn5
         {
-            (Pose){ .x = 200, .y = 1800, .theta = -M_PI/2 },
-            (Pose){ .x = 200, .y = SIMY(1800), .theta = M_PI/2 },
+            (Pose){ .x = 1500, .y = 1700 , .theta = M_PI},
+            (Pose){ .x = 1500, .y = SIMY(1700), .theta = -M_PI },
+
         },
+
 
 
         // Pos6
         {
-            (Pose){ .x = 200, .y = 700 },
-            (Pose){ .x = 200, .y = SIMY(700) },
+            (Pose){ .x = 450, .y = 1700 },
+            (Pose){ .x = 450, .y = SIMY(1700) },
 
         },
 
         // Turn6
         {
-            (Pose){ .x = 200, .y = 700, .theta = -M_PI/4 },
-            (Pose){ .x = 200, .y = SIMY(700), .theta = M_PI/4 },
+            (Pose){ .x = 450, .y = 1700, .theta = -M_PI/2 -0.0001},
+            (Pose){ .x = 450, .y = SIMY(1700), .theta = M_PI/2 + 0.001},
         },
 
+
         // Pos7
+        {
+            (Pose){ .x = 450, .y = 200 },
+            (Pose){ .x = 450, .y = SIMY(250) },
+
+        },
+
+        // Turn7
+        {
+            (Pose){ .x = 450, .y = 700, .theta = M_PI/4 },
+            (Pose){ .x = 450, .y = SIMY(700), .theta = -M_PI/4 },
+        },
+
+        // Pos8
         {
             (Pose){ .x = 700, .y = 200 },
             (Pose){ .x = 700, .y = SIMY(200) },
