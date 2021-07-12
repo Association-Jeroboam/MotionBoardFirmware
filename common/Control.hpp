@@ -77,4 +77,5 @@ class Control {
     float m_distanceError;
     bool  m_forwardDrive;
     bool  m_computeDirection;
+    float m_angularError;
 };

@@ -97,7 +97,7 @@ constexpr float RIGHT_MOTOR_BIAS    = 0.15; //TODO: Change me!
 
 constexpr float INITIAL_X_POS       = 655.; //TODO: Change me!
 constexpr float INITIAL_Y_POS       = 230.; //TODO: Change me!
-constexpr float INITIAL_ANGLE       = M_PI; //TODO: Change me!
+constexpr float INITIAL_ANGLE       = 0; //TODO: Change me!
 
 constexpr float DISTANCE_KP         = 3.5; //TODO: Change me!
 constexpr float DISTANCE_KI         = 0.0; //TODO: Change me!

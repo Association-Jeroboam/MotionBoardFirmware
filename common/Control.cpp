@@ -75,10 +75,19 @@ void Control::applyControl() {
             float a;
             float b;
 
-            m_angularSpeedSetpoint = m_anglePID.compute(m_angleSetpoint, m_robotPose.getAbsoluteAngle());
+            m_angularError = m_angleSetpoint - m_robotPose.getModuloAngle();
+            float newAngularError = m_angularError;
+//            if (m_angularError > M_PI) {
+//                newAngularError = m_angularError - 2*M_PI;
+//            } else if (m_angularError < -M_PI) {
+//                newAngularError = m_angularError + 2*M_PI;
+//            }
+//            m_angularError = unwrap(m_angularError, newAngularError);
+
+            m_angularSpeedSetpoint = m_anglePID.compute(-m_angularError, 0);
             m_linearSpeedSetpoint  = 0.;
 
-            if (fabs(m_angleSetpoint - m_robotPose.getAbsoluteAngle()) < ANGLE_PRECISION && !m_currentGoal.isReached()) {
+            if (m_angularError <= ANGLE_PRECISION && !m_currentGoal.isReached()) {
                 m_currentGoal.setReached(true);
             }
 
@@ -293,7 +302,7 @@ ControlData Control::getData() {
     data.angle                = m_robotPose.getModuloAngle();
     data.absoluteAngle        = m_robotPose.getAbsoluteAngle();
     data.angleSetpoint        = m_angleSetpoint;
-    data.distanceError        = m_distanceError;
+    data.distanceError        = m_angularError;
     data.x                    = m_robotPose.getX();
     data.y                    = m_robotPose.getY();
 
