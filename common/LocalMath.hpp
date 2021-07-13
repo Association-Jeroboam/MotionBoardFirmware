@@ -29,3 +29,27 @@ inline float unwrap(float previous_angle, float new_angle) {
     d       = d > M_PI ? d - 2 * M_PI : (d < -M_PI ? d + 2 * M_PI : d);
     return previous_angle + d;
 }
+
+inline float normalizePi(float angle) {
+    while (angle > M_PI)
+        angle -= 2.0 * M_PI;
+    while (angle <= -M_PI)
+        angle += 2.0 * M_PI;
+
+    return angle;
+}
+
+inline float normalizeHalfPi(float angle) {
+    angle = normalizePi(angle);
+
+    while (angle > M_PI / 2)
+        angle -= M_PI;
+    while (angle <= -M_PI / 2)
+        angle += M_PI;
+
+    return angle;
+}
+
+template <typename T> inline int sign(T val) {
+    return (T(0) < val) - (val < T(0));
+}

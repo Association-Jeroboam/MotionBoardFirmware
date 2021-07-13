@@ -22,6 +22,7 @@
  * @{
  */
 #include <ch.hpp>
+#include <cmath>
 #include "BuildConf.hpp"
 #include "ControlThread.hpp"
 #include "DataStreamer.hpp"
@@ -158,35 +159,35 @@ usage:
 }
 
 static void cmd_control(BaseSequentialStream* chp, int argc, char* argv[]) {
+    RobotPose *robotPose = ControlThread::instance()->getControl()->getRobotPose();
+    float currentX = robotPose->getX();
+    float currentY = robotPose->getY();
+    float currentTheta = robotPose->getModuloAngle();
+
     (void)chp;
     if (argc >= 1) {
         if (!strcmp(argv[0], "angle") && argc == 2) {
-            float angle = atof(argv[1]);
-            Logging::println("angle %f", angle);
-            Goal goal(angle, 0);
+            float theta = atof(argv[1]);
+            Logging::println("angle %f", theta);
+            Goal goal(currentX, currentY, theta, false);
             ControlThread::instance()->getControl()->setCurrentGoal(goal);
-            return;
-        } else if (!strcmp(argv[0], "angle_pid") && argc == 2) {
-            float kp = atof(argv[1]);
-            Logging::println("angle_pid %f", kp);
-            ControlThread::instance()->getControl()->setAngleKp(kp);
             return;
         } else if (!strcmp(argv[0], "distance") && argc == 2) {
             float distance = atof(argv[1]);
             Logging::println("distance %f", distance);
-            Goal goal(distance);
+
+            int direction = sign<float>(distance);
+            float goalX = currentX + direction * cosf(currentTheta) * distance;
+            float goalY = currentX + direction * sinf(currentTheta) * distance;
+            Goal goal(goalX, goalY, currentTheta, false);
             ControlThread::instance()->getControl()->setCurrentGoal(goal);
             return;
-        } else if (!strcmp(argv[0], "distance_pid")) {
-            float kp = atof(argv[1]);
-            Logging::println("distance pid %f", kp);
-            ControlThread::instance()->getControl()->setDistanceKp(kp);
-            return;
-        } else if (!strcmp(argv[0], "goto") && argc == 3) {
+        } else if (!strcmp(argv[0], "goto") && argc == 4) {
             float x = atof(argv[1]);
             float y = atof(argv[2]);
-            Logging::println("goto %f %f", x, y);
-            Goal goal(x, y, Goal::COORD);
+            float theta = atof(argv[3]);
+            Logging::println("goto %f %f %f", x, y, theta);
+            Goal goal(x, y, theta, false);
             ControlThread::instance()->getControl()->setCurrentGoal(goal);
             return;
         } else if (!strcmp(argv[0], "circular") && argc == 3) {
@@ -198,12 +199,18 @@ static void cmd_control(BaseSequentialStream* chp, int argc, char* argv[]) {
         } else if (!strcmp(argv[0], "reset")) {
             ControlThread::instance()->getControl()->reset();
             return;
-        }
+        } else if (!strcmp(argv[0], "pid") && argc == 4) {
+            float kP = atof(argv[1]);
+            float kA = atof(argv[2]);
+            float kB = atof(argv[3]);
+            ControlThread::instance()->getControl()->setPID(kP, kA, kB);
+            return;
+        } 
     }
 
     Logging::println("usage:");
-    Logging::println("control [angle/distance] [value]");
-    Logging::println("control [angle_pid/distance_pid] [value]");
+    Logging::println("control [angle] [value]");
+    Logging::println("control pid [kP] [kA] [kB]");
     Logging::println("control circular [angSpd] [linSpd]");
     Logging::println("control goto [X] [Y]");
 }

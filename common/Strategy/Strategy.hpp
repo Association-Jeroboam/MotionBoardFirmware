@@ -125,14 +125,15 @@ class Strategy {
             distance = -distance;
         }
         // Marche arrière
-        Goal goal(distance);
+        Goal goal(targetPos.x, targetPos.y, targetPos.theta, false);
         this->control->setCurrentGoal(goal);
-        Logging::println("Go to distance: %f", distance);
+        Logging::println("Go to pos: %f %f %f", targetPos.x, targetPos.y, targetPos.theta);
     }
 
     void turn(float targetAngle) {
+        RobotPose* robotPose = this->control->getRobotPose();        
         Logging::println("target angle: %f", targetAngle);
-        Goal goal(targetAngle, 0);
+        Goal goal(robotPose->getX(), robotPose->getY(), targetAngle, false);
         this->control->setCurrentGoal(goal);
     }
 

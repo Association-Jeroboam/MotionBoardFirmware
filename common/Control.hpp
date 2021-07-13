@@ -35,11 +35,9 @@ class Control {
 
     RobotPose* getRobotPose();
 
-    void setAngleKp(float kp);
-
-    void setDistanceKp(float kp);
-
     void setMotorPID(Peripherals::Motor motor, float p, float i, float d);
+
+    void setPID(float kP, float kA, float kB);
 
     void reset();
 
@@ -52,11 +50,11 @@ class Control {
     RobotPose    m_robotPose;
 
   private:
+    void goToPose();
+
     MotorControl m_motorControl;
     Goal         m_currentGoal;
 
-    PID m_distancePID;
-    PID m_anglePID;
     float goalPos;
     bool m_emergencyStop;
 
@@ -78,4 +76,8 @@ class Control {
     bool  m_forwardDrive;
     bool  m_computeDirection;
     float m_angularError;
+
+    float kA;
+    float kB;
+    float kP;
 };
