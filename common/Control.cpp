@@ -51,11 +51,11 @@ void Control::goToPose() {
 
     float currentTheta = m_robotPose.getModuloAngle();
     float currentX = m_robotPose.getX();
-    float currentY = m_robotPose.getX();
+    float currentY = m_robotPose.getY();
 
     float diffX =  goalData.x - m_robotPose.getX();
     float diffY = goalData.y - m_robotPose.getY();
-    float m_distanceError = sqrtf(pow(goalData.x, 2) + pow(goalData.y, 2));
+    float m_distanceError = sqrtf(pow(diffX, 2) + pow(diffY, 2));
     float m_angularError = normalizePi(goalData.theta - m_robotPose.getModuloAngle());
 
     // End condition
@@ -80,10 +80,14 @@ void Control::goToPose() {
 
     if (m_distanceError < DISTANCE_PRECISION) {
         m_linearSpeedSetpoint = 0;
-        m_angularSpeedSetpoint = kB * m_angularError;
+        m_angularSpeedSetpoint = kB * (-m_angularError);
+//        Logging::println("dist reached, err ang %f", m_angularError);
+//        Logging::println("dist reached, err dist %f\r\n", m_distanceError);
     } else {
         m_linearSpeedSetpoint = kP * m_distanceError * direction;
-        m_angularSpeedSetpoint = kA * a + kB *b;
+        m_angularSpeedSetpoint = kA * a + kB * b;
+//        Logging::println("dist no reached, err ang %f", m_angularError);
+//        Logging::println("dist no reached, err dist %f\r\n", m_distanceError);
     }
 
     if (fabs(m_linearSpeedSetpoint) > MAX_WHEEL_SPEED) {
@@ -152,17 +156,17 @@ void Control::applyControl() {
         }
     }
 
-    linearAccl = (m_linearSpeedSetpoint - lastLinearSpeedSetpoint)/MOTOR_CONTROL_LOOP_DT;
+    linearAccl = (m_linearSpeedSetpoint - m_linearSpeed)/MOTOR_CONTROL_LOOP_DT;
     if (linearAccl > MAX_LINEAR_ACCL) {
-        m_linearSpeedSetpoint = lastLinearSpeedSetpoint + MAX_LINEAR_ACCL * MOTOR_CONTROL_LOOP_DT;
+        m_linearSpeedSetpoint = m_linearSpeed + MAX_LINEAR_ACCL * MOTOR_CONTROL_LOOP_DT;
     } else if (linearAccl < -MAX_LINEAR_ACCL) {
-        m_linearSpeedSetpoint = lastLinearSpeedSetpoint - MAX_LINEAR_ACCL * MOTOR_CONTROL_LOOP_DT;
+        m_linearSpeedSetpoint = m_linearSpeed - MAX_LINEAR_ACCL * MOTOR_CONTROL_LOOP_DT;
     }
-    angularAccl = (m_angularSpeedSetpoint - lastAngularSpeedSetpoint)/MOTOR_CONTROL_LOOP_DT;
+    angularAccl = (m_angularSpeedSetpoint - m_angularSpeed)/MOTOR_CONTROL_LOOP_DT;
     if (angularAccl > MAX_ANGULAR_ACCL) {
-        m_angularSpeedSetpoint = lastAngularSpeedSetpoint + MAX_ANGULAR_ACCL * MOTOR_CONTROL_LOOP_DT;
+        m_angularSpeedSetpoint = m_angularSpeed + MAX_ANGULAR_ACCL * MOTOR_CONTROL_LOOP_DT;
     } else if (angularAccl < -MAX_ANGULAR_ACCL) {
-        m_angularSpeedSetpoint = lastAngularSpeedSetpoint - MAX_ANGULAR_ACCL * MOTOR_CONTROL_LOOP_DT;
+        m_angularSpeedSetpoint = m_angularSpeed - MAX_ANGULAR_ACCL * MOTOR_CONTROL_LOOP_DT;
     }
 
 
@@ -248,7 +252,10 @@ RobotPose* Control::getRobotPose() {
 }
 
 void Control::setEmergency(bool emergency) {
-
+    if(m_emergencyStop && !emergency) {
+        m_motorControl.resetMotor(Peripherals::LEFT_MOTOR);
+        m_motorControl.resetMotor(Peripherals::RIGHT_MOTOR);
+    }
     m_emergencyStop = emergency;
     Logging::println("emgy %u", m_emergencyStop);
 }
