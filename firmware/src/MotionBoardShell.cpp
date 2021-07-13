@@ -182,6 +182,13 @@ static void cmd_control(BaseSequentialStream* chp, int argc, char* argv[]) {
             Goal goal(goalX, goalY, currentTheta, false);
             ControlThread::instance()->getControl()->setCurrentGoal(goal);
             return;
+        } else if (!strcmp(argv[0], "angle_pid") && argc == 4) {
+            float kP = atof(argv[1]);
+            float kA = atof(argv[2]);
+            float kB = atof(argv[3]);
+            Logging::println("angle_pid kP: %f kA: %f kB: %f", kP, kA, kB);
+            ControlThread::instance()->getControl()->setPID(kP, kA, kB);
+            return;
         } else if (!strcmp(argv[0], "goto") && argc == 4) {
             float x = atof(argv[1]);
             float y = atof(argv[2]);
@@ -210,7 +217,7 @@ static void cmd_control(BaseSequentialStream* chp, int argc, char* argv[]) {
 
     Logging::println("usage:");
     Logging::println("control [angle] [value]");
-    Logging::println("control pid [kP] [kA] [kB]");
+    Logging::println("control angle_pid [kP] [kA] [kB]");
     Logging::println("control circular [angSpd] [linSpd]");
     Logging::println("control goto [X] [Y]");
 }
