@@ -19,9 +19,9 @@ Control::Control() : m_robotPose(INITIAL_X_POS, INITIAL_Y_POS, INITIAL_ANGLE) {
     m_computeDirection     = true;
 
     // TODO : change me
-    kP = 2;
-    kA = 3;
-    kB = -0.6; // Needs to be negative
+    kP = KP;
+    kA = KA;
+    kB = KB; // Needs to be negative
 }
 
 void Control::update() {
