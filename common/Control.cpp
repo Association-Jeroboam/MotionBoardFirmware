@@ -55,18 +55,18 @@ void Control::goToPose() {
 
     float diffX =  goalData.x - m_robotPose.getX();
     float diffY = goalData.y - m_robotPose.getY();
-    float dist = sqrtf(pow(goalData.x, 2) + pow(goalData.y, 2));
-    float dTheta = normalizePi(goalData.theta - m_robotPose.getModuloAngle());
+    float m_distanceError = sqrtf(pow(goalData.x, 2) + pow(goalData.y, 2));
+    float m_angularError = normalizePi(goalData.theta - m_robotPose.getModuloAngle());
 
     // End condition
-    if (dist < DISTANCE_PRECISION && fabs(dTheta) < ANGLE_PRECISION) {
+    if (m_distanceError < DISTANCE_PRECISION && fabs(m_angularError) < ANGLE_PRECISION) {
         m_currentGoal.setReached(true);
         return;
     }
 
     float goalHeading = atan2f(diffY, diffX);
     float a = -currentTheta + goalHeading;
-    float b = dTheta - a;
+    float b = m_angularError - a;
 
     int direction = 1;
     if (forwardMovementOnly) {
@@ -78,11 +78,11 @@ void Control::goToPose() {
         b = normalizeHalfPi(b);
     }
 
-    if (dist < DISTANCE_PRECISION) {
+    if (m_distanceError < DISTANCE_PRECISION) {
         m_linearSpeedSetpoint = 0;
-        m_angularSpeedSetpoint = kB * dTheta;
+        m_angularSpeedSetpoint = kB * m_angularError;
     } else {
-        m_linearSpeedSetpoint = kP * dist * direction;
+        m_linearSpeedSetpoint = kP * m_distanceError * direction;
         m_angularSpeedSetpoint = kA * a + kB *b;
     }
 

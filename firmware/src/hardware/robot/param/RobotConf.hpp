@@ -27,8 +27,8 @@ constexpr float INITIAL_X_POS       = 655.; //TODO: Change me!
 constexpr float INITIAL_Y_POS       = 230.; //TODO: Change me!
 constexpr float INITIAL_ANGLE       = M_PI.; //TODO: Change me!
 
-constexpr float KP         = 2; //TODO: Change me!
-constexpr float KA         = 3; //TODO: Change me!
+constexpr float KP         = 0; //TODO: Change me!
+constexpr float KA         = 0; //TODO: Change me!
 constexpr float KB         = -0.6; //TODO: Change me!
 
 #define MOTOR_LEFT_FORWARD   PAL_HIGH
@@ -99,8 +99,8 @@ constexpr float INITIAL_X_POS       = 655.; //TODO: Change me!
 constexpr float INITIAL_Y_POS       = 230.; //TODO: Change me!
 constexpr float INITIAL_ANGLE       = 0; //TODO: Change me!
 
-constexpr float KP         = 2; //TODO: Change me!
-constexpr float KA         = 3; //TODO: Change me!
+constexpr float KP         = 0; //TODO: Change me!
+constexpr float KA         = 0; //TODO: Change me!
 constexpr float KB         = -0.6; //TODO: Change me!
 
 #define MOTOR_LEFT_FORWARD   PAL_LOW
