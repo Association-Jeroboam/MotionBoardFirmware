@@ -50,6 +50,10 @@ class DataStreamer : public chibios_rt::BaseStaticThread<DATA_STREAMER_WA>,
 
     void setEntry(enum dataEntryEnum entry, float value);
 
+    inline bool isStarted() {return m_started;};
+    void startStream();
+    void stopStream();
+
   private:
     explicit DataStreamer();
 
@@ -57,5 +61,6 @@ class DataStreamer : public chibios_rt::BaseStaticThread<DATA_STREAMER_WA>,
 
     uint32_t                m_packetCounter;
     volatile DataStreamType m_data;
+    bool                    m_started;
     static DataStreamer     s_instance;
 };

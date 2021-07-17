@@ -50,22 +50,19 @@ char* completion_buffer[SHELL_MAX_COMPLETIONS];
 /*
  * Shell commands
  */
-chibios_rt::ThreadReference streamThread;
 static void cmd_data_stream(BaseSequentialStream* chp, int argc, char* argv[]) {
     static bool thread_launched = false;
 
     (void)chp;
     if (argc == 1) {
         if (!strcmp(argv[0], "start")) {
-            if (!thread_launched) {
-                streamThread = DataStreamer::instance()->start(NORMALPRIO);
-                thread_launched = true;
+            if (!DataStreamer::instance()->isStarted()) {
+                DataStreamer::instance()->startStream();
             }
             return;
         } else if (!strcmp(argv[0], "stop")) {
-            if (thread_launched) {
-                streamThread.requestTerminate();
-                thread_launched = false;
+            if (DataStreamer::instance()->isStarted()) {
+                DataStreamer::instance()->stopStream();
             }
             return;
         }

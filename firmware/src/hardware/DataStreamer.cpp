@@ -19,7 +19,6 @@ void DataStreamer::main() {
     setName("Data Streamer");
     Logging::println("Starting Data Stream, disabling logging");
     chThdSleepMilliseconds(20);
-    Logging::setDisablePrint(true);
     Board::Events::eventRegister(this, BoardEvent);
 
     while (!shouldTerminate()) {
@@ -28,12 +27,14 @@ void DataStreamer::main() {
         if (event & BoardEvent) {
             eventflags_t flags = getAndClearFlags();
             if (flags & Board::Events::RUN_MOTOR_CONTROL) {
-                sendData();
+                if(m_started) {
+                    sendData();
+                }
             }
         }
     }
     chThdSleepMilliseconds(20);
-    Logging::setDisablePrint(false);
+
     Logging::println("Data Stream disabled, enabling logging");
 }
 
@@ -43,7 +44,17 @@ void DataStreamer::sendData() {
     m_packetCounter++;
 }
 
-DataStreamer::DataStreamer() : BaseStaticThread<DATA_STREAMER_WA>(), EventListener() {
+void DataStreamer::startStream() {
+    Logging::setDisablePrint(true);
+    m_started = true;
+}
+
+void DataStreamer::stopStream() {
+    m_started = false;
+    Logging::setDisablePrint(false);
+}
+
+DataStreamer::DataStreamer() : BaseStaticThread<DATA_STREAMER_WA>(), EventListener(), m_started(false) {
     m_data.synchro  = 0xDEADBEEF;
     m_packetCounter = 0;
 }

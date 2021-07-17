@@ -9,6 +9,7 @@
 #include "MotionBoardShell.hpp"
 #include "Strategy/Events.hpp"
 #include "StrategyThread.hpp"
+#include "DataStreamer.hpp"
 #include <Logging.hpp>
 
 Strategy* stateMachine;
@@ -31,6 +32,8 @@ int main() {
     LidarThread::instance()->start(NORMALPRIO + 4);
     chThdSleepMilliseconds(10);
     AvoidanceThread::instance()->start(NORMALPRIO +5);
+    chThdSleepMilliseconds(10);
+    DataStreamer::instance()->start(NORMALPRIO);
     chThdSleepMilliseconds(10);
 
     chThdCreateStatic(waShellThread, sizeof(waShellThread), NORMALPRIO,
