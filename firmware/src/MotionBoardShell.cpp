@@ -315,6 +315,12 @@ usage:
     Logging::println("slider [elevator/translator] [distance (mm)]");
 }
 
+static void cmd_reboot(BaseSequentialStream* chp, int argc, char* argv[]) {
+    if (argc == 0) {
+        NVIC_SystemReset();
+    }
+}
+
 static const ShellCommand commands[] = {
     {"data_stream", cmd_data_stream},
     {"motor", cmd_motor},
@@ -322,6 +328,7 @@ static const ShellCommand commands[] = {
     {"pliers", cmd_pliers},
     {"pliers_block", cmd_pliers_block},
     {"slider", cmd_slider},
+    {"reboot", cmd_reboot},
     {NULL, NULL}};
 
 /*
