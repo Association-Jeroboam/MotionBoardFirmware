@@ -78,5 +78,7 @@ void Motor::reset() {
 void Motor::setDisable(bool disable) {
     m_disabled = disable;
     Board::IO::setBrake(m_motor, disable);
-    reset();
+    if(disable) {
+        reset();
+    }
 }
