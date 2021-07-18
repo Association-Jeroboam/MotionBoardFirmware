@@ -46,7 +46,7 @@ void Control::goToPose() {
 
     float goalX = goalData.x;
     float goalY = goalData.y;
-    float goalTheta = goalData.theta;
+    m_angleSetpoint = goalData.theta;
     bool forwardMovementOnly = goalData.forwardMovementOnly;
 
     float currentTheta = m_robotPose.getModuloAngle();
@@ -57,6 +57,7 @@ void Control::goToPose() {
     float diffY = goalData.y - m_robotPose.getY();
     float m_distanceError = sqrtf(pow(diffX, 2) + pow(diffY, 2));
     float m_angularError = normalizePi(goalData.theta - m_robotPose.getModuloAngle());
+
 
     // End condition
     if (m_distanceError < DISTANCE_PRECISION && fabs(m_angularError) < ANGLE_PRECISION) {
@@ -257,5 +258,4 @@ void Control::setEmergency(bool emergency) {
         m_motorControl.resetMotor(Peripherals::RIGHT_MOTOR);
     }
     m_emergencyStop = emergency;
-    Logging::println("emgy %u", m_emergencyStop);
 }
