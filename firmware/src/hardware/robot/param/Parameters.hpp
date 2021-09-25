@@ -15,6 +15,7 @@ constexpr float DEFAULT_MAX_PID_OUTPUT      = 1.;
 constexpr float DEFAULT_MAX_PID_INTEGRAL    = 1.;
 
 constexpr uint16_t PWM_MAX_DUTY_CYCLE_VALUE = 10000;
+constexpr uint16_t PWM_DUTY_CYCLE_PRECISION = 100000;
 
 constexpr float GEAR_RATIO     = 1.;
 constexpr float GEAR_RATIO_INV = 1.;

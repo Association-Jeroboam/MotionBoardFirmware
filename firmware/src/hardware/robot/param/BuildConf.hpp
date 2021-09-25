@@ -41,7 +41,7 @@ CANConfig const canConfig = {
 #define CAN_DTSEG2 1 << FDCAN_DBTP_DTSEG2_Pos
 #define CAN_DSJW 0
 
-#define PWM_COUNTING_FREQUENCY 1000000
+#define PWM_COUNTING_FREQUENCY 32000000
 #define PWM_OUTPUT_FREQUENCY 20000
 
 __extension__ const PWMChannelConfig channelConf{

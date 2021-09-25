@@ -54,5 +54,5 @@ void Board::IO::setMotorDutyCycle(Peripherals::Motor motor, float duty_cycle) {
 
     pwmEnableChannel(&MOTOR_PWM_DRIVER,
                      channel,
-                     PWM_FRACTION_TO_WIDTH(&MOTOR_PWM_DRIVER, PWM_MAX_DUTY_CYCLE_VALUE, percentage));
+                     PWM_FRACTION_TO_WIDTH(&MOTOR_PWM_DRIVER, PWM_DUTY_CYCLE_PRECISION, percentage));
 }
