@@ -6,7 +6,7 @@
 
 constexpr uint16_t LED_TOGGLE_FREQUENCY = 10; //[Hz]
 
-constexpr uint16_t MOTOR_CONTROL_LOOP_FREQ = 50; //[Hz]
+constexpr uint16_t MOTOR_CONTROL_LOOP_FREQ = 100; //[Hz]
 constexpr float    MOTOR_CONTROL_LOOP_DT   = 1./MOTOR_CONTROL_LOOP_FREQ; //[s]
 
 constexpr float ENCODER_TICK_PER_TURN = 4096.;

@@ -17,7 +17,8 @@ Control::Control() : m_robotPose(INITIAL_X_POS, INITIAL_Y_POS, INITIAL_ANGLE) {
     m_lastAngleSetpoint    = INITIAL_ANGLE;
     m_distanceError        = 0.;
     m_computeDirection     = true;
-
+//    0.00030000
+//    0.00060000
     // TODO : change me
     kP = KP;
     kA = KA;
@@ -141,6 +142,7 @@ void Control::applyControl() {
         case Goal::PWM: {
             Board::IO::setMotorDutyCycle(Peripherals::Motor::LEFT_MOTOR, m_currentGoal.getPWMData().leftPWM);
             Board::IO::setMotorDutyCycle(Peripherals::Motor::RIGHT_MOTOR, m_currentGoal.getPWMData().rightPWM);
+            goto control_update;
             break;
         }
         case Goal::NO_GOAL: {
@@ -184,7 +186,7 @@ set_speeds:
         m_motorControl.motorSetSpeed(Peripherals::LEFT_MOTOR, leftSpeedSetpoint);
         m_motorControl.motorSetSpeed(Peripherals::RIGHT_MOTOR, rightSpeedSetpoint);
     }
-
+control_update:
     m_motorControl.update();
 }
 

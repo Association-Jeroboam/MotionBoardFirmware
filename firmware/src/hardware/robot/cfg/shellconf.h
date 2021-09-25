@@ -16,7 +16,7 @@
  * @brief   Shell maximum arguments per command.
  */
 #if !defined(SHELL_MAX_ARGUMENTS) || defined(__DOXYGEN__)
-#define SHELL_MAX_ARGUMENTS         4
+#define SHELL_MAX_ARGUMENTS         5
 #endif
 
 /**
