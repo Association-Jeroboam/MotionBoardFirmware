@@ -106,9 +106,10 @@ void ControlThread::updateDataStreamer() {
     DataStreamer::instance()->setEntry(angleEnum, controlData.angle);
     DataStreamer::instance()->setEntry(absoluteAngleEnum, controlData.absoluteAngle);
     DataStreamer::instance()->setEntry(angleSetpointEnum, controlData.angleSetpoint);
-    DataStreamer::instance()->setEntry(distanceErrorEnum, controlData.distanceError);
-    DataStreamer::instance()->setEntry(xEnum, controlData.x);
-    DataStreamer::instance()->setEntry(yEnum, controlData.y);
+    DataStreamer::instance()->setEntry(xCurrentEnum, controlData.x);
+    DataStreamer::instance()->setEntry(xSetpointEnum, controlData.xSetpoint);
+    DataStreamer::instance()->setEntry(yCurrentEnum, controlData.y);
+    DataStreamer::instance()->setEntry(ySetpointEnum, controlData.ySetpoint);
 }
 
 Control* ControlThread::getControl() {

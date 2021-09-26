@@ -16,7 +16,9 @@ struct ControlData {
     float angleSetpoint;
     float distanceError;
     float x;
+    float xSetpoint;
     float y;
+    float ySetpoint;
 };
 
 class Control {

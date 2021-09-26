@@ -240,6 +240,14 @@ ControlData Control::getData() {
     // TODO : add angularError
     data.x                    = m_robotPose.getX();
     data.y                    = m_robotPose.getY();
+    if(m_currentGoal.getType() == Goal::COORD) {
+        data.xSetpoint            = m_currentGoal.getCoordData().x;
+        data.ySetpoint            = m_currentGoal.getCoordData().y;
+    } else {
+        data.xSetpoint = 0;
+        data.ySetpoint = 0;
+    }
+
 
     return data;
 }

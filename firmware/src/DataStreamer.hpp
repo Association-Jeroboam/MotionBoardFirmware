@@ -16,9 +16,10 @@ constexpr uint16_t DATA_STREAMER_WA = 256;
     ENTRY(angle)                   \
     ENTRY(absoluteAngle)           \
     ENTRY(angleSetpoint)           \
-    ENTRY(distanceError)           \
-    ENTRY(x)                       \
-    ENTRY(y)                       \
+    ENTRY(xCurrent)                \
+    ENTRY(xSetpoint)               \
+    ENTRY(yCurrent)                 \
+    ENTRY(ySetpoint)               \
     ENTRY(leftPWM)                 \
     ENTRY(rightPWM)
 
