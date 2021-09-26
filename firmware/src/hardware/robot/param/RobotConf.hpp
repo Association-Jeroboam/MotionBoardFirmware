@@ -13,23 +13,23 @@ constexpr float WHEEL_LEFT_RADIUS  = 28.25 * WHEEL_DISTANCE_FACTOR;  //[mm] Theo
 constexpr float WHEEL_RIGHT_RADIUS = 28.25 / WHEEL_RADIUS_FACTOR * WHEEL_DISTANCE_FACTOR;  //[mm] Theorical 28.25
 constexpr float WHEEL_BASE         = 266.; //[mm] Theorical 266
 
-constexpr float LEFT_MOTOR_KP      = 0.0001;
-constexpr float LEFT_MOTOR_KI      = 0.000;
+constexpr float LEFT_MOTOR_KP      = 0.001;
+constexpr float LEFT_MOTOR_KI      = 0.0001;
 constexpr float LEFT_MOTOR_KD      = 0.0;
 constexpr float LEFT_MOTOR_BIAS    = 0.0;
 
-constexpr float RIGHT_MOTOR_KP      = 0.0001;
-constexpr float RIGHT_MOTOR_KI      = 0.000;
+constexpr float RIGHT_MOTOR_KP      = 0.001;
+constexpr float RIGHT_MOTOR_KI      = 0.0001;
 constexpr float RIGHT_MOTOR_KD      = 0.0;
 constexpr float RIGHT_MOTOR_BIAS    = 0.0;
 
-constexpr float INITIAL_X_POS       = 655.;
-constexpr float INITIAL_Y_POS       = 230.;
+constexpr float INITIAL_X_POS       = 0.;
+constexpr float INITIAL_Y_POS       = 0.;
 constexpr float INITIAL_ANGLE       = 0;
 
 constexpr float KP         = 2; //TODO: Change me!
 constexpr float KA         = 4; //TODO: Change me!
-constexpr float KB         = 0;// -4.5; //TODO: Change me!
+constexpr float KB         = -4.5;// -4.5; //TODO: Change me!
 
 #define MOTOR_LEFT_FORWARD   PAL_LOW
 #define MOTOR_LEFT_BACKWARD  PAL_HIGH
