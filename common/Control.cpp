@@ -126,12 +126,6 @@ void Control::applyControl() {
             t += MOTOR_CONTROL_LOOP_DT;
             m_angularSpeedSetpoint = m_currentGoal.getCircularData().angularSpeed;
             m_linearSpeedSetpoint  = m_currentGoal.getCircularData().linearSpeed;
-            if ( t > circularTimeout ){
-                Logging::println("timeout");
-                m_currentGoal.setReached(true);
-                m_angularSpeedSetpoint = 0;
-                m_linearSpeedSetpoint  = 0;
-            }
             break;
         }
         case Goal::SPEED: {
@@ -159,18 +153,18 @@ void Control::applyControl() {
         }
     }
 
-    linearAccl = (m_linearSpeedSetpoint - m_linearSpeed)/MOTOR_CONTROL_LOOP_DT;
-    if (linearAccl > MAX_LINEAR_ACCL) {
-        m_linearSpeedSetpoint = m_linearSpeed + MAX_LINEAR_ACCL * MOTOR_CONTROL_LOOP_DT;
-    } else if (linearAccl < -MAX_LINEAR_ACCL) {
-        m_linearSpeedSetpoint = m_linearSpeed - MAX_LINEAR_ACCL * MOTOR_CONTROL_LOOP_DT;
-    }
-    angularAccl = (m_angularSpeedSetpoint - m_angularSpeed)/MOTOR_CONTROL_LOOP_DT;
-    if (angularAccl > MAX_ANGULAR_ACCL) {
-        m_angularSpeedSetpoint = m_angularSpeed + MAX_ANGULAR_ACCL * MOTOR_CONTROL_LOOP_DT;
-    } else if (angularAccl < -MAX_ANGULAR_ACCL) {
-        m_angularSpeedSetpoint = m_angularSpeed - MAX_ANGULAR_ACCL * MOTOR_CONTROL_LOOP_DT;
-    }
+//    linearAccl = (m_linearSpeedSetpoint - m_linearSpeed)/MOTOR_CONTROL_LOOP_DT;
+//    if (linearAccl > MAX_LINEAR_ACCL) {
+//        m_linearSpeedSetpoint = m_linearSpeed + MAX_LINEAR_ACCL * MOTOR_CONTROL_LOOP_DT;
+//    } else if (linearAccl < -MAX_LINEAR_ACCL) {
+//        m_linearSpeedSetpoint = m_linearSpeed - MAX_LINEAR_ACCL * MOTOR_CONTROL_LOOP_DT;
+//    }
+//    angularAccl = (m_angularSpeedSetpoint - m_angularSpeed)/MOTOR_CONTROL_LOOP_DT;
+//    if (angularAccl > MAX_ANGULAR_ACCL) {
+//        m_angularSpeedSetpoint = m_angularSpeed + MAX_ANGULAR_ACCL * MOTOR_CONTROL_LOOP_DT;
+//    } else if (angularAccl < -MAX_ANGULAR_ACCL) {
+//        m_angularSpeedSetpoint = m_angularSpeed - MAX_ANGULAR_ACCL * MOTOR_CONTROL_LOOP_DT;
+//    }
 
 
     leftSpeedSetpoint  = m_linearSpeedSetpoint - m_angularSpeedSetpoint * WHEEL_BASE * 0.5;

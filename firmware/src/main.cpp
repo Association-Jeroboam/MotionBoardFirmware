@@ -27,12 +27,11 @@ int main() {
     chThdSleepMilliseconds(10);
     ControlThread::instance()->start(NORMALPRIO + 1);
     chThdSleepMilliseconds(10);
-    StrategyThread::instance()->start(NORMALPRIO + 2);
-    chThdSleepMilliseconds(10);
-    LidarThread::instance()->start(NORMALPRIO + 4);
-    chThdSleepMilliseconds(10);
-    AvoidanceThread::instance()->start(NORMALPRIO +5);
-    chThdSleepMilliseconds(10);
+//    StrategyThread::instance()->start(NORMALPRIO + 2);
+//    chThdSleepMilliseconds(10);
+//    LidarThread::instance()->start(NORMALPRIO + 4);
+//    AvoidanceThread::instance()->start(NORMALPRIO +5);
+//    chThdSleepMilliseconds(10);
     DataStreamer::instance()->start(NORMALPRIO);
     chThdSleepMilliseconds(10);
 
