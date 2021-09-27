@@ -57,7 +57,7 @@ void Control::goToPose() {
     float diffX =  goalData.x - m_robotPose.getX();
     float diffY = goalData.y - m_robotPose.getY();
     float m_distanceError = sqrtf(pow(diffX, 2) + pow(diffY, 2));
-    float m_angularError = normalizePi(goalData.theta - m_robotPose.getModuloAngle());
+    float m_angularError = normalizePi(m_robotPose.getModuloAngle() - goalData.theta);
 
 
     // End condition
@@ -68,7 +68,7 @@ void Control::goToPose() {
 
     float goalHeading = atan2f(diffY, diffX);
     float a = -currentTheta + goalHeading;
-    float b = m_angularError - a;
+    float b = -m_angularError - a;
 
     int direction = 1;
     if (forwardMovementOnly) {
@@ -80,9 +80,9 @@ void Control::goToPose() {
         b = normalizeHalfPi(b);
     }
 
-    if (m_distanceError < DISTANCE_PRECISION) {
+    if (fabs(m_distanceError) < DISTANCE_PRECISION) {
         m_linearSpeedSetpoint = 0;
-        m_angularSpeedSetpoint = kB * (-m_angularError);
+        m_angularSpeedSetpoint = kB * m_angularError;
 //        Logging::println("dist reached, err ang %f", m_angularError);
 //        Logging::println("dist reached, err dist %f\r\n", m_distanceError);
     } else {
@@ -102,6 +102,10 @@ void Control::goToPose() {
         float ratio = MAX_ANGULAR_SPEED / fabs(m_angularSpeedSetpoint);
         m_linearSpeedSetpoint *= ratio;
         m_angularSpeedSetpoint *= ratio;
+    }
+
+    if(fabs(m_distanceError) < DISTANCE_PRECISION && fabs(m_angularError) < ANGLE_PRECISION) {
+        m_currentGoal.setReached(true);
     }
 
     
@@ -176,9 +180,11 @@ set_speeds:
         m_motorControl.motorSetSpeed(Peripherals::RIGHT_MOTOR, 0.);
         m_motorControl.resetMotor(Peripherals::LEFT_MOTOR);
         m_motorControl.resetMotor(Peripherals::RIGHT_MOTOR);
+        m_motorControl.setDisable(true);
     } else {
         m_motorControl.motorSetSpeed(Peripherals::LEFT_MOTOR, leftSpeedSetpoint);
         m_motorControl.motorSetSpeed(Peripherals::RIGHT_MOTOR, rightSpeedSetpoint);
+        m_motorControl.setDisable(false);
     }
 control_update:
     m_motorControl.update();
