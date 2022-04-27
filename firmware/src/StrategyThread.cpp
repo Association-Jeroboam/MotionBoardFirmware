@@ -62,7 +62,7 @@ void StrategyThread::main() {
 
                 frame.data.pliersData.plierID = PLIERS_FRONT_FAR_LEFT;
                 frame.data.pliersData.state   = PLIERS_CLOSE;
-                Board::Com::CANBus::send(frame);
+//                Board::Com::CANBus::send(frame);
                 Strategy::instance()->dispatch(StartFunnyAction);
             }
         }

@@ -5,6 +5,7 @@
 #include "Peripherals.hpp"
 #include "ch.hpp"
 #include "inttypes.h"
+#include "canard.h"
 
 namespace Board {
 void init();
@@ -37,7 +38,9 @@ namespace Com {
 void initDrivers();
 namespace CANBus {
 void init();
-bool send(canFrame_t canData);
+bool send(const CanardTransferMetadata* const metadata,
+          const size_t                        payload_size,
+          const void* const                   payload);
 void registerListener(CanListener* listener);
 } // namespace CANBus
 

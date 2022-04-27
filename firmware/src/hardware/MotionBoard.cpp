@@ -7,6 +7,7 @@
 #include "ch.hpp"
 #include "hal.h"
 #include <climits>
+#include "canard.h"
 
 #define CONTROL_LOOP_TIMER_COUNTING_FREQUENCY 2000000
 
@@ -25,8 +26,17 @@ enum timerState {
 };
 timerState matchTimerState;
 
+CanardInstance canardInstance;
 CanTxThread canTxThread;
 CanRxThread canRxThread;
+
+static void* canardSpecificHeapAlloc(CanardInstance* ins, size_t amount) {
+    return chHeapAlloc(NULL, amount);
+}
+
+static void canardSpecificHeapFree(CanardInstance* ins, void* pointer) {
+    chHeapFree(pointer);
+}
 
 
 
@@ -161,18 +171,25 @@ void Board::Com::CANBus::init() {
     palSetLineMode(CAN_TX_PIN, CAN_TX_PIN_MODE);
     palSetLineMode(CAN_RX_PIN, CAN_RX_PIN_MODE);
     canStart(&CAN_DRIVER, &canConfig);
+    canardInstance = canardInit(canardSpecificHeapAlloc, canardSpecificHeapFree);
+    canTxThread.setCanardInstance(&canardInstance);
     canTxThread.start(NORMALPRIO);
+    chThdSleep(TIME_MS2I(10));
+    canRxThread.setCanardInstance(&canardInstance);
     canRxThread.start(NORMALPRIO + 1);
+    chThdSleep(TIME_MS2I(10));
     // let Threads finish initialization
     chThdYield();
 }
 
-bool Board::Com::CANBus::send(canFrame_t canData) {
-    return canTxThread.send(canData);
+bool Board::Com::CANBus::send(const CanardTransferMetadata* const metadata,
+                              const size_t                        payload_size,
+                              const void* const                   payload) {
+    return canTxThread.send(metadata, payload_size, payload);
 }
 
 void Board::Com::CANBus::registerListener(CanListener* listener) {
-    canRxThread.registerListener(listener);
+//    canRxThread.registerListener(listener);
 }
 
 void Board::Com::Lidar::init() {

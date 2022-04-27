@@ -244,7 +244,7 @@ static void cmd_pliers(BaseSequentialStream* chp, int argc, char* argv[]) {
             .plierID = id,
             .state   = state,
         };
-        Board::Com::CANBus::send(frame);
+//        Board::Com::CANBus::send(frame);
     } else {
         goto usage;
     }
@@ -274,7 +274,7 @@ static void cmd_pliers_block(BaseSequentialStream* chp, int argc, char* argv[]) 
         frame.data.pliersBlockData = {
             .state = state,
         };
-        Board::Com::CANBus::send(frame);
+//        Board::Com::CANBus::send(frame);
     } else {
         goto usage;
     }
@@ -304,7 +304,7 @@ static void cmd_slider(BaseSequentialStream* chp, int argc, char* argv[]) {
         } else {
             goto usage;
         }
-        Board::Com::CANBus::send(frame);
+//        Board::Com::CANBus::send(frame);
     } else {
         goto usage;
     }
