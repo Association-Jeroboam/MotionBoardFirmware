@@ -3,11 +3,9 @@
 #include "Logging.hpp"
 #include "MotionBoard.hpp"
 #include "Parameters.hpp"
-#include "Strategy/Events.hpp"
-#include "Strategy/Strategy.hpp"
 #include "ch.hpp"
-#include "AvoidanceThread.hpp"
-#include <new>
+#include "cartesian/Pose_0_1.h"
+#include "canard.h"
 
 enum ControlThreadEvents {
     BoardEvent = 1 << 0,

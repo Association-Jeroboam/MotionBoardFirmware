@@ -4,7 +4,3 @@ COMMONCPPSRC += $(COMMONDIR)/Goal.cpp
 COMMONCPPSRC += $(COMMONDIR)/Control.cpp
 
 COMMONINC += $(COMMONDIR)
-COMMONINC += $(COMMONDIR)/actions
-COMMONINC += $(COMMONDIR)/Strategy
-
-include $(COMMONDIR)/Strategy/strategy.mk

@@ -2,13 +2,9 @@
 #include <hal.h>
 #include <shell.h>
 
-#include "AvoidanceThread.hpp"
 #include "ControlThread.hpp"
-#include "LidarThread.hpp"
 #include "MotionBoard.hpp"
 #include "MotionBoardShell.hpp"
-#include "Strategy/Events.hpp"
-#include "StrategyThread.hpp"
 #include "DataStreamer.hpp"
 #include <Logging.hpp>
 #include "canard.h"
@@ -57,23 +53,15 @@ int main() {
     shellInit();
     Board::init();
     chThdSleepMilliseconds(10);
-//    ControlThread::instance()->start(NORMALPRIO + 1);
-//    chThdSleepMilliseconds(10);
-//    StrategyThread::instance()->start(NORMALPRIO + 2);
-//    chThdSleepMilliseconds(10);
-//    LidarThread::instance()->start(NORMALPRIO + 4);
-//    chThdSleepMilliseconds(10);
-//    AvoidanceThread::instance()->start(NORMALPRIO +5);
-//    chThdSleepMilliseconds(10);
-//    DataStreamer::instance()->start(NORMALPRIO);
-//    chThdSleepMilliseconds(10);
+    ControlThread::instance()->start(NORMALPRIO + 1);
+    chThdSleepMilliseconds(10);
+    DataStreamer::instance()->start(NORMALPRIO);
+    chThdSleepMilliseconds(10);
 
 
 
     chThdCreateStatic(waShellThread, sizeof(waShellThread), NORMALPRIO,
                       shellThread, (void*)&shell_cfg);
-    enum pliersState state;
-    uint8_t i = 0;
 
     while (!chThdShouldTerminateX()) {
         Board::IO::toggleLED();
