@@ -7,14 +7,21 @@
 #include "ch.hpp"
 #include "hal.h"
 #include <climits>
+#include "canard.h"
+#include "Memory.hpp"
 
 #define CONTROL_LOOP_TIMER_COUNTING_FREQUENCY 2000000
 
 static void controlLoopTimerCallback(GPTDriver* gptp);
-static void startMatchTimerCallback(GPTDriver* gptp);
-static void gpioStartMatchCb(void* arg);
 static void gpioEmergencyStopCb(void* arg);
-static void endMatchCb(virtual_timer_t *vtp, void *p);
+
+inline void* canardSpecificHeapAlloc(CanardInstance* ins, size_t amount) {
+    return chHeapAlloc(NULL, amount);
+}
+
+inline void canardSpecificHeapFree(CanardInstance* ins, void* pointer) {
+    if(pointer) chHeapFree(pointer);
+}
 
 static chibios_rt::EventSource eventSource;
 chibios_rt::Timer matchTimer;
@@ -25,21 +32,15 @@ enum timerState {
 };
 timerState matchTimerState;
 
-CanTxThread canTxThread;
-CanRxThread canRxThread;
+CanardInstance canardInstance;
+CanTxThread canTxThread(&canardInstance);
+CanRxThread canRxThread(&canardInstance);
 
 
 
 __extension__ const GPTConfig intervalTimerConfig{
     .frequency = CONTROL_LOOP_TIMER_COUNTING_FREQUENCY,
     .callback  = controlLoopTimerCallback,
-    .cr2       = 0,
-    .dier      = 0,
-};
-
-__extension__ const GPTConfig startMatchTimerConfig{
-    .frequency = 1000,
-    .callback  = startMatchTimerCallback,
     .cr2       = 0,
     .dier      = 0,
 };
@@ -73,36 +74,18 @@ void Board::IO::initEncoders() {
 
 void Board::IO::initTimers() {
     gptStart(&MOTOR_CONTROL_LOOP_TIMER, &intervalTimerConfig);
-    //    gptStart(&START_MATCH_TIMER, &startMatchTimerConfig);
 }
 
 void Board::IO::initGPIO() {
     palSetLineMode(LED_LINE, LED_LINE_MODE);
 
-    palSetLineMode(START_PIN, START_PIN_MODE);
-    palEnableLineEvent(START_PIN, PAL_EVENT_MODE_RISING_EDGE);
-    palSetLineCallback(START_PIN, gpioStartMatchCb, NULL);
-
-    palSetLineMode(STRATEGY_1_PIN, STRATEGY_1_PIN_MODE);
-
-    palSetLineMode(STRATEGY_2_PIN, STRATEGY_2_PIN_MODE);
-
-    palSetLineMode(SIDE_PIN, SIDE_PIN_MODE);
-
+    //TODO: This causes an assert in _pal_lld_enablepadevent, find out why
     palSetLineMode(EMGCY_STOP_PIN, EMGCY_STOP_PIN_MODE);
     palEnableLineEvent(EMGCY_STOP_PIN, PAL_EVENT_MODE_BOTH_EDGES);
     palSetLineCallback(EMGCY_STOP_PIN, gpioEmergencyStopCb, NULL);
 
     palSetLineMode(BRAKE_PIN, BRAKE_PIN_MODE);
     palSetLine(BRAKE_PIN);
-}
-
-bool Board::IO::getSide() {
-    return (palReadLine(SIDE_PIN) == PAL_HIGH);
-}
-
-bool Board::IO::getStart() {
-    return (palReadLine(START_PIN) == PAL_HIGH);
 }
 
 void Board::IO::setBrake(Peripherals::Motor motor, bool brake){
@@ -116,13 +99,6 @@ void Board::IO::setBrake(Peripherals::Motor motor, bool brake){
 
 
     palWriteLine(BRAKE_PIN, (leftBrake || rightBrake) ? PAL_LOW : PAL_HIGH);
-}
-
-uint8_t Board::IO::getStrategy() {
-    uint8_t strategy = 0;
-    strategy |= palReadLine(STRATEGY_1_PIN) << 0;
-    strategy |= palReadLine(STRATEGY_2_PIN) << 1;
-    return strategy;
 }
 
 void Board::IO::deinitPWM() {
@@ -154,32 +130,35 @@ void Board::IO::toggleLED() {
 void Board::Com::initDrivers() {
     Logging::println("Com drivers init");
     CANBus::init();
-    Lidar::init();
 }
 
 void Board::Com::CANBus::init() {
     palSetLineMode(CAN_TX_PIN, CAN_TX_PIN_MODE);
     palSetLineMode(CAN_RX_PIN, CAN_RX_PIN_MODE);
     canStart(&CAN_DRIVER, &canConfig);
+    canardInstance = canardInit(canardSpecificHeapAlloc, canardSpecificHeapFree);
+    canardInstance.node_id = MOTION_BOARD_ID;
     canTxThread.start(NORMALPRIO);
+    chThdSleep(TIME_MS2I(10));
     canRxThread.start(NORMALPRIO + 1);
+    chThdSleep(TIME_MS2I(10));
     // let Threads finish initialization
     chThdYield();
 }
 
-bool Board::Com::CANBus::send(canFrame_t canData) {
-    return canTxThread.send(canData);
+bool Board::Com::CANBus::send(const CanardTransferMetadata* const metadata,
+                              const size_t                        payload_size,
+                              const void* const                   payload) {
+    return canTxThread.send(metadata, payload_size, payload);
 }
 
-void Board::Com::CANBus::registerListener(CanListener* listener) {
-    canRxThread.registerListener(listener);
+void Board::Com::CANBus::registerCanMsg(CanListener *listener,
+                                          CanardTransferKind transfer_kind,
+                                          CanardPortID port_id,
+                                          size_t extent) {
+    canRxThread.subscribe(listener, transfer_kind, port_id, extent);
 }
 
-void Board::Com::Lidar::init() {
-    palSetLineMode(LIDAR_SD_TX_PIN, LIDAR_SD_TX_PIN_MODE);
-    palSetLineMode(LIDAR_SD_RX_PIN, LIDAR_SD_RX_PIN_MODE);
-    sdStart(&LIDAR_SD_DRIVER, &lidarSDConfig);
-}
 
 void Board::Events::startControlLoop(uint16_t frequency) {
     if (frequency > CONTROL_LOOP_TIMER_COUNTING_FREQUENCY) {
@@ -189,25 +168,9 @@ void Board::Events::startControlLoop(uint16_t frequency) {
     gptStartContinuous(&MOTOR_CONTROL_LOOP_TIMER, (gptcnt_t)interval);
 }
 
-void Board::Events::startStartMatchTimer(uint16_t interval_ms) {
-    //    gptStartOneShot(&START_MATCH_TIMER, (gptcnt_t)interval_ms);
-}
-
 static void controlLoopTimerCallback(GPTDriver* gptp) {
     (void)gptp;
     eventSource.broadcastFlagsI(Board::Events::RUN_MOTOR_CONTROL);
-}
-
-static void startMatchTimerCallback(GPTDriver* gptp) {
-    (void)gptp;
-    eventSource.broadcastFlagsI(Board::Events::START_MATCH);
-}
-
-static void gpioStartMatchCb(void* arg) {
-    palDisableLineEvent(START_PIN);
-    matchTimerState = COMPASS;
-    eventSource.broadcastFlagsI(Board::Events::START_MATCH);
-    matchTimer.setI(TIME_S2I(COMPASS_TIMEOUT), endMatchCb, nullptr);
 }
 
 static void gpioEmergencyStopCb(void* arg) {
@@ -216,30 +179,6 @@ static void gpioEmergencyStopCb(void* arg) {
     } else {
         eventSource.broadcastFlagsI(Board::Events::EMERGENCY_CLEARED);
     }
-}
-
-static void endMatchCb(virtual_timer_t *vtp, void *p){
-    uint32_t flag = 0;
-    uint32_t nextTimeout = 0;
-    switch (matchTimerState) {
-        case COMPASS:
-            flag = Board::Events::COMPASS_TIMEOUT;
-            matchTimerState = FLAG;
-            nextTimeout = FLAG_TIMEOUT - COMPASS_TIMEOUT;
-            matchTimer.setI(TIME_S2I(nextTimeout), endMatchCb, nullptr);
-            break;
-        case FLAG:
-            flag = Board::Events::FLAG_TIMEOUT;
-            matchTimerState = END_MATCH;
-            nextTimeout = MATCH_TIMEOUT - FLAG_TIMEOUT;
-            matchTimer.setI(TIME_S2I(nextTimeout), endMatchCb, nullptr);
-            break;
-        case END_MATCH:
-            flag = Board::Events::END_MATCH;
-
-            break;
-    }
-    eventSource.broadcastFlagsI(flag);
 }
 
 void Board::Events::eventRegister(chibios_rt::EventListener* elp, eventmask_t event) {

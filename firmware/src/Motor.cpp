@@ -20,6 +20,7 @@ void Motor::updateControl() {
     float command;
     if(m_disabled) {
         command = 0.;
+        m_speedPID.reset();
     } else {
         command = m_speedPID.compute(m_speedSetpoint, m_speed);
     }
@@ -47,6 +48,11 @@ void Motor::setPID(float p, float i, float d) {
 }
 
 void Motor::setSpeed(float speed) {
+    if( speed > MAX_WHEEL_SPEED ) {
+        speed = MAX_WHEEL_SPEED;
+    } else if (speed < -MAX_WHEEL_SPEED) {
+        speed = -MAX_WHEEL_SPEED;
+    }
     m_speedSetpoint = speed;
 }
 
@@ -72,5 +78,7 @@ void Motor::reset() {
 void Motor::setDisable(bool disable) {
     m_disabled = disable;
     Board::IO::setBrake(m_motor, disable);
-    reset();
+    if(disable) {
+        reset();
+    }
 }

@@ -22,7 +22,7 @@ void Board::IO::setMotorDutyCycle(Peripherals::Motor motor, float duty_cycle) {
         return;
     }
 
-    uint16_t percentage = (fabs(duty_cycle) / DEFAULT_MAX_PID_OUTPUT) * PWM_MAX_DUTY_CYCLE_VALUE;
+    uint16_t percentage = (uint16_t)(fabs(duty_cycle) * PWM_MAX_DUTY_CYCLE_VALUE / DEFAULT_MAX_PID_OUTPUT);
     uint16_t channel;
     ioline_t dir_pin;
     if (motor == Peripherals::Motor::LEFT_MOTOR) {
@@ -54,5 +54,5 @@ void Board::IO::setMotorDutyCycle(Peripherals::Motor motor, float duty_cycle) {
 
     pwmEnableChannel(&MOTOR_PWM_DRIVER,
                      channel,
-                     PWM_FRACTION_TO_WIDTH(&MOTOR_PWM_DRIVER, PWM_MAX_DUTY_CYCLE_VALUE, percentage));
+                     PWM_FRACTION_TO_WIDTH(&MOTOR_PWM_DRIVER, PWM_DUTY_CYCLE_PRECISION, percentage));
 }

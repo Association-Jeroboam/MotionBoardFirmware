@@ -3,13 +3,6 @@ COMMONCPPSRC += $(SOURCEDIR)/Motor.cpp
 COMMONCPPSRC += $(SOURCEDIR)/MotorControl.cpp
 COMMONCPPSRC += $(SOURCEDIR)/MotionBoardShell.cpp
 COMMONCPPSRC += $(SOURCEDIR)/ControlThread.cpp
-COMMONCPPSRC += $(SOURCEDIR)/StrategyThread.cpp
 COMMONCPPSRC += $(SOURCEDIR)/Memory.cpp
-COMMONCPPSRC += $(SOURCEDIR)/LidarThread.cpp
-COMMONCPPSRC += $(SOURCEDIR)/QuickSort.cpp
-COMMONCPPSRC += $(SOURCEDIR)/AvoidanceThread.cpp
-COMMONCPPSRC += $(SOURCEDIR)/ClusterBuffer.cpp
-COMMONCPPSRC += $(SOURCEDIR)/Point.cpp
-COMMONCPPSRC += $(SOURCEDIR)/Switchers.cpp
 
 include $(SOURCEDIR)/$(TARGET_TYPE)/target.mk

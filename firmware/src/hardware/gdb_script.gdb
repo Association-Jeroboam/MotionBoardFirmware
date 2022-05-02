@@ -4,5 +4,4 @@ mon reset 0
 layout split
 focus cmd
 
-break main
-break main.cpp:21
+break main.cpp:main

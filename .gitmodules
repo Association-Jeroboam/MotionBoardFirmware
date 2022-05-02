@@ -4,12 +4,6 @@
 [submodule "libs/ChibiOS-Contrib"]
 	path = firmware/libs/ChibiOS-Contrib
 	url = git@github.com:Association-Jeroboam/ChibiOS-Contrib.git
-[submodule "libs/eHSM"]
-	path = libs/eHSM
-	url = https://gitlab.com/ecruzolivera/eHSM
 [submodule "firmware/libs/CanProtocol"]
 	path = firmware/libs/CanProtocol
 	url = git@github.com:Association-Jeroboam/CanProtocol.git
-[submodule "firmware/libs/rplidar_arduino"]
-	path = firmware/libs/rplidar_arduino
-	url = git@github.com:robopeak/rplidar_arduino.git

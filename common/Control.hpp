@@ -16,7 +16,9 @@ struct ControlData {
     float angleSetpoint;
     float distanceError;
     float x;
+    float xSetpoint;
     float y;
+    float ySetpoint;
 };
 
 class Control {
@@ -35,11 +37,9 @@ class Control {
 
     RobotPose* getRobotPose();
 
-    void setAngleKp(float kp);
-
-    void setDistanceKp(float kp);
-
     void setMotorPID(Peripherals::Motor motor, float p, float i, float d);
+
+    void setPID(float kP, float kA, float kB);
 
     void reset();
 
@@ -52,17 +52,21 @@ class Control {
     RobotPose    m_robotPose;
 
   private:
+    void goToPose();
+
     MotorControl m_motorControl;
     Goal         m_currentGoal;
 
-    PID m_distancePID;
-    PID m_anglePID;
     float goalPos;
     bool m_emergencyStop;
 
     float direction    = 1;
     float initialPos   = 0;
     float t            = 0;
+
+    float m_distance;
+    float m_dl;
+    float m_dr;
 
     float m_linearSpeed;
     float m_linearSpeedSetpoint;
@@ -73,4 +77,9 @@ class Control {
     float m_distanceError;
     bool  m_forwardDrive;
     bool  m_computeDirection;
+    float m_angularError;
+
+    float kA;
+    float kB;
+    float kP;
 };

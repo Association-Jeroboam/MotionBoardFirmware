@@ -7,6 +7,7 @@ class Goal {
 public:
 
     enum GoalType {
+        DISTANCE,
         ANGLE,
         COORD,
         CIRCULAR,
@@ -15,21 +16,11 @@ public:
         NO_GOAL,
     };
 
-    enum Direction {
-        FORWARD,
-        BACKWARD,
-        ANY,
-    };
-
-    typedef struct angleData {
-        float   angle;
-        int32_t turns;
-    } angleData_t;
-
     typedef struct coordData {
         float x;
         float y;
-        enum Direction direction;
+        float theta;
+        bool forwardMovementOnly;
     } coordData_t;
 
     typedef struct circularData {
@@ -49,16 +40,13 @@ public:
     } pwmData_t;
 
     typedef union goalData {
-        angleData_t angleData;
         coordData_t coordData;
         circularData_t circularData;
         speedData_t speedData;
         pwmData_t   pwmData;
     } goalData_t;
 
-    Goal(float angle, int32_t turns);
-
-    Goal(float x, float y, enum Direction direction);
+    Goal(float x, float y, float theta, bool forwardMovementOnly);
 
     Goal(float input0, float input1, enum GoalType type);
 
@@ -67,8 +55,6 @@ public:
     Goal();
 
     enum GoalType getType();
-
-    angleData_t getAngleData();
 
     coordData_t getCoordData();
 
@@ -79,8 +65,6 @@ public:
     pwmData_t getPWMData();
 
     uint32_t getID();
-
-    inline void setCoordDirection(enum Direction dir) { m_data.coordData.direction = dir;};
 
     void setReached(bool reached);
 

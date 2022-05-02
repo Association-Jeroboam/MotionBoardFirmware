@@ -58,20 +58,20 @@ float PID::compute(float setpoint, float input) {
     }
     m_lastInput = input;
 
-    m_errorSum += (error + m_lastError) / 2.; // bilinear integration
+    m_errorSum += m_i * (error + m_lastError) / 2.; // bilinear integration
+
+    if (m_errorSum > m_maxIntegral) {
+        m_errorSum = m_maxIntegral;
+    } else if (m_errorSum < -m_maxIntegral) {
+        m_errorSum = -m_maxIntegral;
+    }
     m_lastError = error;
 
     float P_part = m_p * error;
-    float I_part = m_i * m_errorSum;
+    float I_part = m_errorSum;
     float D_part = m_d * error_D;
 
-    if (I_part > m_maxIntegral) {
-        I_part = m_maxIntegral;
-    } else if (I_part < -m_maxIntegral) {
-        I_part = -m_maxIntegral;
-    }
-
-    m_output = P_part + I_part + D_part;
+    m_output = P_part + I_part - D_part;
 
     //nothing happens if m_output == 0
     if (m_output > 0) {

@@ -3,15 +3,14 @@
 #include "Logging.hpp"
 #include "MotionBoard.hpp"
 #include "Parameters.hpp"
-#include "Strategy/Events.hpp"
-#include "Strategy/Strategy.hpp"
 #include "ch.hpp"
-#include "AvoidanceThread.hpp"
-#include <new>
+#include "cartesian/Pose_0_1.h"
+#include "canard.h"
+#include "CanProtocol.hpp"
+
 
 enum ControlThreadEvents {
-    BoardEvent = 1 << 0,
-    AvoidanceEvent  = 1 << 1,
+    BoardEvent      = 1 << 0,
 };
 
 ControlThread ControlThread::s_instance;
@@ -20,7 +19,28 @@ ControlThread* ControlThread::instance() {
     return &s_instance;
 }
 
-ControlThread::ControlThread() : BaseStaticThread<CONTROL_THREAD_WA>(), EventSource(), moveOkFired(true) {
+void ControlThread::processPoseGoal(CanardRxTransfer * transfer) {
+    reg_udral_physics_kinematics_cartesian_Pose_0_1 poseGoal;
+    reg_udral_physics_kinematics_cartesian_Pose_0_1_deserialize_(&poseGoal,
+                                                                 (uint8_t *)transfer->payload,
+                                                                 &transfer->payload_size);
+    Logging::println("Pose Goal");
+    Logging::print("pos");
+    for(uint8_t i = 0; i< 3; i++) {
+        Logging::print(" %.2f", poseGoal.position.value.meter[i]);
+    }
+    Logging::println("\norientation");
+    for(uint8_t i = 0; i< 4; i++) {
+        Logging::print(" %.2f", poseGoal.orientation.wxyz[i]);
+    }
+    Logging::println("");
+}
+
+ControlThread::ControlThread() : BaseStaticThread<CONTROL_THREAD_WA>(),
+                                 EventSource(),
+                                 m_boardListener(),
+                                 m_avoidanceListener(),
+                                 moveOkFired(true) {
 }
 
 void ControlThread::main() {
@@ -30,13 +50,13 @@ void ControlThread::main() {
     static uint16_t toggleCounter = 0;
 
     Board::Events::eventRegister(&m_boardListener, BoardEvent);
-    AvoidanceThread::instance()->registerMask(&m_avoidanceListener, AvoidanceEvent);
+    Board::Com::CANBus::registerCanMsg(this, CanardTransferKindMessage, ROBOT_POSE_GOAL_ID, reg_udral_physics_kinematics_cartesian_Pose_0_1_EXTENT_BYTES_);
     Board::Events::startControlLoop(MOTOR_CONTROL_LOOP_FREQ);
 
     while (!shouldTerminate()) {
-        eventmask_t event = waitOneEvent(AvoidanceEvent | BoardEvent);
-
+        eventmask_t event = waitOneEvent(BoardEvent);
         if( event && BoardEvent) {
+
             eventflags_t flags = m_boardListener.getAndClearFlags();
             if (flags & Board::Events::RUN_MOTOR_CONTROL) {
 
@@ -63,29 +83,17 @@ void ControlThread::main() {
 
                 toggleCounter++;
                 if (toggleCounter % (MOTOR_CONTROL_LOOP_FREQ / LED_TOGGLE_FREQUENCY) == 0) {
-                    Board::IO::toggleLED();
                     toggleCounter = 0;
                 }
             }
 
             if (flags & Board::Events::EMERGENCY_STOP) {
                 Logging::println("[ControlThread] Emeregency Stop!");
+                control.setEmergency(true);
             }
 
             if (flags & Board::Events::EMERGENCY_CLEARED) {
                 Logging::println("[ControlThread] Emeregency Cleared");
-            }
-        }
-
-        if(event & AvoidanceEvent) {
-            eventflags_t flags = m_avoidanceListener.getAndClearFlags();
-            if(flags & RobotDetected) {
-                Logging::println("[ControlThread] Robot detected");
-                control.setEmergency(true);
-            }
-
-            if(flags & WayCleared) {
-                Logging::println("[ControlThread] Way cleared");
                 control.setEmergency(false);
             }
         }
@@ -104,11 +112,23 @@ void ControlThread::updateDataStreamer() {
     DataStreamer::instance()->setEntry(angleEnum, controlData.angle);
     DataStreamer::instance()->setEntry(absoluteAngleEnum, controlData.absoluteAngle);
     DataStreamer::instance()->setEntry(angleSetpointEnum, controlData.angleSetpoint);
-    DataStreamer::instance()->setEntry(distanceErrorEnum, controlData.distanceError);
-    DataStreamer::instance()->setEntry(xEnum, controlData.x);
-    DataStreamer::instance()->setEntry(yEnum, controlData.y);
+    DataStreamer::instance()->setEntry(xCurrentEnum, controlData.x);
+    DataStreamer::instance()->setEntry(xSetpointEnum, controlData.xSetpoint);
+    DataStreamer::instance()->setEntry(yCurrentEnum, controlData.y);
+    DataStreamer::instance()->setEntry(ySetpointEnum, controlData.ySetpoint);
 }
 
 Control* ControlThread::getControl() {
     return &control;
+}
+
+void ControlThread::processCanMsg(CanardRxTransfer * transfer) {
+     switch(transfer->metadata.port_id) {
+        case ROBOT_POSE_GOAL_ID:
+            processPoseGoal(transfer);
+            break;
+        default:
+            break;
+    }
+
 }

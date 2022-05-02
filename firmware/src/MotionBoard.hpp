@@ -5,6 +5,7 @@
 #include "Peripherals.hpp"
 #include "ch.hpp"
 #include "inttypes.h"
+#include "canard.h"
 
 namespace Board {
 void init();
@@ -18,9 +19,6 @@ void    initEncoders();
 void    initTimers();
 void    initGPIO();
 
-bool    getSide();
-bool    getStart();
-uint8_t getStrategy();
 void setBrake(Peripherals::Motor motor, bool brake);
 
 void deinitPWM();
@@ -37,13 +35,15 @@ namespace Com {
 void initDrivers();
 namespace CANBus {
 void init();
-bool send(canFrame_t canData);
-void registerListener(CanListener* listener);
+bool send(const CanardTransferMetadata* const metadata,
+          const size_t                        payload_size,
+          const void* const                   payload);
+void registerCanMsg(CanListener *listener,
+                    CanardTransferKind transfer_kind,
+                    CanardPortID port_id,
+                    size_t extent);
 } // namespace CANBus
 
-namespace Lidar {
-void init();
-} // namespace Lidar
 } // namespace Com
 
 namespace Events {
@@ -51,17 +51,12 @@ namespace Events {
 enum eventFlags {
     RUN_MOTOR_CONTROL = 1 << 0,
     SEND_STREAM       = 1 << 1,
-    START_MATCH       = 1 << 2,
-    EMERGENCY_STOP    = 1 << 3,
-    EMERGENCY_CLEARED = 1 << 4,
-    END_MATCH         = 1 << 5,
-    COMPASS_TIMEOUT   = 1 << 6,
-    FLAG_TIMEOUT      = 1 << 7,
+    EMERGENCY_STOP    = 1 << 2,
+    EMERGENCY_CLEARED = 1 << 3,
 };
 
 void eventRegister(chibios_rt::EventListener* elp, eventmask_t event);
 
 void startControlLoop(uint16_t frequency);
-void startStartMatchTimer(uint16_t interval_ms);
 } // namespace Events
 } // namespace Board
