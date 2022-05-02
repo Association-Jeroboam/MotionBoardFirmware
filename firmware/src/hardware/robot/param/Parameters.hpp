@@ -30,18 +30,3 @@ constexpr float COMPUTE_DIRECTION_THRESHOLD = 10.; //[mm] //TODO: Change me!
 
 constexpr float ANGLE_PRECISION = 0.05; //[rad]
 constexpr float DISTANCE_PRECISION = 5;  //[mm]
-
-constexpr float LIDAR_ANGLE_OFFSET = -M_PI/2.; // [rad]
-constexpr float LIDAR_X_OFFSET = 0.; // [mm]
-constexpr float LIDAR_Y_OFFSET = 0.; // [mm]
-constexpr float LIDAR_MIN_DISTANCE = 160.; // [mm]
-constexpr float LIDAR_MAX_DISTANCE = 500.; // [mm]
-
-constexpr float MAP_MIN_X = 50.;
-constexpr float MAP_MAX_X = 1950.;
-constexpr float MAP_MIN_Y = 50.;
-constexpr float MAP_MAX_Y = 2950.;
-
-constexpr uint32_t COMPASS_TIMEOUT = 25;
-constexpr uint32_t FLAG_TIMEOUT = 95;
-constexpr uint32_t MATCH_TIMEOUT = 100;
