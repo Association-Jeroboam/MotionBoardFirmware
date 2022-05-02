@@ -15,15 +15,21 @@ static THD_WORKING_AREA(waShellThread, SHELL_WA_SIZE);
 
 void cyphalHeartBeatRoutine() {
     static CanardTransferID transfer_id = 0;
-    uavcan_node_Mode_1_0 mode;
-    mode.value = uavcan_node_Mode_1_0_OPERATIONAL;
-    uavcan_node_Health_1_0 health;
-    health.value = uavcan_node_Health_1_0_NOMINAL;
+    static uint16_t MSB = 0;
+    static uint32_t before = 0;
     uint32_t now = chVTGetSystemTime();
+    if(now <= before) {
+        MSB++;
+    }
     const uavcan_node_Heartbeat_1_0 heartbeat = {
-        .uptime = now,
-        .health = health,
-        .mode = mode,
+        .uptime = TIME_I2S(now | (MSB << 16)),
+        .health = {
+            .value = uavcan_node_Health_1_0_NOMINAL
+        },
+        .mode = {
+            .value = uavcan_node_Mode_1_0_OPERATIONAL,
+        },
+        .vendor_specific_status_code = 42,
     };
 
     size_t buf_size = uavcan_node_Heartbeat_1_0_SERIALIZATION_BUFFER_SIZE_BYTES_;
@@ -41,6 +47,7 @@ void cyphalHeartBeatRoutine() {
     };
     transfer_id++;
     Board::Com::CANBus::send(&metadata, buf_size,  buffer);
+    before = now;
 }
 
 int main() {
