@@ -9,8 +9,8 @@
 #include <Logging.hpp>
 #include "canard.h"
 #include "Heartbeat_1_0.h"
+#include "cartesian/Pose_0_1.h"
 
-//Strategy* stateMachine;
 static THD_WORKING_AREA(waShellThread, SHELL_WA_SIZE);
 
 void cyphalHeartBeatRoutine() {
@@ -50,6 +50,34 @@ void cyphalHeartBeatRoutine() {
     before = now;
 }
 
+void publishPose() {
+    static CanardTransferID transfer_id = 0;
+    const reg_udral_physics_kinematics_cartesian_Pose_0_1 pose = {
+        .position = {
+            .value = {1,2,3}
+        },
+        .orientation ={
+            .wxyz = {1.,2.,3.,4.}
+        },
+    };
+
+    size_t buf_size = reg_udral_physics_kinematics_cartesian_Pose_0_1_SERIALIZATION_BUFFER_SIZE_BYTES_;
+    uint8_t buffer[reg_udral_physics_kinematics_cartesian_Pose_0_1_SERIALIZATION_BUFFER_SIZE_BYTES_];
+
+    reg_udral_physics_kinematics_cartesian_Pose_0_1_serialize_(&pose, buffer, &buf_size);
+
+
+    const CanardTransferMetadata metadata = {
+        .priority = CanardPriorityNominal,
+        .transfer_kind = CanardTransferKindMessage,
+        .port_id = 123,
+        .remote_node_id = CANARD_NODE_ID_UNSET,
+        .transfer_id = transfer_id,
+    };
+    transfer_id++;
+    Board::Com::CANBus::send(&metadata, buf_size,  buffer);
+}
+
 int main() {
     halInit();
     halCommunityInit();
@@ -72,7 +100,8 @@ int main() {
 
     while (!chThdShouldTerminateX()) {
         Board::IO::toggleLED();
-        cyphalHeartBeatRoutine();
+//        cyphalHeartBeatRoutine();
+//        publishPose();
         chThdSleepMilliseconds(1000);
     }
 
