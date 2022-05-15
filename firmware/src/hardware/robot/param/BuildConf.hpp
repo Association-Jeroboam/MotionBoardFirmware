@@ -1,6 +1,7 @@
 #pragma once
 
 #include "MotionBoard.hpp"
+#include "hal.h"
 #define LOGGING_DRIVER SD2
 #define SHELL_DRIVER LOGGING_DRIVER
 #define MOTOR_PWM_DRIVER PWMD1  //right for now
