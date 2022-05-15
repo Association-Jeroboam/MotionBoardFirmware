@@ -4,6 +4,7 @@
 #include "MotionBoard.hpp"
 #include "Parameters.hpp"
 #include "Peripherals.hpp"
+#include "RobotConf.hpp"
 #include <cmath>
 
 constexpr float circularTimeout = 2.;
@@ -193,10 +194,15 @@ control_update:
 void Control::setCurrentGoal(Goal goal) {
     m_currentGoal      = goal;
     m_computeDirection = true;
-    m_currentGoal.print();
-    m_motorControl.resetMotor(Peripherals::LEFT_MOTOR);
-    m_motorControl.resetMotor(Peripherals::RIGHT_MOTOR);
-    Goal::GoalType goalType = m_currentGoal.getType();
+
+    Goal::GoalType goalType     = m_currentGoal.getType();
+    if(goalType == Goal::GoalType::COORD    ||
+       goalType == Goal::GoalType::DISTANCE ||
+       goalType == Goal::GoalType::ANGLE      ) {
+
+        m_motorControl.resetMotor(Peripherals::LEFT_MOTOR);
+        m_motorControl.resetMotor(Peripherals::RIGHT_MOTOR);
+    }
 
     t = 0;
 }
