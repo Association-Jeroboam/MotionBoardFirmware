@@ -119,7 +119,7 @@ void ControlThread::sendCurrentState() {
     const reg_udral_physics_kinematics_cartesian_State_0_1 state       = {
         .pose = {
             .position = {
-                .value = {controlData.x, controlData.y, 0.},
+                .value = {controlData.x * (1./1000.), controlData.y * (1./1000.), 0.},
             },
             .orientation = {
                 .wxyz = {q.w, q.x, q.y, q.z},
@@ -194,7 +194,7 @@ void ControlThread::processTwistGoal(CanardRxTransfer * transfer) {
                                                                  &transfer->payload_size);
     float v = twistGoal.linear.meter_per_second[0] * 1000.; // linear speed on x axis;
     float w = twistGoal.angular.radian_per_second[2]; // angular speed on z axis;
-
+    Logging::println("twist goal");
     Goal goal(v, w, Goal::GoalType::CIRCULAR);
     control.setCurrentGoal(goal);
 }
