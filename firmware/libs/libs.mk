@@ -5,7 +5,7 @@ COMMONCPPSRC += $(LIBDIR)/CanProtocol/ChibiOS/CanTxThread.cpp
 CYPHALDIR = $(LIBDIR)/CanProtocol/Cyphal
 CYPHALLOOKUPDIRS += $(CYPHALDIR)/public_regulated_data_types/uavcan
 CYPHALREGULAR += $(CYPHALDIR)/public_regulated_data_types/reg
-CYPHALPRIVATE += $(CYPHALDIR)/jeroboam_private_cyphal_datatypes
+CYPHALPRIVATE += $(CYPHALDIR)/jeroboam_datatypes
 COMMONINC += $(CYPHALDIR)/libcanard/libcanard/
 COMMONCSRC += $(CYPHALDIR)/libcanard/libcanard/canard.c
 
@@ -60,6 +60,10 @@ COMMONINC += $(CYPHALDIR)/includes/uavcan/si/unit/volume
 COMMONINC += $(CYPHALDIR)/includes/uavcan/si/unit/volumetric_flow_rate
 COMMONINC += $(CYPHALDIR)/includes/uavcan/time
 COMMONINC += $(CYPHALDIR)/includes/
+COMMONINC += $(CYPHALDIR)/includes/jeroboam_datatypes/sensors
+COMMONINC += $(CYPHALDIR)/includes/jeroboam_datatypes/actuators/servo
+COMMONINC += $(CYPHALDIR)/includes/jeroboam_datatypes/actuators/pump
+COMMONINC += $(CYPHALDIR)/includes/jeroboam_datatypes/actuators/motion
 
 #$(shell nnvg --target-language c -v --target-endianness=little $(CYPHALREGULAR) --lookup-dir $(CYPHALLOOKUPDIRS) --outdir $(CYPHALDIR)/includes)
 #$(shell nnvg --target-language c -v --target-endianness=little $(CYPHALLOOKUPDIRS) --outdir $(CYPHALDIR)/includes)
