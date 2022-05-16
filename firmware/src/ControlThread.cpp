@@ -44,6 +44,10 @@ void ControlThread::main() {
                                       CanardTransferKindMessage,
                                       ROBOT_TWIST_GOAL_ID,
                                       reg_udral_physics_kinematics_cartesian_Twist_0_1_EXTENT_BYTES_);
+    Board::Com::CANBus::registerCanMsg(this,
+                                       CanardTransferKindMessage,
+                                       ROBOT_SET_CURRENT_POSE_ID,
+                                       reg_udral_physics_kinematics_cartesian_Pose_0_1_EXTENT_BYTES_);
     Board::Events::startControlLoop(MOTOR_CONTROL_LOOP_FREQ);
 
     while (!shouldTerminate()) {
@@ -154,47 +158,58 @@ void ControlThread::sendCurrentState() {
 }
 
 void ControlThread::processCanMsg(CanardRxTransfer * transfer) {
-     switch(transfer->metadata.port_id) {
-        case ROBOT_POSE_GOAL_ID:
-            processPoseGoal(transfer);
+    switch(transfer->metadata.port_id) {
+        case ROBOT_POSE_GOAL_ID: {
+            float x, y, theta;
+            processPoseMsg(transfer, &x, &y, &theta);
+            Goal goal(x, y, theta, false);
+            control.setCurrentGoal(goal);
             break;
-        case ROBOT_TWIST_GOAL_ID:
-            processTwistGoal(transfer);
+        }
+        case ROBOT_TWIST_GOAL_ID: {
+            float linear, angular;
+            processTwistMsg(transfer, &linear, &angular);
+            Goal goal(linear, angular, Goal::GoalType::CIRCULAR);
+            control.setCurrentGoal(goal);
             break;
+        }
+        case ROBOT_SET_CURRENT_POSE_ID: {
+            float x, y, theta;
+            processPoseMsg(transfer, &x, &y, &theta);
+            control.getRobotPose()->setPose(x, y, theta);
+            break;
+        }
         default:
             Logging::println("[Control Thread] CAN transfer dropped");
             break;
     }
 }
 
-void ControlThread::processPoseGoal(CanardRxTransfer * transfer) {
+void ControlThread::processPoseMsg(CanardRxTransfer * transfer, float* x, float* y, float* theta) {
     reg_udral_physics_kinematics_cartesian_Pose_0_1 poseGoal;
     reg_udral_physics_kinematics_cartesian_Pose_0_1_deserialize_(&poseGoal,
                                                                  (uint8_t *)transfer->payload,
                                                                  &transfer->payload_size);
-    float w, x, y, z;
-    w = poseGoal.orientation.wxyz[0];
-    x = poseGoal.orientation.wxyz[1];
-    y = poseGoal.orientation.wxyz[2];
-    z = poseGoal.orientation.wxyz[3];
+    float qw, qx, qy, qz;
+    qw = poseGoal.orientation.wxyz[0];
+    qx = poseGoal.orientation.wxyz[1];
+    qy = poseGoal.orientation.wxyz[2];
+    qz = poseGoal.orientation.wxyz[3];
 
-    Quaternion q(w, x, y, z);
-    float a, osef1, osef2, theta;
+    Quaternion q(qw, qx, qy, qz);
+    float a, osef1, osef2;
     a = 0.;
-    q.ToAngleAxis(&a, &osef1, &osef2, &theta);
-    Goal goal(x, y, theta, false);
-    control.setCurrentGoal(goal);
+    q.ToAngleAxis(&a, &osef1, &osef2, theta);
+    *x = poseGoal.position.value.meter[0];
+    *y = poseGoal.position.value.meter[1];
 
 }
 
-void ControlThread::processTwistGoal(CanardRxTransfer * transfer) {
+void ControlThread::processTwistMsg(CanardRxTransfer * transfer, float* linear, float* angular) {
     reg_udral_physics_kinematics_cartesian_Twist_0_1 twistGoal;
     reg_udral_physics_kinematics_cartesian_Twist_0_1_deserialize_(&twistGoal,
                                                                  (uint8_t *)transfer->payload,
                                                                  &transfer->payload_size);
-    float v = twistGoal.linear.meter_per_second[0] * 1000.; // linear speed on x axis;
-    float w = twistGoal.angular.radian_per_second[2]; // angular speed on z axis;
-    Logging::println("twist goal");
-    Goal goal(v, w, Goal::GoalType::CIRCULAR);
-    control.setCurrentGoal(goal);
+    *linear = twistGoal.linear.meter_per_second[0] * 1000.; // linear speed on x axis;
+    *angular = twistGoal.angular.radian_per_second[2]; // angular speed on z axis;
 }
