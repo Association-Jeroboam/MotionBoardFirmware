@@ -11,6 +11,7 @@
 #include "CanProtocol.hpp"
 #include "Quaternion.hpp"
 
+#include "MotionConfig_0_1.h"
 
 enum ControlThreadEvents {
     BoardEvent      = 1 << 0,
@@ -48,6 +49,10 @@ void ControlThread::main() {
                                        CanardTransferKindMessage,
                                        ROBOT_SET_CURRENT_POSE_ID,
                                        reg_udral_physics_kinematics_cartesian_Pose_0_1_EXTENT_BYTES_);
+    Board::Com::CANBus::registerCanMsg(this,
+                                       CanardTransferKindMessage,
+                                       MOTION_SET_MOTION_CONFIG_ID,
+                                       jeroboam_datatypes_actuators_motion_MotionConfig_0_1_EXTENT_BYTES_);
     Board::Events::startControlLoop(MOTOR_CONTROL_LOOP_FREQ);
 
     while (!shouldTerminate()) {
@@ -179,6 +184,9 @@ void ControlThread::processCanMsg(CanardRxTransfer * transfer) {
             control.getRobotPose()->setPose(x, y, theta);
             break;
         }
+        case MOTION_SET_ADAPTATIVE_PID_ID:
+            processAdaptativPIDMsg(transfer);
+            break;
         default:
             Logging::println("[Control Thread] CAN transfer dropped");
             break;
@@ -212,4 +220,14 @@ void ControlThread::processTwistMsg(CanardRxTransfer * transfer, float* linear, 
                                                                  &transfer->payload_size);
     *linear = twistGoal.linear.meter_per_second[0] * 1000.; // linear speed on x axis;
     *angular = twistGoal.angular.radian_per_second[2]; // angular speed on z axis;
+}
+
+void ControlThread::processMotionConfigMsg(CanardRxTransfer * transfer) {
+    jeroboam_datatypes_actuators_motion_MotionConfig_0_1 motionConf;
+    jeroboam_datatypes_actuators_motion_MotionConfig_0_1_deserialize_(&motionConf,
+                                                                                     (uint8_t *)transfer->payload,
+                                                                                     &transfer->payload_size);
+    control.getRobotPose()->setWheelBase(motionConf.wheel_base.meter);
+    control.getMotorControl()->setWheelRadius(Peripherals::LEFT_MOTOR, motionConf.left_wheel_radius.meter);
+    control.getMotorControl()->setWheelRadius(Peripherals::RIGHT_MOTOR, motionConf.right_wheel_radius.meter);
 }

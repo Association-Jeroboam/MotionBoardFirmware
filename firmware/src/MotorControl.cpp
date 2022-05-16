@@ -44,6 +44,17 @@ void MotorControl::motorSetPID(Peripherals::Motor motor, float p, float i, float
     }
 }
 
+void MotorControl::setWheelRadius(Peripherals::Motor motor, float wheelRadius) {
+    switch (motor) {
+        case Peripherals::LEFT_MOTOR:
+            m_leftMotor.setWheelRadius(wheelRadius);
+            break;
+        case Peripherals::RIGHT_MOTOR:
+            m_rightMotor.setWheelRadius(wheelRadius);
+            break;
+    }
+}
+
 float MotorControl::getMotorDrivenDistance(Peripherals::Motor motor) {
     float drivenDistance;
     switch (motor) {

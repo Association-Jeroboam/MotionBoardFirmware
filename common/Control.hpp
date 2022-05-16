@@ -49,6 +49,8 @@ class Control {
 
     ControlData getData();
 
+    inline MotorControl* getMotorControl(){return &m_motorControl;};
+
     RobotPose    m_robotPose;
 
   private:

@@ -27,6 +27,7 @@ class ControlThread : public chibios_rt::BaseStaticThread<CONTROL_THREAD_WA>,
 
     void    processPoseMsg(CanardRxTransfer * transfer, float* x, float* y, float* theta);
     void    processTwistMsg(CanardRxTransfer * transfer, float* linear, float* angular);
+    void    processMotionConfigMsg(CanardRxTransfer * transfer);
     void    sendCurrentState();
     void    updateDataStreamer();
     bool    moveOkFired;

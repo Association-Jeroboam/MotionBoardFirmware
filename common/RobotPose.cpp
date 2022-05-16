@@ -4,13 +4,18 @@
 #include "Parameters.hpp"
 #include "Logging.hpp"
 
-RobotPose::RobotPose(float x, float y, float angle) : m_x(x), m_y(y), m_angle(angle) {
-    m_turns = 0;
+RobotPose::RobotPose(float x, float y, float angle) :
+m_x(x),
+m_y(y),
+m_angle(angle),
+m_turns(0),
+m_wheelBase(WHEEL_BASE)
+{
 }
 
 void RobotPose::update(float dl, float dr) {
     float dDistance = (dr + dl) * 0.5;
-    float dAngle = (dr - dl) / WHEEL_BASE;
+    float dAngle = (dr - dl) / m_wheelBase;
 
     m_x += dDistance * cosf(m_angle + dAngle * 0.5);
     m_y += dDistance * sinf(m_angle + dAngle * 0.5);

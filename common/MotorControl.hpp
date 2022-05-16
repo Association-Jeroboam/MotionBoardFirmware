@@ -21,6 +21,8 @@ class MotorControl {
 
     void resetMotor(Peripherals::Motor motor);
 
+    void setWheelRadius(Peripherals::Motor motor, float wheelRadius);
+
   private:
     Motor m_leftMotor;
     Motor m_rightMotor;

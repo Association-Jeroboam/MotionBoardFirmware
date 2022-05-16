@@ -40,7 +40,7 @@ void Control::updateState() {
 
     m_robotPose.update(m_dl, m_dr);
     m_linearSpeed  = (right_speed + left_speed) * 0.5;
-    m_angularSpeed = (right_speed - left_speed) / WHEEL_BASE;
+    m_angularSpeed = (right_speed - left_speed) / m_robotPose.getWheelBase();
 }
 
 void Control::goToPose() {
@@ -172,8 +172,8 @@ void Control::applyControl() {
 //    }
 
 
-    leftSpeedSetpoint  = m_linearSpeedSetpoint - m_angularSpeedSetpoint * WHEEL_BASE * 0.5;
-    rightSpeedSetpoint = m_linearSpeedSetpoint + m_angularSpeedSetpoint * WHEEL_BASE * 0.5;
+    leftSpeedSetpoint  = m_linearSpeedSetpoint - m_angularSpeedSetpoint * m_robotPose.getWheelBase() * 0.5;
+    rightSpeedSetpoint = m_linearSpeedSetpoint + m_angularSpeedSetpoint * m_robotPose.getWheelBase() * 0.5;
 
 set_speeds:
     if(m_currentGoal.isReached() || m_emergencyStop) {
