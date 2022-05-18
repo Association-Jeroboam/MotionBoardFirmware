@@ -3,5 +3,7 @@ COMMONCPPSRC += $(COMMONDIR)/RobotPose.cpp
 COMMONCPPSRC += $(COMMONDIR)/Goal.cpp
 COMMONCPPSRC += $(COMMONDIR)/Control.cpp
 COMMONCPPSRC += $(COMMONDIR)/Quaternion.cpp
+COMMONCPPSRC += $(COMMONDIR)/SpeedController.cpp
+COMMONCPPSRC += $(COMMONDIR)/AdaptativeSpeedController.cpp
 
 COMMONINC += $(COMMONDIR)

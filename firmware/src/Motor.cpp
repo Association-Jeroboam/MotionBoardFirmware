@@ -8,9 +8,16 @@
 
 Motor::Motor(Peripherals::Encoder encoder,
              Peripherals::Motor   motor,
-             float                wheelRadius) : m_wheelRadius(wheelRadius),
-                                  m_encoder(encoder),
-                                  m_motor(motor) {
+             float                wheelRadius) :
+m_wheelRadius(wheelRadius),
+m_encoder(encoder),
+m_motor(motor),
+m_speedController((float*)LEFT_MOTOR_KP,
+                       (float*)LEFT_MOTOR_KI,
+                       (float*)MOTOR_SPEED_RANGE,
+                       DEFAULT_MAX_PID_OUTPUT,
+                       MAX_WHEEL_SPEED, MOTOR_CONTROL_LOOP_FREQ)
+{
     m_drivenDistance = 0.;
     m_disabled = false;
 }
@@ -20,9 +27,11 @@ void Motor::updateControl() {
     float command;
     if(m_disabled) {
         command = 0.;
-        m_speedPID.reset();
+//        m_speedPID.reset();
+        m_speedController.resetIntegral();
     } else {
-        command = m_speedPID.compute(m_speedSetpoint, m_speed);
+//        command = m_speedPID.compute(m_speedSetpoint, m_speed);
+        command = m_speedController.update(m_speed);
     }
     Board::IO::setMotorDutyCycle(m_motor, command);
     if (m_encoder == Peripherals::LEFT_ENCODER) {
@@ -39,12 +48,16 @@ void Motor::updateMeasure() {
     m_drivenDistance += drivenAngle * m_wheelRadius;
 }
 
-void Motor::setPID(float p, float i, float d, float bias, float frequency) {
-    m_speedPID.set(p, i, d, bias, frequency);
-}
+//void Motor::setPID(float p, float i, float d, float bias, float frequency) {
+//    m_speedPID.set(p, i, d, bias, frequency);
+//}
 
-void Motor::setPID(float p, float i, float d) {
-    m_speedPID.set(p, i, d);
+//void Motor::setPID(float p, float i, float d) {
+//    m_speedPID.set(p, i, d);
+//}
+
+void Motor::setPID(float p, float i, uint8_t range) {
+    m_speedController.setGains(p, i, range);
 }
 
 void Motor::setSpeed(float speed) {
@@ -53,7 +66,8 @@ void Motor::setSpeed(float speed) {
     } else if (speed < -MAX_WHEEL_SPEED) {
         speed = -MAX_WHEEL_SPEED;
     }
-    m_speedSetpoint = speed;
+//    m_speedSetpoint = speed;
+    m_speedController.setSpeedGoal(speed);
 }
 
 void Motor::setWheelRadius(float wheelRadius) {
@@ -71,8 +85,10 @@ float Motor::getDrivenDistance() {
 }
 
 void Motor::reset() {
-    m_speedPID.reset();
-    m_speedSetpoint = 0.;
+//    m_speedPID.reset();
+//    m_speedSetpoint = 0.;
+    m_speedController.resetIntegral();
+    m_speedController.setSpeedGoal(0.);
 }
 
 void Motor::setDisable(bool disable) {

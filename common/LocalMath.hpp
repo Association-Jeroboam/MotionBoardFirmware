@@ -53,3 +53,7 @@ inline float normalizeHalfPi(float angle) {
 template <typename T> inline int sign(T val) {
     return (T(0) < val) - (val < T(0));
 }
+
+inline float fmap(float x, float in_min, float in_max, float out_min, float out_max) {
+    return (x - in_min) * (out_max - out_min) / (in_max - in_min) + out_min;
+}

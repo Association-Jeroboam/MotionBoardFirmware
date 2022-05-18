@@ -1,7 +1,7 @@
 #pragma once
 
 #include "PID.h"
-
+#include "AdaptativeSpeedController.hpp"
 #include "Peripherals.hpp"
 
 class Motor {
@@ -14,9 +14,11 @@ class Motor {
 
     void setSpeed(float speed);
 
-    void setPID(float p, float i, float d, float bias, float frequency);
+//    void setPID(float p, float i, float d, float bias, float frequency);
 
-    void setPID(float p, float i, float d);
+//    void setPID(float p, float i, float d);
+
+    void setPID(float p, float i, uint8_t range);
 
     void setWheelRadius(float wheelRadius);
 
@@ -34,6 +36,7 @@ class Motor {
     float                      m_drivenDistance;
     float                      m_wheelRadius;
     PID                        m_speedPID;
+    AdaptativeSpeedController  m_speedController;
     const Peripherals::Encoder m_encoder;
     const Peripherals::Motor   m_motor;
     bool m_disabled;
