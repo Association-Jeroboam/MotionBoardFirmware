@@ -193,8 +193,8 @@ void ControlThread::sendPIDStates() {
     transfer_id++;
     Board::Com::CANBus::send(&metadata, buf_size,  buffer);
 
-    params = control.getMotorControl()->getMotorControllerParameters(Peripherals::LEFT_MOTOR);
-    pidState.ID = CAN_PROTOCOL_LEFT_SPEED_PID_ID;
+    params = control.getMotorControl()->getMotorControllerParameters(Peripherals::RIGHT_MOTOR);
+    pidState.ID = CAN_PROTOCOL_RIGHT_SPEED_PID_ID;
     pidState._error = params.speedError;
     pidState.output = params.outputValue;
     pidState.setpoint = params.speedGoal;
