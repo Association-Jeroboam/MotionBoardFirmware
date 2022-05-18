@@ -10,7 +10,7 @@
 #include "canard.h"
 #include "CanProtocol.hpp"
 #include "Quaternion.hpp"
-
+#include "AdaptativePIDConfig_0_1.h"
 #include "MotionConfig_0_1.h"
 
 enum ControlThreadEvents {
@@ -51,13 +51,17 @@ void ControlThread::main() {
                                        reg_udral_physics_kinematics_cartesian_Pose_0_1_EXTENT_BYTES_);
     Board::Com::CANBus::registerCanMsg(this,
                                        CanardTransferKindMessage,
+                                       MOTION_SET_ADAPTATIVE_PID_ID,
+                                       jeroboam_datatypes_actuators_motion_AdaptativePIDConfig_0_1_EXTENT_BYTES_);
+    Board::Com::CANBus::registerCanMsg(this,
+                                       CanardTransferKindMessage,
                                        MOTION_SET_MOTION_CONFIG_ID,
                                        jeroboam_datatypes_actuators_motion_MotionConfig_0_1_EXTENT_BYTES_);
     Board::Events::startControlLoop(MOTOR_CONTROL_LOOP_FREQ);
 
     while (!shouldTerminate()) {
         eventmask_t event = waitOneEvent(BoardEvent);
-        if( event && BoardEvent) {
+        if( event & BoardEvent) {
 
             eventflags_t flags = m_boardListener.getAndClearFlags();
             if (flags & Board::Events::RUN_MOTOR_CONTROL) {
@@ -187,6 +191,9 @@ void ControlThread::processCanMsg(CanardRxTransfer * transfer) {
         case MOTION_SET_ADAPTATIVE_PID_ID:
             processAdaptativPIDMsg(transfer);
             break;
+        case MOTION_SET_MOTION_CONFIG_ID:
+            processMotionConfigMsg(transfer);
+            break;
         default:
             Logging::println("[Control Thread] CAN transfer dropped");
             break;
@@ -220,6 +227,29 @@ void ControlThread::processTwistMsg(CanardRxTransfer * transfer, float* linear, 
                                                                  &transfer->payload_size);
     *linear = twistGoal.linear.meter_per_second[0] * 1000.; // linear speed on x axis;
     *angular = twistGoal.angular.radian_per_second[2]; // angular speed on z axis;
+}
+
+void ControlThread::processAdaptativPIDMsg(CanardRxTransfer * transfer) {
+    jeroboam_datatypes_actuators_motion_AdaptativePIDConfig_0_1 adaptPID;
+    jeroboam_datatypes_actuators_motion_AdaptativePIDConfig_0_1_deserialize_(&adaptPID,
+                                                                                            (uint8_t *)transfer->payload,
+                                                                                            &transfer->payload_size);
+    // TODO: implement adaptative PIDs
+    switch (adaptPID.ID) {
+        case Peripherals::LEFT_MOTOR:
+            for(uint8_t i = 0; i < NB_PI_SUBSET; i ++) {
+                control.getMotorControl()->motorSetPID(Peripherals::LEFT_MOTOR, adaptPID.configs[i].pid[0], adaptPID.configs[i].pid[1], i);
+            }
+
+            break;
+        case Peripherals::RIGHT_MOTOR:
+            for(uint8_t i = 0; i < NB_PI_SUBSET; i ++) {
+                control.getMotorControl()->motorSetPID(Peripherals::RIGHT_MOTOR, adaptPID.configs[i].pid[0], adaptPID.configs[i].pid[1], i);
+            }
+            break;
+        default:
+            Logging::println("[Control] Unknown motor id");
+    }
 }
 
 void ControlThread::processMotionConfigMsg(CanardRxTransfer * transfer) {
