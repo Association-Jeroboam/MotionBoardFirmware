@@ -6,8 +6,6 @@
 
 MotorControl::MotorControl() : m_leftMotor(Peripherals::LEFT_ENCODER, Peripherals::LEFT_MOTOR, WHEEL_LEFT_RADIUS),
                                m_rightMotor(Peripherals::RIGHT_ENCODER, Peripherals::RIGHT_MOTOR, WHEEL_RIGHT_RADIUS) {
-    m_leftMotor.setPID(LEFT_MOTOR_KP, LEFT_MOTOR_KI, LEFT_MOTOR_KD, LEFT_MOTOR_BIAS, MOTOR_CONTROL_LOOP_FREQ);
-    m_rightMotor.setPID(RIGHT_MOTOR_KP, RIGHT_MOTOR_KI, RIGHT_MOTOR_KD, RIGHT_MOTOR_BIAS, MOTOR_CONTROL_LOOP_FREQ);
     motorSetSpeed(Peripherals::LEFT_MOTOR, 0.);
     motorSetSpeed(Peripherals::RIGHT_MOTOR, 0.);
 }
@@ -33,13 +31,24 @@ void MotorControl::motorSetSpeed(Peripherals::Motor motor, float speed) {
     }
 }
 
-void MotorControl::motorSetPID(Peripherals::Motor motor, float p, float i, float d) {
+void MotorControl::motorSetPID(Peripherals::Motor motor, float p, float i, uint8_t range) {
     switch (motor) {
         case Peripherals::LEFT_MOTOR:
-            m_leftMotor.setPID(p, i, d);
+            m_leftMotor.setPID(p, i, range);
             break;
         case Peripherals::RIGHT_MOTOR:
-            m_rightMotor.setPID(p, i, d);
+            m_rightMotor.setPID(p, i, range);
+            break;
+    }
+}
+
+void MotorControl::setWheelRadius(Peripherals::Motor motor, float wheelRadius) {
+    switch (motor) {
+        case Peripherals::LEFT_MOTOR:
+            m_leftMotor.setWheelRadius(wheelRadius);
+            break;
+        case Peripherals::RIGHT_MOTOR:
+            m_rightMotor.setWheelRadius(wheelRadius);
             break;
     }
 }
@@ -68,6 +77,20 @@ float MotorControl::getMotorSpeed(Peripherals::Motor motor) {
             break;
     }
     return speed;
+}
+
+SpeedControllerParameters MotorControl::getMotorControllerParameters(Peripherals::Motor motor){
+    SpeedControllerParameters params;
+    switch (motor) {
+        case Peripherals::LEFT_MOTOR:
+            params = m_leftMotor.getControllerParameters();
+            break;
+        case Peripherals::RIGHT_MOTOR:
+            params = m_rightMotor.getControllerParameters();
+            break;
+    }
+    return params;
+
 }
 
 void MotorControl::resetMotor(Peripherals::Motor motor) {

@@ -10,7 +10,9 @@
 #include "canard.h"
 #include "CanProtocol.hpp"
 #include "Quaternion.hpp"
-
+#include "AdaptativePIDConfig_0_1.h"
+#include "PIDState_0_1.h"
+#include "MotionConfig_0_1.h"
 
 enum ControlThreadEvents {
     BoardEvent      = 1 << 0,
@@ -44,11 +46,23 @@ void ControlThread::main() {
                                       CanardTransferKindMessage,
                                       ROBOT_TWIST_GOAL_ID,
                                       reg_udral_physics_kinematics_cartesian_Twist_0_1_EXTENT_BYTES_);
+    Board::Com::CANBus::registerCanMsg(this,
+                                       CanardTransferKindMessage,
+                                       ROBOT_SET_CURRENT_POSE_ID,
+                                       reg_udral_physics_kinematics_cartesian_Pose_0_1_EXTENT_BYTES_);
+    Board::Com::CANBus::registerCanMsg(this,
+                                       CanardTransferKindMessage,
+                                       MOTION_SET_ADAPTATIVE_PID_ID,
+                                       jeroboam_datatypes_actuators_motion_AdaptativePIDConfig_0_1_EXTENT_BYTES_);
+    Board::Com::CANBus::registerCanMsg(this,
+                                       CanardTransferKindMessage,
+                                       MOTION_SET_MOTION_CONFIG_ID,
+                                       jeroboam_datatypes_actuators_motion_MotionConfig_0_1_EXTENT_BYTES_);
     Board::Events::startControlLoop(MOTOR_CONTROL_LOOP_FREQ);
 
     while (!shouldTerminate()) {
         eventmask_t event = waitOneEvent(BoardEvent);
-        if( event && BoardEvent) {
+        if( event & BoardEvent) {
 
             eventflags_t flags = m_boardListener.getAndClearFlags();
             if (flags & Board::Events::RUN_MOTOR_CONTROL) {
@@ -72,6 +86,7 @@ void ControlThread::main() {
                     }
                 }
                 sendCurrentState();
+                sendPIDStates();
                 updateDataStreamer();
 
             }
@@ -153,13 +168,80 @@ void ControlThread::sendCurrentState() {
 
 }
 
+void ControlThread::sendPIDStates() {
+    static CanardTransferID transfer_id = 0;
+
+    SpeedControllerParameters params = control.getMotorControl()->getMotorControllerParameters(Peripherals::LEFT_MOTOR);
+    jeroboam_datatypes_actuators_motion_PIDState_0_1 pidState;
+    pidState.ID = CAN_PROTOCOL_LEFT_SPEED_PID_ID;
+    pidState._error = params.speedError;
+    pidState.output = params.outputValue;
+    pidState.setpoint = params.speedGoal;
+
+    size_t buf_size = jeroboam_datatypes_actuators_motion_PIDState_0_1_SERIALIZATION_BUFFER_SIZE_BYTES_;
+    uint8_t buffer[jeroboam_datatypes_actuators_motion_PIDState_0_1_SERIALIZATION_BUFFER_SIZE_BYTES_];
+
+    jeroboam_datatypes_actuators_motion_PIDState_0_1_serialize_(&pidState, buffer, &buf_size);
+
+    CanardTransferMetadata metadata = {
+        .priority = CanardPriorityNominal,
+        .transfer_kind = CanardTransferKindMessage,
+        .port_id = MOTION_PID_STATE_ID,
+        .remote_node_id = CANARD_NODE_ID_UNSET,
+        .transfer_id = transfer_id,
+    };
+    transfer_id++;
+    Board::Com::CANBus::send(&metadata, buf_size,  buffer);
+
+    params = control.getMotorControl()->getMotorControllerParameters(Peripherals::LEFT_MOTOR);
+    pidState.ID = CAN_PROTOCOL_LEFT_SPEED_PID_ID;
+    pidState._error = params.speedError;
+    pidState.output = params.outputValue;
+    pidState.setpoint = params.speedGoal;
+
+    jeroboam_datatypes_actuators_motion_PIDState_0_1_serialize_(&pidState, buffer, &buf_size);
+
+    metadata = {
+        .priority = CanardPriorityNominal,
+        .transfer_kind = CanardTransferKindMessage,
+        .port_id = MOTION_PID_STATE_ID,
+        .remote_node_id = CANARD_NODE_ID_UNSET,
+        .transfer_id = transfer_id,
+    };
+    transfer_id++;
+    Board::Com::CANBus::send(&metadata, buf_size,  buffer);
+
+
+}
+
 void ControlThread::processCanMsg(CanardRxTransfer * transfer) {
-     switch(transfer->metadata.port_id) {
-        case ROBOT_POSE_GOAL_ID:
-            processPoseGoal(transfer);
+    switch(transfer->metadata.port_id) {
+        case ROBOT_POSE_GOAL_ID: {
+            float x, y, theta;
+            processPoseMsg(transfer, &x, &y, &theta);
+            Goal goal(x, y, theta, false);
+            control.setCurrentGoal(goal);
             break;
-        case ROBOT_TWIST_GOAL_ID:
-            processTwistGoal(transfer);
+        }
+        case ROBOT_TWIST_GOAL_ID: {
+            float linear, angular;
+            processTwistMsg(transfer, &linear, &angular);
+            Goal goal(linear, angular, Goal::GoalType::CIRCULAR);
+            control.setCurrentGoal(goal);
+            break;
+        }
+        case ROBOT_SET_CURRENT_POSE_ID: {
+            Logging::println("[Control Thread] ROBOT_SET_CURRENT_POSE_ID");
+            float x, y, theta;
+            processPoseMsg(transfer, &x, &y, &theta);
+            control.getRobotPose()->setPose(x, y, theta);
+            break;
+        }
+        case MOTION_SET_ADAPTATIVE_PID_ID:
+            processAdaptativPIDMsg(transfer);
+            break;
+        case MOTION_SET_MOTION_CONFIG_ID:
+            processMotionConfigMsg(transfer);
             break;
         default:
             Logging::println("[Control Thread] CAN transfer dropped");
@@ -167,34 +249,64 @@ void ControlThread::processCanMsg(CanardRxTransfer * transfer) {
     }
 }
 
-void ControlThread::processPoseGoal(CanardRxTransfer * transfer) {
+void ControlThread::processPoseMsg(CanardRxTransfer * transfer, float* x, float* y, float* theta) {
     reg_udral_physics_kinematics_cartesian_Pose_0_1 poseGoal;
     reg_udral_physics_kinematics_cartesian_Pose_0_1_deserialize_(&poseGoal,
                                                                  (uint8_t *)transfer->payload,
                                                                  &transfer->payload_size);
-    float w, x, y, z;
-    w = poseGoal.orientation.wxyz[0];
-    x = poseGoal.orientation.wxyz[1];
-    y = poseGoal.orientation.wxyz[2];
-    z = poseGoal.orientation.wxyz[3];
+    float qw, qx, qy, qz;
+    qw = poseGoal.orientation.wxyz[0];
+    qx = poseGoal.orientation.wxyz[1];
+    qy = poseGoal.orientation.wxyz[2];
+    qz = poseGoal.orientation.wxyz[3];
 
-    Quaternion q(w, x, y, z);
-    float a, osef1, osef2, theta;
+    Quaternion q(qw, qx, qy, qz);
+    float a, osef1, osef2;
     a = 0.;
-    q.ToAngleAxis(&a, &osef1, &osef2, &theta);
-    Goal goal(x, y, theta, false);
-    control.setCurrentGoal(goal);
+    q.ToAngleAxis(&a, &osef1, &osef2, theta);
+    *x = poseGoal.position.value.meter[0];
+    *y = poseGoal.position.value.meter[1];
 
 }
 
-void ControlThread::processTwistGoal(CanardRxTransfer * transfer) {
+void ControlThread::processTwistMsg(CanardRxTransfer * transfer, float* linear, float* angular) {
     reg_udral_physics_kinematics_cartesian_Twist_0_1 twistGoal;
     reg_udral_physics_kinematics_cartesian_Twist_0_1_deserialize_(&twistGoal,
                                                                  (uint8_t *)transfer->payload,
                                                                  &transfer->payload_size);
-    float v = twistGoal.linear.meter_per_second[0] * 1000.; // linear speed on x axis;
-    float w = twistGoal.angular.radian_per_second[2]; // angular speed on z axis;
-    Logging::println("twist goal");
-    Goal goal(v, w, Goal::GoalType::CIRCULAR);
-    control.setCurrentGoal(goal);
+    *linear = twistGoal.linear.meter_per_second[0] * 1000.; // linear speed on x axis;
+    *angular = twistGoal.angular.radian_per_second[2]; // angular speed on z axis;
+}
+
+void ControlThread::processAdaptativPIDMsg(CanardRxTransfer * transfer) {
+    jeroboam_datatypes_actuators_motion_AdaptativePIDConfig_0_1 adaptPID;
+    jeroboam_datatypes_actuators_motion_AdaptativePIDConfig_0_1_deserialize_(&adaptPID,
+                                                                                            (uint8_t *)transfer->payload,
+                                                                                            &transfer->payload_size);
+    // TODO: implement adaptative PIDs
+    switch (adaptPID.ID) {
+        case Peripherals::LEFT_MOTOR:
+            for(uint8_t i = 0; i < NB_PI_SUBSET; i ++) {
+                control.getMotorControl()->motorSetPID(Peripherals::LEFT_MOTOR, adaptPID.configs[i].pid[0], adaptPID.configs[i].pid[1], i);
+            }
+
+            break;
+        case Peripherals::RIGHT_MOTOR:
+            for(uint8_t i = 0; i < NB_PI_SUBSET; i ++) {
+                control.getMotorControl()->motorSetPID(Peripherals::RIGHT_MOTOR, adaptPID.configs[i].pid[0], adaptPID.configs[i].pid[1], i);
+            }
+            break;
+        default:
+            Logging::println("[Control] Unknown motor id");
+    }
+}
+
+void ControlThread::processMotionConfigMsg(CanardRxTransfer * transfer) {
+    jeroboam_datatypes_actuators_motion_MotionConfig_0_1 motionConf;
+    jeroboam_datatypes_actuators_motion_MotionConfig_0_1_deserialize_(&motionConf,
+                                                                                     (uint8_t *)transfer->payload,
+                                                                                     &transfer->payload_size);
+    control.getRobotPose()->setWheelBase(motionConf.wheel_base.meter);
+    control.getMotorControl()->setWheelRadius(Peripherals::LEFT_MOTOR, motionConf.left_wheel_radius.meter);
+    control.getMotorControl()->setWheelRadius(Peripherals::RIGHT_MOTOR, motionConf.right_wheel_radius.meter);
 }

@@ -23,6 +23,9 @@ public:
 
     int32_t getTurns();
 
+    inline void setWheelBase(float wheelBase){ m_wheelBase = wheelBase;};
+    inline float getWheelBase(){ return m_wheelBase;};
+
 private:
 
     void restrainAngle();
@@ -31,4 +34,5 @@ private:
     float m_y;
     float m_angle;
     int32_t m_turns;
+    float m_wheelBase;
 };

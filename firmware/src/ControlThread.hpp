@@ -25,9 +25,12 @@ class ControlThread : public chibios_rt::BaseStaticThread<CONTROL_THREAD_WA>,
     chibios_rt::EventListener m_boardListener;
     chibios_rt::EventListener m_avoidanceListener;
 
-    void    processPoseGoal(CanardRxTransfer * transfer);
-    void    processTwistGoal(CanardRxTransfer * transfer);
+    void    processPoseMsg(CanardRxTransfer * transfer, float* x, float* y, float* theta);
+    void    processTwistMsg(CanardRxTransfer * transfer, float* linear, float* angular);
+    void    processAdaptativPIDMsg(CanardRxTransfer * transfer);
+    void    processMotionConfigMsg(CanardRxTransfer * transfer);
     void    sendCurrentState();
+    void    sendPIDStates();
     void    updateDataStreamer();
     bool    moveOkFired;
     Control control;

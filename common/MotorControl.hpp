@@ -11,7 +11,7 @@ class MotorControl {
 
     void motorSetSpeed(Peripherals::Motor motor, float speed);
 
-    void motorSetPID(Peripherals::Motor motor, float p, float i, float d);
+    void motorSetPID(Peripherals::Motor motor, float p, float i, uint8_t range);
 
     float getMotorDrivenDistance(Peripherals::Motor motor);
 
@@ -20,6 +20,10 @@ class MotorControl {
     void setDisable(bool disable);
 
     void resetMotor(Peripherals::Motor motor);
+
+    void setWheelRadius(Peripherals::Motor motor, float wheelRadius);
+
+    SpeedControllerParameters getMotorControllerParameters(Peripherals::Motor motor);
 
   private:
     Motor m_leftMotor;

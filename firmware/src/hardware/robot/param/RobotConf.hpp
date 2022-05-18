@@ -13,15 +13,27 @@ constexpr float WHEEL_LEFT_RADIUS  = 28.25 * WHEEL_DISTANCE_FACTOR;  //[mm] Theo
 constexpr float WHEEL_RIGHT_RADIUS = 28.25 / WHEEL_RADIUS_FACTOR * WHEEL_DISTANCE_FACTOR;  //[mm] Theorical 28.25
 constexpr float WHEEL_BASE         = 266.; //[mm] Theorical 266
 
-constexpr float LEFT_MOTOR_KP      = 0.001;
-constexpr float LEFT_MOTOR_KI      = 0.0001;
+constexpr float LEFT_MOTOR_KP[3]      = {0.001,0.001,0.001};
+constexpr float LEFT_MOTOR_KI[3]      = {0.0001,0.0001,0.0001};
 constexpr float LEFT_MOTOR_KD      = 0.0;
 constexpr float LEFT_MOTOR_BIAS    = 0.0;
 
-constexpr float RIGHT_MOTOR_KP      = 0.001;
-constexpr float RIGHT_MOTOR_KI      = 0.0001;
+constexpr float MOTOR_SPEED_RANGE[3]   = {200., 500., 1000.};
+
+constexpr float RIGHT_MOTOR_KP[3]      = {0.001,0.001,0.001};
+constexpr float RIGHT_MOTOR_KI[3]      = {0.0001,0.0001,0.0001};
 constexpr float RIGHT_MOTOR_KD      = 0.0;
 constexpr float RIGHT_MOTOR_BIAS    = 0.0;
+
+constexpr float LINEAR_CONTROL_KP[3]      = {0.001,0.001,0.001};
+constexpr float LINEAR_CONTROL_KI[3]      = {0.0001,0.0001,0.0001};
+constexpr float LINEAR_CONTROL_KD      = 0.0;
+constexpr float LINEAR_CONTROL_BIAS    = 0.0;
+
+constexpr float ANGULAR_CONTROL_KP[3]      = {0.001,0.001,0.001};
+constexpr float ANGULAR_CONTROL_KI[3]      = {0.0001,0.0001,0.0001};
+constexpr float ANGULAR_CONTROL_KD      = 0.0;
+constexpr float ANGULAR_CONTROL_BIAS    = 0.0;
 
 constexpr float INITIAL_X_POS       = 0.;
 constexpr float INITIAL_Y_POS       = 0.;

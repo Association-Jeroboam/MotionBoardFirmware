@@ -137,7 +137,7 @@ void Board::Com::CANBus::init() {
     palSetLineMode(CAN_RX_PIN, CAN_RX_PIN_MODE);
     canStart(&CAN_DRIVER, &canConfig);
     canardInstance = canardInit(canardSpecificHeapAlloc, canardSpecificHeapFree);
-    canardInstance.node_id = MOTION_BOARD_ID;
+    canardInstance.node_id = CAN_PROTOCOL_MOTION_BOARD_ID;
     canTxThread.start(NORMALPRIO);
     chThdSleep(TIME_MS2I(10));
     canRxThread.start(NORMALPRIO + 1);
