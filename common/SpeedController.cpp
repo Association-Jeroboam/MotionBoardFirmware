@@ -10,9 +10,10 @@
 
 SpeedController::SpeedController(float speedKp, float speedKi, float outputLimit, float maxInputSpeed, float measureFrequency)
 {
-    m_speedGoal = 0;
+    m_params.outputValue = 0;
+    m_params.speedGoal = 0;
     m_integratedOutput = 0;
-    m_speedError = 0;
+    m_params.speedError = 0;
     m_speedKp = speedKp;
     m_speedKi = speedKi;
 
@@ -23,21 +24,21 @@ SpeedController::SpeedController(float speedKp, float speedKi, float outputLimit
 
 float SpeedController::update(float actualSpeed)
 {
-    float outputValue = 0;
-    m_speedError = m_speedGoal - actualSpeed;
+    m_params.outputValue = 0;
+    m_params.speedError = m_params.speedGoal - actualSpeed;
 
     // Regulateur en vitesse : un PI
-    outputValue = m_speedError * m_speedKp;
-    outputValue += m_integratedOutput;
+    m_params.outputValue = m_params.speedError * m_speedKp;
+    m_params.outputValue += m_integratedOutput;
 
     // On limite la sortie entre -m_outputLimit et m_outputLimit...
     bool limited = false;
-    if (outputValue > m_outputLimit) {
-        outputValue = m_outputLimit;
+    if (m_params.outputValue > m_outputLimit) {
+        m_params.outputValue = m_outputLimit;
         limited = true;
     }
-    if (outputValue < -m_outputLimit) {
-        outputValue = -m_outputLimit;
+    if (m_params.outputValue < -m_outputLimit) {
+        m_params.outputValue = -m_outputLimit;
         limited = true;
     }
 
@@ -47,8 +48,8 @@ float SpeedController::update(float actualSpeed)
     }
     else    // .. Sinon, on integre l'erreur
     {
-        m_integratedOutput += m_speedKi * m_speedError / m_measureFrequency;
-        if (std::fabs(m_speedError) < 0.1) // Quand l'erreur de vitesse est proche de zero(ie: consigne à 0 et le robot ne bouge pas..), on désature l'intégrale
+        m_integratedOutput += m_speedKi * m_params.speedError / m_measureFrequency;
+        if (std::fabs(m_params.speedError) < 0.1) // Quand l'erreur de vitesse est proche de zero(ie: consigne à 0 et le robot ne bouge pas..), on désature l'intégrale
             m_integratedOutput *= 0.95;
     }
 
@@ -58,7 +59,7 @@ float SpeedController::update(float actualSpeed)
     else if (m_integratedOutput < -m_outputLimit)
         m_integratedOutput = -m_outputLimit;
 
-    return outputValue;
+    return m_params.outputValue;
 }
 
 void SpeedController::setSpeedGoal(float speed)
@@ -70,7 +71,7 @@ void SpeedController::setSpeedGoal(float speed)
 
     if (speed == 0.0)
         resetIntegral();
-    m_speedGoal = speed;
+    m_params.speedGoal = speed;
 }
 ;
 

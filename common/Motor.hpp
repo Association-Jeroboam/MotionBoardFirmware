@@ -20,6 +20,8 @@ class Motor {
 
     void setPID(float p, float i, uint8_t range);
 
+    inline SpeedControllerParameters getControllerParameters(){return m_speedController.getParameters();};
+
     void setWheelRadius(float wheelRadius);
 
     void setDisable(bool disable);

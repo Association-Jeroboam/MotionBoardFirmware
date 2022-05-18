@@ -23,6 +23,8 @@ class MotorControl {
 
     void setWheelRadius(Peripherals::Motor motor, float wheelRadius);
 
+    SpeedControllerParameters getMotorControllerParameters(Peripherals::Motor motor);
+
   private:
     Motor m_leftMotor;
     Motor m_rightMotor;

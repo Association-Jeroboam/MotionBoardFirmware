@@ -30,6 +30,7 @@ class ControlThread : public chibios_rt::BaseStaticThread<CONTROL_THREAD_WA>,
     void    processAdaptativPIDMsg(CanardRxTransfer * transfer);
     void    processMotionConfigMsg(CanardRxTransfer * transfer);
     void    sendCurrentState();
+    void    sendPIDStates();
     void    updateDataStreamer();
     bool    moveOkFired;
     Control control;

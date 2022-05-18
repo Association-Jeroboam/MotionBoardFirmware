@@ -11,6 +11,7 @@
 #include "CanProtocol.hpp"
 #include "Quaternion.hpp"
 #include "AdaptativePIDConfig_0_1.h"
+#include "PIDState_0_1.h"
 #include "MotionConfig_0_1.h"
 
 enum ControlThreadEvents {
@@ -85,6 +86,7 @@ void ControlThread::main() {
                     }
                 }
                 sendCurrentState();
+                sendPIDStates();
                 updateDataStreamer();
 
             }
@@ -163,6 +165,52 @@ void ControlThread::sendCurrentState() {
     };
     transfer_id++;
     Board::Com::CANBus::send(&metadata, buf_size,  buffer);
+
+}
+
+void ControlThread::sendPIDStates() {
+    static CanardTransferID transfer_id = 0;
+
+    SpeedControllerParameters params = control.getMotorControl()->getMotorControllerParameters(Peripherals::LEFT_MOTOR);
+    jeroboam_datatypes_actuators_motion_PIDState_0_1 pidState;
+    pidState.ID = CAN_PROTOCOL_LEFT_SPEED_PID_ID;
+    pidState._error = params.speedError;
+    pidState.output = params.outputValue;
+    pidState.setpoint = params.speedGoal;
+
+    size_t buf_size = jeroboam_datatypes_actuators_motion_PIDState_0_1_SERIALIZATION_BUFFER_SIZE_BYTES_;
+    uint8_t buffer[jeroboam_datatypes_actuators_motion_PIDState_0_1_SERIALIZATION_BUFFER_SIZE_BYTES_];
+
+    jeroboam_datatypes_actuators_motion_PIDState_0_1_serialize_(&pidState, buffer, &buf_size);
+
+    CanardTransferMetadata metadata = {
+        .priority = CanardPriorityNominal,
+        .transfer_kind = CanardTransferKindMessage,
+        .port_id = MOTION_PID_STATE_ID,
+        .remote_node_id = CANARD_NODE_ID_UNSET,
+        .transfer_id = transfer_id,
+    };
+    transfer_id++;
+    Board::Com::CANBus::send(&metadata, buf_size,  buffer);
+
+    params = control.getMotorControl()->getMotorControllerParameters(Peripherals::LEFT_MOTOR);
+    pidState.ID = CAN_PROTOCOL_LEFT_SPEED_PID_ID;
+    pidState._error = params.speedError;
+    pidState.output = params.outputValue;
+    pidState.setpoint = params.speedGoal;
+
+    jeroboam_datatypes_actuators_motion_PIDState_0_1_serialize_(&pidState, buffer, &buf_size);
+
+    metadata = {
+        .priority = CanardPriorityNominal,
+        .transfer_kind = CanardTransferKindMessage,
+        .port_id = MOTION_PID_STATE_ID,
+        .remote_node_id = CANARD_NODE_ID_UNSET,
+        .transfer_id = transfer_id,
+    };
+    transfer_id++;
+    Board::Com::CANBus::send(&metadata, buf_size,  buffer);
+
 
 }
 

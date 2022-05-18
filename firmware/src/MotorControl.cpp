@@ -79,6 +79,20 @@ float MotorControl::getMotorSpeed(Peripherals::Motor motor) {
     return speed;
 }
 
+SpeedControllerParameters MotorControl::getMotorControllerParameters(Peripherals::Motor motor){
+    SpeedControllerParameters params;
+    switch (motor) {
+        case Peripherals::LEFT_MOTOR:
+            params = m_leftMotor.getControllerParameters();
+            break;
+        case Peripherals::RIGHT_MOTOR:
+            params = m_rightMotor.getControllerParameters();
+            break;
+    }
+    return params;
+
+}
+
 void MotorControl::resetMotor(Peripherals::Motor motor) {
     switch (motor) {
         case Peripherals::LEFT_MOTOR:

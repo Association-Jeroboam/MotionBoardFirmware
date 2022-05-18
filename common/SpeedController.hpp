@@ -7,6 +7,12 @@
 
 #include <cstdint>
 
+struct SpeedControllerParameters {
+    float outputValue;
+    float speedGoal;
+    float speedError;
+};
+
 class SpeedController
 {
   public:
@@ -20,12 +26,12 @@ class SpeedController
     void setSpeedGoal(float speed);
     float getSpeedGoal() const
     {
-        return m_speedGoal;
+        return m_params.speedGoal;
     }
 
     float getSpeedError() const
     {
-        return m_speedError;
+        return m_params.speedError;
     }
 
     float getIntegratedOutput() const
@@ -58,12 +64,18 @@ class SpeedController
         m_inputLimit = max;
     }
 
+    inline float getOutputValue() {return m_params.outputValue;};
+
+    inline SpeedControllerParameters getParameters(){return m_params;};
+
   protected:
     float m_speedKp;
     float m_speedKi;
 
 
   private:
+    SpeedControllerParameters m_params;
+    float m_outputValue;
     float m_speedGoal;
     float m_integratedOutput;
     float m_speedError;
