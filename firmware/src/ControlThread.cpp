@@ -183,6 +183,7 @@ void ControlThread::processCanMsg(CanardRxTransfer * transfer) {
             break;
         }
         case ROBOT_SET_CURRENT_POSE_ID: {
+            Logging::println("[Control Thread] ROBOT_SET_CURRENT_POSE_ID");
             float x, y, theta;
             processPoseMsg(transfer, &x, &y, &theta);
             control.getRobotPose()->setPose(x, y, theta);
