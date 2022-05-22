@@ -130,15 +130,13 @@ static void cmd_motor(BaseSequentialStream* chp, int argc, char* argv[]) {
 
             ControlThread::instance()->getControl()->setMotorPID(motor, p, i, d);
             return;
-        } else if (!strcmp(argv[1], "duty_cycle")) {
+        } else if (!strcmp(argv[1], "pwm")) {
             float duty_cycle = atof(argv[2]);
-            float dc_left;
-            float dc_right;
+            static float dc_left = 0;
+            static float dc_right = 0;
             if (motor == Peripherals::Motor::LEFT_MOTOR) {
                 dc_left  = duty_cycle;
-                dc_right = 0;
             } else {
-                dc_left  = 0;
                 dc_right = duty_cycle;
             }
             Goal goal(dc_left, dc_right, Goal::PWM);
@@ -152,7 +150,7 @@ static void cmd_motor(BaseSequentialStream* chp, int argc, char* argv[]) {
 
 usage:
     Logging::println("usage:");
-    Logging::println("motor [left/right] [pid/speed] [parameters]");
+    Logging::println("motor [left/right] [pid/speed/pwm] [parameters]");
 }
 
 static void cmd_control(BaseSequentialStream* chp, int argc, char* argv[]) {

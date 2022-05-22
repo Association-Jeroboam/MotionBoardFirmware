@@ -141,8 +141,7 @@ void Control::applyControl() {
         case Goal::PWM: {
             Board::IO::setMotorDutyCycle(Peripherals::Motor::LEFT_MOTOR, m_currentGoal.getPWMData().leftPWM);
             Board::IO::setMotorDutyCycle(Peripherals::Motor::RIGHT_MOTOR, m_currentGoal.getPWMData().rightPWM);
-            goto control_update;
-            break;
+            return;
         }
         case Goal::NO_GOAL: {
             m_linearSpeed          = 0.;
