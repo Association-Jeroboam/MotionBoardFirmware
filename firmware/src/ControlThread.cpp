@@ -283,7 +283,6 @@ void ControlThread::processAdaptativPIDMsg(CanardRxTransfer * transfer) {
     jeroboam_datatypes_actuators_motion_AdaptativePIDConfig_0_1_deserialize_(&adaptPID,
                                                                                             (uint8_t *)transfer->payload,
                                                                                             &transfer->payload_size);
-    // TODO: implement adaptative PIDs
     switch (adaptPID.ID) {
         case Peripherals::LEFT_MOTOR:
             for(uint8_t i = 0; i < NB_PI_SUBSET; i ++) {
