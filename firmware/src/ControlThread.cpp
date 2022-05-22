@@ -157,7 +157,7 @@ void ControlThread::sendCurrentState() {
 
 
     const CanardTransferMetadata metadata = {
-        .priority = CanardPriorityNominal,
+        .priority = CanardPriorityImmediate,
         .transfer_kind = CanardTransferKindMessage,
         .port_id = ROBOT_CURRENT_STATE_ID,
         .remote_node_id = CANARD_NODE_ID_UNSET,
