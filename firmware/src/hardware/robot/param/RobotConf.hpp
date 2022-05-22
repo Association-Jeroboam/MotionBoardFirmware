@@ -48,9 +48,10 @@ constexpr float KB         = -4.5;// -4.5; //TODO: Change me!
 #define MOTOR_RIGHT_FORWARD  PAL_HIGH
 #define MOTOR_RIGHT_BACKWARD PAL_LOW
 
-#define LEFT_ENCODER_DRIVER QEID3
-#define RIGHT_ENCODER_DRIVER QEID2
+#define LEFT_ENCODER_DRIVER QEID2
+#define RIGHT_ENCODER_DRIVER QEID8
 
+//TODO: update
 __extension__ const QEIConfig leftEncoderConf{
     .mode        = QEI_MODE_QUADRATURE,
     .resolution  = QEI_BOTH_EDGES,
@@ -61,7 +62,7 @@ __extension__ const QEIConfig leftEncoderConf{
     .notify_cb   = NULL,
     .overflow_cb = NULL,
 };
-
+//TODO: update
 __extension__ const QEIConfig rightEncoderConf{
     .mode        = QEI_MODE_QUADRATURE,
     .resolution  = QEI_BOTH_EDGES,
@@ -73,18 +74,18 @@ __extension__ const QEIConfig rightEncoderConf{
     .overflow_cb = NULL,
 };
 
-constexpr uint8_t MOTOR_LEFT_CHANNEL  = 2;
+constexpr uint8_t MOTOR_LEFT_CHANNEL  = 1;
 constexpr uint8_t MOTOR_RIGHT_CHANNEL = 0;
 
-#define MOTOR_LEFT_P_CHAN_LINE PAL_LINE(GPIOA, 10U)
-#define MOTOR_RIGHT_P_CHAN_LINE PAL_LINE(GPIOA, 8U)
+#define MOTOR_LEFT_P_CHAN_LINE PAL_LINE(GPIOA, 7U)
+#define MOTOR_RIGHT_P_CHAN_LINE PAL_LINE(GPIOB, 4U)
 
-#define MOTOR_LEFT_P_CHAN_LINE_MODE PAL_MODE_ALTERNATE(6)
-#define MOTOR_RIGHT_P_CHAN_LINE_MODE PAL_MODE_ALTERNATE(6)
+#define MOTOR_LEFT_P_CHAN_LINE_MODE PAL_MODE_ALTERNATE(2)
+#define MOTOR_RIGHT_P_CHAN_LINE_MODE PAL_MODE_ALTERNATE(2)
 
-#define MOTOR_LEFT_DIR_PIN PAL_LINE(GPIOB, 3U)
+#define MOTOR_LEFT_DIR_PIN PAL_LINE(GPIOA, 5U)
 #define MOTOR_LEFT_DIR_PIN_MODE PAL_MODE_OUTPUT_PUSHPULL
-#define MOTOR_RIGHT_DIR_PIN PAL_LINE(GPIOA, 15U)
+#define MOTOR_RIGHT_DIR_PIN PAL_LINE(GPIOB, 5U)
 #define MOTOR_RIGHT_DIR_PIN_MODE PAL_MODE_OUTPUT_PUSHPULL
 
 
@@ -120,9 +121,10 @@ constexpr float KB         = -0.6; //TODO: Change me!
 #define MOTOR_RIGHT_FORWARD  PAL_HIGH
 #define MOTOR_RIGHT_BACKWARD PAL_LOW
 
-#define LEFT_ENCODER_DRIVER QEID3
-#define RIGHT_ENCODER_DRIVER QEID2
+#define LEFT_ENCODER_DRIVER QEID2
+#define RIGHT_ENCODER_DRIVER QEID8
 
+//TODO: update
 __extension__ const QEIConfig leftEncoderConf{
     .mode        = QEI_MODE_QUADRATURE,
     .resolution  = QEI_BOTH_EDGES,
@@ -134,6 +136,7 @@ __extension__ const QEIConfig leftEncoderConf{
     .overflow_cb = NULL,
 };
 
+//TODO: update
 __extension__ const QEIConfig rightEncoderConf{
     .mode        = QEI_MODE_QUADRATURE,
     .resolution  = QEI_BOTH_EDGES,
@@ -145,18 +148,18 @@ __extension__ const QEIConfig rightEncoderConf{
     .overflow_cb = NULL,
 };
 
-constexpr uint8_t MOTOR_LEFT_CHANNEL  = 2;
+constexpr uint8_t MOTOR_LEFT_CHANNEL  = 1;
 constexpr uint8_t MOTOR_RIGHT_CHANNEL = 0;
 
-#define MOTOR_LEFT_P_CHAN_LINE PAL_LINE(GPIOA, 10U)
-#define MOTOR_RIGHT_P_CHAN_LINE PAL_LINE(GPIOA, 8U)
+#define MOTOR_LEFT_P_CHAN_LINE PAL_LINE(GPIOA, 7U)
+#define MOTOR_RIGHT_P_CHAN_LINE PAL_LINE(GPIOB, 4U)
 
-#define MOTOR_LEFT_P_CHAN_LINE_MODE PAL_MODE_ALTERNATE(6)
-#define MOTOR_RIGHT_P_CHAN_LINE_MODE PAL_MODE_ALTERNATE(6)
+#define MOTOR_LEFT_P_CHAN_LINE_MODE PAL_MODE_ALTERNATE(2)
+#define MOTOR_RIGHT_P_CHAN_LINE_MODE PAL_MODE_ALTERNATE(2)
 
-#define MOTOR_LEFT_DIR_PIN PAL_LINE(GPIOB, 3U)
+#define MOTOR_LEFT_DIR_PIN PAL_LINE(GPIOA, 5U)
 #define MOTOR_LEFT_DIR_PIN_MODE PAL_MODE_OUTPUT_PUSHPULL
-#define MOTOR_RIGHT_DIR_PIN PAL_LINE(GPIOA, 15U)
+#define MOTOR_RIGHT_DIR_PIN PAL_LINE(GPIOB, 5U)
 #define MOTOR_RIGHT_DIR_PIN_MODE PAL_MODE_OUTPUT_PUSHPULL
 
 #else

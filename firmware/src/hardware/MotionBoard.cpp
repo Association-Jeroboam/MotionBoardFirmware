@@ -77,28 +77,27 @@ void Board::IO::initTimers() {
 }
 
 void Board::IO::initGPIO() {
-    palSetLineMode(LED_LINE, LED_LINE_MODE);
+//    palSetLineMode(LED_LINE, LED_LINE_MODE);
 
     //TODO: This causes an assert in _pal_lld_enablepadevent, find out why
     palSetLineMode(EMGCY_STOP_PIN, EMGCY_STOP_PIN_MODE);
     palEnableLineEvent(EMGCY_STOP_PIN, PAL_EVENT_MODE_BOTH_EDGES);
     palSetLineCallback(EMGCY_STOP_PIN, gpioEmergencyStopCb, NULL);
 
-    palSetLineMode(BRAKE_PIN, BRAKE_PIN_MODE);
-    palSetLine(BRAKE_PIN);
+    palSetLineMode(BRAKE_LEFT_PIN, BRAKE_LEFT_PIN_MODE);
+    palSetLine(BRAKE_LEFT_PIN);
+    palSetLineMode(BRAKE_RIGHT_PIN, BRAKE_LEFT_PIN_MODE);
+    palSetLine(BRAKE_RIGHT_PIN);
 }
 
 void Board::IO::setBrake(Peripherals::Motor motor, bool brake){
-    static bool leftBrake = false;
-    static bool rightBrake = false;
+    uint32_t palState = brake ? PAL_LOW : PAL_HIGH;
+
     if(motor == Peripherals::LEFT_MOTOR) {
-        leftBrake = brake;
+        palWriteLine(BRAKE_LEFT_PIN, palState);
     } else {
-        rightBrake = brake;
+        palWriteLine(BRAKE_RIGHT_PIN, palState);
     }
-
-
-    palWriteLine(BRAKE_PIN, (leftBrake || rightBrake) ? PAL_LOW : PAL_HIGH);
 }
 
 void Board::IO::deinitPWM() {
@@ -124,7 +123,7 @@ int16_t Board::IO::getEncoderCount(Peripherals::Encoder encoder) {
 }
 
 void Board::IO::toggleLED() {
-    palToggleLine(LED_LINE);
+//    palToggleLine(LED_LINE);
 }
 
 void Board::Com::initDrivers() {
