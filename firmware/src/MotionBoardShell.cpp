@@ -51,7 +51,6 @@ char* completion_buffer[SHELL_MAX_COMPLETIONS];
  * Shell commands
  */
 static void cmd_data_stream(BaseSequentialStream* chp, int argc, char* argv[]) {
-    static bool thread_launched = false;
 
     (void)chp;
     if (argc == 1) {

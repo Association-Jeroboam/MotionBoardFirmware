@@ -46,14 +46,14 @@ void Control::updateState() {
 void Control::goToPose() {
     Goal::coordData_t goalData = m_currentGoal.getCoordData();
 
-    float goalX = goalData.x;
-    float goalY = goalData.y;
+//    float goalX = goalData.x;
+//    float goalY = goalData.y;
     m_angleSetpoint = goalData.theta;
     bool forwardMovementOnly = goalData.forwardMovementOnly;
 
     float currentTheta = m_robotPose.getModuloAngle();
-    float currentX = m_robotPose.getX();
-    float currentY = m_robotPose.getY();
+//    float currentX = m_robotPose.getX();
+//    float currentY = m_robotPose.getY();
 
     float diffX =  goalData.x - m_robotPose.getX();
     float diffY = goalData.y - m_robotPose.getY();
@@ -116,10 +116,10 @@ void Control::applyControl() {
     float leftSpeedSetpoint;
     float rightSpeedSetpoint;
 
-    float lastLinearSpeedSetpoint = m_linearSpeedSetpoint;
-    float lastAngularSpeedSetpoint = m_angularSpeedSetpoint;
-    float linearAccl;
-    float angularAccl;
+//    float lastLinearSpeedSetpoint = m_linearSpeedSetpoint;
+//    float lastAngularSpeedSetpoint = m_angularSpeedSetpoint;
+//    float linearAccl;
+//    float angularAccl;
     m_motorControl.setDisable(m_emergencyStop);
 
     switch (m_currentGoal.getType()) {
@@ -141,6 +141,10 @@ void Control::applyControl() {
         case Goal::PWM: {
             Board::IO::setMotorDutyCycle(Peripherals::Motor::LEFT_MOTOR, m_currentGoal.getPWMData().leftPWM);
             Board::IO::setMotorDutyCycle(Peripherals::Motor::RIGHT_MOTOR, m_currentGoal.getPWMData().rightPWM);
+//            float leftMotorSpeed = Board::IO::getMotorSpeed(Peripherals::Motor::LEFT_MOTOR);
+//            Logging::print("speedl %.4f  ×  ", leftMotorSpeed);
+//            float rightMotorSpeed = Board::IO::getMotorSpeed(Peripherals::Motor::RIGHT_MOTOR);
+//            Logging::println("speedr %.4f", rightMotorSpeed);
             return;
         }
         case Goal::NO_GOAL: {
@@ -155,6 +159,10 @@ void Control::applyControl() {
             m_motorControl.resetMotor(Peripherals::RIGHT_MOTOR);
             break;
         }
+        case Goal::DISTANCE:
+            break;
+        case Goal::ANGLE:
+            break;
     }
 
 //    linearAccl = (m_linearSpeedSetpoint - m_linearSpeed)/MOTOR_CONTROL_LOOP_DT;
@@ -186,7 +194,6 @@ set_speeds:
         m_motorControl.motorSetSpeed(Peripherals::RIGHT_MOTOR, rightSpeedSetpoint);
         m_motorControl.setDisable(false);
     }
-control_update:
     m_motorControl.update();
 }
 

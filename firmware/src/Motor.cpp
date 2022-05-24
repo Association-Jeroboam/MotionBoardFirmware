@@ -10,13 +10,13 @@ Motor::Motor(Peripherals::Encoder encoder,
              Peripherals::Motor   motor,
              float                wheelRadius) :
 m_wheelRadius(wheelRadius),
-m_encoder(encoder),
-m_motor(motor),
 m_speedController((float*)LEFT_MOTOR_KP,
                        (float*)LEFT_MOTOR_KI,
                        (float*)MOTOR_SPEED_RANGE,
                        DEFAULT_MAX_PID_OUTPUT,
-                       MAX_WHEEL_SPEED, MOTOR_CONTROL_LOOP_FREQ)
+                       MAX_WHEEL_SPEED, MOTOR_CONTROL_LOOP_FREQ),
+m_encoder(encoder),
+m_motor(motor)
 {
     m_drivenDistance = 0.;
     m_disabled = false;

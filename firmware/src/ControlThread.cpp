@@ -35,8 +35,6 @@ void ControlThread::main() {
     Logging::println("[ControlThread] init");
     setName("ControlThread");
 
-    static uint16_t toggleCounter = 0;
-
     Board::Events::eventRegister(&m_boardListener, BoardEvent);
     Board::Com::CANBus::registerCanMsg(this,
                                        CanardTransferKindMessage,
@@ -288,6 +286,7 @@ void ControlThread::processAdaptativPIDMsg(CanardRxTransfer * transfer) {
             for(uint8_t i = 0; i < NB_PI_SUBSET; i ++) {
                 control.getMotorControl()->motorSetPID(Peripherals::LEFT_MOTOR, adaptPID.configs[i].pid[0], adaptPID.configs[i].pid[1], i);
             }
+
 
             break;
         case Peripherals::RIGHT_MOTOR:
