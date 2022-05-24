@@ -46,6 +46,9 @@ void Motor::updateMeasure() {
     float   drivenAngle  = float(encoderCount) * (1. / ENCODER_TICK_PER_TURN) * GEAR_RATIO * 2. * M_PI;
     m_speed              = drivenAngle * MOTOR_CONTROL_LOOP_FREQ * m_wheelRadius;
     m_drivenDistance += drivenAngle * m_wheelRadius;
+//    float motorSpeed = Board::IO::getMotorSpeed(m_motor);
+//    Logging::println("speed %.4f", motorSpeed);
+
 }
 
 //void Motor::setPID(float p, float i, float d, float bias, float frequency) {

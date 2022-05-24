@@ -26,6 +26,7 @@ void deinitPWM();
 void setMotorDutyCycle(Peripherals::Motor motor, float duty_cycle);
 
 int16_t getEncoderCount(Peripherals::Encoder encoder);
+float   getMotorSpeed(Peripherals::Motor motor);
 
 void toggleLED();
 

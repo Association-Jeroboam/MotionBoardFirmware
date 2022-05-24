@@ -16,10 +16,12 @@ static void controlLoopTimerCallback(GPTDriver* gptp);
 static void gpioEmergencyStopCb(void* arg);
 
 inline void* canardSpecificHeapAlloc(CanardInstance* ins, size_t amount) {
+    (void)ins;
     return chHeapAlloc(NULL, amount);
 }
 
 inline void canardSpecificHeapFree(CanardInstance* ins, void* pointer) {
+    (void)ins;
     if(pointer) chHeapFree(pointer);
 }
 
@@ -60,6 +62,7 @@ void Board::IO::initDrivers() {
 
 void Board::IO::initEncoders() {
     //Left encoder
+    Logging::println("init encoders");
     palSetLineMode(ENCODER_LEFT_CHAN1_LINE, ENCODER_LEFT_CHAN1_PIN_MODE);
     palSetLineMode(ENCODER_LEFT_CHAN2_LINE, ENCODER_LEFT_CHAN2_PIN_MODE);
     qeiStart(&LEFT_ENCODER_DRIVER, &leftEncoderConf);
@@ -70,6 +73,17 @@ void Board::IO::initEncoders() {
     palSetLineMode(ENCODER_RIGHT_CHAN2_LINE, ENCODER_RIGHT_CHAN2_PIN_MODE);
     qeiStart(&RIGHT_ENCODER_DRIVER, &rightEncoderConf);
     qeiEnable(&RIGHT_ENCODER_DRIVER);
+
+    //Left Tachp
+    palSetLineMode(TACHO_LEFT_LINE, TACHO_LEFT_PIN_MODE);
+    icuStart(&TACHO_DRIVER_LEFT, &leftTachoConfig);
+    icuStartCapture(&TACHO_DRIVER_LEFT);
+//
+//    //Right Tachp
+    palSetLineMode(TACHO_RIGHT_LINE, TACHO_RIGHT_PIN_MODE);
+    icuStart(&TACHO_DRIVER_RIGHT, &rightTachoConfig);
+    icuStartCapture(&TACHO_DRIVER_RIGHT);
+//    uint32_t width = icu_lld_get_width(&TACHO_DRIVER_RIGHT);
 }
 
 void Board::IO::initTimers() {
@@ -119,7 +133,26 @@ int16_t Board::IO::getEncoderCount(Peripherals::Encoder encoder) {
             qeiSetCount(&RIGHT_ENCODER_DRIVER, 0);
             break;
     }
+//    Logging::println("enc %i cnt: %i", encoder, encoderCount);
     return encoderCount;
+}
+
+float Board::IO::getMotorSpeed(Peripherals::Motor motor) {
+//    uint32_t icuWidth = 0;
+    uint32_t icuPeriod = 0;
+    switch (motor) {
+        case Peripherals::LEFT_MOTOR:
+            icuPeriod = icu_lld_get_period(&TACHO_DRIVER_LEFT);
+//            icuWidth = icu_lld_get_width(&TACHO_DRIVER_LEFT);
+            break;
+        case Peripherals::RIGHT_MOTOR:
+            icuPeriod = icu_lld_get_period(&TACHO_DRIVER_RIGHT);
+//            icuWidth = icu_lld_get_width(&TACHO_DRIVER_RIGHT);
+            break;
+    }
+//    Logging::println("period %u width %u", icuPeriod, icuWidth);
+    float motorSpeedRevPerSec = (float)icuPeriod / ICU_FREQUENCY;
+    return 2 * M_PI * motorSpeedRevPerSec;
 }
 
 void Board::IO::toggleLED() {
