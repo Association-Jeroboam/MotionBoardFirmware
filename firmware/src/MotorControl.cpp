@@ -42,6 +42,17 @@ void MotorControl::motorSetPID(Peripherals::Motor motor, float p, float i, uint8
     }
 }
 
+void MotorControl::motorSetPIDThreshold(Peripherals::Motor motor, float threshold, uint8_t range) {
+    switch (motor) {
+        case Peripherals::LEFT_MOTOR:
+            m_leftMotor.setPIDThreshold(threshold, range);
+            break;
+        case Peripherals::RIGHT_MOTOR:
+            m_rightMotor.setPIDThreshold(threshold, range);
+            break;
+    }
+}
+
 void MotorControl::setWheelRadius(Peripherals::Motor motor, float wheelRadius) {
     switch (motor) {
         case Peripherals::LEFT_MOTOR:

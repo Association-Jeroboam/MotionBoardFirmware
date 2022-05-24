@@ -285,6 +285,7 @@ void ControlThread::processAdaptativPIDMsg(CanardRxTransfer * transfer) {
         case Peripherals::LEFT_MOTOR:
             for(uint8_t i = 0; i < NB_PI_SUBSET; i ++) {
                 control.getMotorControl()->motorSetPID(Peripherals::LEFT_MOTOR, adaptPID.configs[i].pid[0], adaptPID.configs[i].pid[1], i);
+                control.getMotorControl()->motorSetPIDThreshold(Peripherals::LEFT_MOTOR, adaptPID.thresholds[i], i);
             }
 
 
@@ -292,6 +293,7 @@ void ControlThread::processAdaptativPIDMsg(CanardRxTransfer * transfer) {
         case Peripherals::RIGHT_MOTOR:
             for(uint8_t i = 0; i < NB_PI_SUBSET; i ++) {
                 control.getMotorControl()->motorSetPID(Peripherals::RIGHT_MOTOR, adaptPID.configs[i].pid[0], adaptPID.configs[i].pid[1], i);
+                control.getMotorControl()->motorSetPIDThreshold(Peripherals::RIGHT_MOTOR, adaptPID.thresholds[i], i);
             }
             break;
         default:

@@ -70,6 +70,10 @@ void Motor::setSpeed(float speed) {
     m_speedController.setSpeedGoal(speed);
 }
 
+void Motor::setPIDThreshold(float threshold, uint8_t range) {
+    m_speedController.setSpeedRange(threshold, range);
+}
+
 void Motor::setWheelRadius(float wheelRadius) {
     m_wheelRadius = wheelRadius;
 }
