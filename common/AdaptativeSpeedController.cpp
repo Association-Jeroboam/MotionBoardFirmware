@@ -35,8 +35,8 @@ void AdaptativeSpeedController::updateGains(float actualSpeed)
 
     // D'abord, on cherche à quel set correspond la vitesse actuelle
     uint8_t set = 0;
-    while (set < (NB_PI_SUBSET) && actualSpeed > m_GainsSpeedRange[set])
-        set++;
+//    while (set < (NB_PI_SUBSET) && actualSpeed > m_GainsSpeedRange[set])
+//        set++;
 
     if (set == 0) {
         // Le 1er set, on prend directement les valeurs
