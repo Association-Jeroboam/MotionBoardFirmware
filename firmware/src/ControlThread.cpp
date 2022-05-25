@@ -286,7 +286,7 @@ void ControlThread::processAdaptativPIDMsg(CanardRxTransfer * transfer) {
         case CAN_PROTOCOL_LEFT_SPEED_PID_ID:
             for(uint8_t i = 0; i < NB_PI_SUBSET; i ++) {
                 control.getMotorControl()->motorSetPID(Peripherals::LEFT_MOTOR, adaptPID.configs[i].pid[0], adaptPID.configs[i].pid[1], i);
-                control.getMotorControl()->motorSetPIDThreshold(Peripherals::LEFT_MOTOR, adaptPID.thresholds[i], i);
+                control.getMotorControl()->motorSetPIDThreshold(Peripherals::LEFT_MOTOR, adaptPID.thresholds[i] * 1000, i);
             }
 
 
@@ -294,7 +294,7 @@ void ControlThread::processAdaptativPIDMsg(CanardRxTransfer * transfer) {
         case CAN_PROTOCOL_RIGHT_SPEED_PID_ID:
             for(uint8_t i = 0; i < NB_PI_SUBSET; i ++) {
                 control.getMotorControl()->motorSetPID(Peripherals::RIGHT_MOTOR, adaptPID.configs[i].pid[0], adaptPID.configs[i].pid[1], i);
-                control.getMotorControl()->motorSetPIDThreshold(Peripherals::RIGHT_MOTOR, adaptPID.thresholds[i], i);
+                control.getMotorControl()->motorSetPIDThreshold(Peripherals::RIGHT_MOTOR, adaptPID.thresholds[i] * 1000, i);
             }
             break;
         default:
@@ -308,6 +308,6 @@ void ControlThread::processMotionConfigMsg(CanardRxTransfer * transfer) {
                                                                                      (uint8_t *)transfer->payload,
                                                                                      &transfer->payload_size);
     control.getRobotPose()->setWheelBase(motionConf.wheel_base.meter);
-    control.getMotorControl()->setWheelRadius(Peripherals::LEFT_MOTOR, motionConf.left_wheel_radius.meter);
-    control.getMotorControl()->setWheelRadius(Peripherals::RIGHT_MOTOR, motionConf.right_wheel_radius.meter);
+    control.getMotorControl()->setWheelRadius(Peripherals::LEFT_MOTOR, motionConf.left_wheel_radius.meter * 1000);
+    control.getMotorControl()->setWheelRadius(Peripherals::RIGHT_MOTOR, motionConf.right_wheel_radius.meter * 1000);
 }
