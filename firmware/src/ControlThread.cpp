@@ -263,8 +263,8 @@ void ControlThread::processPoseMsg(CanardRxTransfer * transfer, float* x, float*
     float a, osef1, osef2;
     a = 0.;
     q.ToAngleAxis(&a, &osef1, &osef2, theta);
-    *x = poseGoal.position.value.meter[0];
-    *y = poseGoal.position.value.meter[1];
+    *x = poseGoal.position.value.meter[0] * 1000;
+    *y = poseGoal.position.value.meter[1] * 1000;
 
 }
 

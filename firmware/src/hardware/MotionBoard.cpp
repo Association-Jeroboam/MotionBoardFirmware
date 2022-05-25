@@ -75,14 +75,14 @@ void Board::IO::initEncoders() {
     qeiEnable(&RIGHT_ENCODER_DRIVER);
 
     //Left Tachp
-    palSetLineMode(TACHO_LEFT_LINE, TACHO_LEFT_PIN_MODE);
-    icuStart(&TACHO_DRIVER_LEFT, &leftTachoConfig);
-    icuStartCapture(&TACHO_DRIVER_LEFT);
+//    palSetLineMode(TACHO_LEFT_LINE, TACHO_LEFT_PIN_MODE);
+//    icuStart(&TACHO_DRIVER_LEFT, &leftTachoConfig);
+//    icuStartCapture(&TACHO_DRIVER_LEFT);
 //
 //    //Right Tachp
-    palSetLineMode(TACHO_RIGHT_LINE, TACHO_RIGHT_PIN_MODE);
-    icuStart(&TACHO_DRIVER_RIGHT, &rightTachoConfig);
-    icuStartCapture(&TACHO_DRIVER_RIGHT);
+//    palSetLineMode(TACHO_RIGHT_LINE, TACHO_RIGHT_PIN_MODE);
+//    icuStart(&TACHO_DRIVER_RIGHT, &rightTachoConfig);
+//    icuStartCapture(&TACHO_DRIVER_RIGHT);
 //    uint32_t width = icu_lld_get_width(&TACHO_DRIVER_RIGHT);
 }
 
@@ -126,10 +126,12 @@ int16_t Board::IO::getEncoderCount(Peripherals::Encoder encoder) {
     switch (encoder) {
         case Peripherals::LEFT_ENCODER:
             encoderCount = qeiGetCount(&LEFT_ENCODER_DRIVER);
+//            Logging::println("LEFT   %i", encoderCount);
             qeiSetCount(&LEFT_ENCODER_DRIVER, 0);
             break;
         case Peripherals::RIGHT_ENCODER:
             encoderCount = qeiGetCount(&RIGHT_ENCODER_DRIVER);
+//            Logging::println("RIGHT %i", encoderCount);
             qeiSetCount(&RIGHT_ENCODER_DRIVER, 0);
             break;
     }

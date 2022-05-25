@@ -75,6 +75,7 @@ void AdaptativeSpeedController::setGains(float Kp, float Ki, uint8_t range)
 {
     m_speedKpSet[range] = Kp;
     m_speedKiSet[range] = Ki;
+    resetIntegral();
 }
 
 void AdaptativeSpeedController::setSpeedRange(float value, uint8_t range) {

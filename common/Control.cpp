@@ -148,9 +148,7 @@ void Control::applyControl() {
             return;
         }
         case Goal::NO_GOAL: {
-            m_linearSpeed          = 0.;
             m_linearSpeedSetpoint  = 0.;
-            m_angularSpeed         = 0.;
             m_angularSpeedSetpoint = 0.;
             m_angleSetpoint        = 0.;
             m_distanceError        = 0.;
