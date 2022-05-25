@@ -126,13 +126,14 @@ Control* ControlThread::getControl() {
 
 void ControlThread::sendCurrentState() {
     static CanardTransferID transfer_id = 0;
+    const float divideBy1000 = 1./1000.;
 
     struct ControlData controlData = control.getData();
     Quaternion q = Quaternion::Euler(0., 0., controlData.angle);
     const reg_udral_physics_kinematics_cartesian_State_0_1 state       = {
         .pose = {
             .position = {
-                .value = {controlData.x * (1./1000.), controlData.y * (1./1000.), 0.},
+                .value = {controlData.x * divideBy1000, controlData.y * divideBy1000, 0.},
             },
             .orientation = {
                 .wxyz = {q.w, q.x, q.y, q.z},
@@ -140,7 +141,7 @@ void ControlThread::sendCurrentState() {
         },
         .twist = {
             .linear = {
-                .meter_per_second = {controlData.linearSpeed, 0., 0.},
+                .meter_per_second = {controlData.linearSpeed * divideBy1000, 0., 0.},
             },
             .angular = {
                 .radian_per_second = {0., 0., controlData.angularSpeed},
@@ -172,9 +173,9 @@ void ControlThread::sendPIDStates() {
     SpeedControllerParameters params = control.getMotorControl()->getMotorControllerParameters(Peripherals::LEFT_MOTOR);
     jeroboam_datatypes_actuators_motion_PIDState_0_1 pidState;
     pidState.ID = CAN_PROTOCOL_LEFT_SPEED_PID_ID;
-    pidState._error = params.speedError;
-    pidState.output = params.outputValue;
-    pidState.setpoint = params.speedGoal;
+    pidState._error = params.speedError / 1000.;
+    pidState.output = params.outputValue / 1000.;
+    pidState.setpoint = params.speedGoal / 1000.;
 
     size_t buf_size = jeroboam_datatypes_actuators_motion_PIDState_0_1_SERIALIZATION_BUFFER_SIZE_BYTES_;
     uint8_t buffer[jeroboam_datatypes_actuators_motion_PIDState_0_1_SERIALIZATION_BUFFER_SIZE_BYTES_];
@@ -193,9 +194,9 @@ void ControlThread::sendPIDStates() {
 
     params = control.getMotorControl()->getMotorControllerParameters(Peripherals::RIGHT_MOTOR);
     pidState.ID = CAN_PROTOCOL_RIGHT_SPEED_PID_ID;
-    pidState._error = params.speedError;
-    pidState.output = params.outputValue;
-    pidState.setpoint = params.speedGoal;
+    pidState._error = params.speedError / 1000.;
+    pidState.output = params.outputValue / 1000.;
+    pidState.setpoint = params.speedGoal / 1000.;
 
     jeroboam_datatypes_actuators_motion_PIDState_0_1_serialize_(&pidState, buffer, &buf_size);
 
@@ -224,7 +225,7 @@ void ControlThread::processCanMsg(CanardRxTransfer * transfer) {
         case ROBOT_TWIST_GOAL_ID: {
             float linear, angular;
             processTwistMsg(transfer, &linear, &angular);
-            Goal goal(linear, angular, Goal::GoalType::CIRCULAR);
+            Goal goal(angular, linear, Goal::GoalType::CIRCULAR);
             control.setCurrentGoal(goal);
             break;
         }
@@ -282,7 +283,7 @@ void ControlThread::processAdaptativPIDMsg(CanardRxTransfer * transfer) {
                                                                                             (uint8_t *)transfer->payload,
                                                                                             &transfer->payload_size);
     switch (adaptPID.ID) {
-        case Peripherals::LEFT_MOTOR:
+        case CAN_PROTOCOL_LEFT_SPEED_PID_ID:
             for(uint8_t i = 0; i < NB_PI_SUBSET; i ++) {
                 control.getMotorControl()->motorSetPID(Peripherals::LEFT_MOTOR, adaptPID.configs[i].pid[0], adaptPID.configs[i].pid[1], i);
                 control.getMotorControl()->motorSetPIDThreshold(Peripherals::LEFT_MOTOR, adaptPID.thresholds[i], i);
@@ -290,7 +291,7 @@ void ControlThread::processAdaptativPIDMsg(CanardRxTransfer * transfer) {
 
 
             break;
-        case Peripherals::RIGHT_MOTOR:
+        case CAN_PROTOCOL_RIGHT_SPEED_PID_ID:
             for(uint8_t i = 0; i < NB_PI_SUBSET; i ++) {
                 control.getMotorControl()->motorSetPID(Peripherals::RIGHT_MOTOR, adaptPID.configs[i].pid[0], adaptPID.configs[i].pid[1], i);
                 control.getMotorControl()->motorSetPIDThreshold(Peripherals::RIGHT_MOTOR, adaptPID.thresholds[i], i);

@@ -51,22 +51,21 @@ constexpr float KB         = -4.5;// -4.5; //TODO: Change me!
 #define LEFT_ENCODER_DRIVER QEID8
 #define RIGHT_ENCODER_DRIVER QEID2
 
-//TODO: update
 __extension__ const QEIConfig leftEncoderConf{
     .mode        = QEI_MODE_QUADRATURE,
     .resolution  = QEI_BOTH_EDGES,
-    .dirinv      = QEI_DIRINV_TRUE,
+    .dirinv      = QEI_DIRINV_FALSE,
     .overflow    = QEI_OVERFLOW_WRAP,
     .min         = 0,
     .max         = SHRT_MAX,
     .notify_cb   = NULL,
     .overflow_cb = NULL,
 };
-//TODO: update
+
 __extension__ const QEIConfig rightEncoderConf{
     .mode        = QEI_MODE_QUADRATURE,
     .resolution  = QEI_BOTH_EDGES,
-    .dirinv      = QEI_DIRINV_FALSE,
+    .dirinv      = QEI_DIRINV_TRUE,
     .overflow    = QEI_OVERFLOW_WRAP,
     .min         = 0,
     .max         = SHRT_MAX,
