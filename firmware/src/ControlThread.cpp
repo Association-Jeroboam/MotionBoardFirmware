@@ -258,9 +258,9 @@ void ControlThread::processPoseMsg(CanardRxTransfer * transfer, float* x, float*
     qz = poseGoal.orientation.wxyz[3];
 
     Quaternion q(qw, qx, qy, qz);
-    float a, osef1, osef2;
-    a = 0.;
-    q.ToAngleAxis(&a, &osef1, &osef2, theta);
+    float osef1, osef2, osef3;
+    q.ToAngleAxis(theta, &osef1, &osef2, &osef3);
+    *theta *= 2 * M_PI / 360.;
     *x = poseGoal.position.value.meter[0] * 1000;
     *y = poseGoal.position.value.meter[1] * 1000;
 
