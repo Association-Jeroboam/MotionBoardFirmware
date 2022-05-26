@@ -90,12 +90,10 @@ void ControlThread::main() {
             }
 
             if (flags & Board::Events::EMERGENCY_STOP) {
-                Logging::println("[ControlThread] Emeregency Stop!");
                 control.setEmergency(true);
             }
 
             if (flags & Board::Events::EMERGENCY_CLEARED) {
-                Logging::println("[ControlThread] Emeregency Cleared");
                 control.setEmergency(false);
             }
         }
