@@ -18,6 +18,7 @@ Control::Control() : m_robotPose(INITIAL_X_POS, INITIAL_Y_POS, INITIAL_ANGLE) {
     m_lastAngleSetpoint    = INITIAL_ANGLE;
     m_distanceError        = 0.;
     m_computeDirection     = true;
+    m_triggerCounter = 0;
 //    0.00030000
 //    0.00060000
     // TODO : change me
@@ -27,6 +28,13 @@ Control::Control() : m_robotPose(INITIAL_X_POS, INITIAL_Y_POS, INITIAL_ANGLE) {
 }
 
 void Control::update() {
+    if(m_triggerCounter * MOTOR_CONTROL_LOOP_DT > CONTROL_COMMAND_TIMEOUT_S &&
+        m_currentGoal.getType() != Goal::NO_GOAL) {
+        Goal noGoal = Goal();
+        setCurrentGoal(noGoal);
+        Logging::println("No Goal timeout");
+    }
+    m_triggerCounter++;
     updateState();
     applyControl();
 }
@@ -189,7 +197,10 @@ void Control::setCurrentGoal(Goal goal) {
 
         m_motorControl.resetMotor(Peripherals::LEFT_MOTOR);
         m_motorControl.resetMotor(Peripherals::RIGHT_MOTOR);
+
     }
+    // timeout on command, better be done specifically for circular goals, but meh ¯\_(ツ)_/¯
+    m_triggerCounter = 0;
 
     t = 0;
 }

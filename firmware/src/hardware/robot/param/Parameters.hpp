@@ -29,3 +29,5 @@ constexpr float COMPUTE_DIRECTION_THRESHOLD = 10.; //[mm] //TODO: Change me!
 
 constexpr float ANGLE_PRECISION = 0.05; //[rad]
 constexpr float DISTANCE_PRECISION = 5;  //[mm]
+
+constexpr float CONTROL_COMMAND_TIMEOUT_S = 0.25; //[s]

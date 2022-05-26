@@ -80,6 +80,7 @@ class Control {
     bool  m_forwardDrive;
     bool  m_computeDirection;
     float m_angularError;
+    uint32_t m_triggerCounter;
 
     float kA;
     float kB;
