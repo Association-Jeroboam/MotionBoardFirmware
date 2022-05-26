@@ -16,10 +16,12 @@ static void controlLoopTimerCallback(GPTDriver* gptp);
 static void gpioEmergencyStopCb(void* arg);
 
 inline void* canardSpecificHeapAlloc(CanardInstance* ins, size_t amount) {
+    (void)ins;
     return chHeapAlloc(NULL, amount);
 }
 
 inline void canardSpecificHeapFree(CanardInstance* ins, void* pointer) {
+    (void)ins;
     if(pointer) chHeapFree(pointer);
 }
 
@@ -60,6 +62,7 @@ void Board::IO::initDrivers() {
 
 void Board::IO::initEncoders() {
     //Left encoder
+    Logging::println("init encoders");
     palSetLineMode(ENCODER_LEFT_CHAN1_LINE, ENCODER_LEFT_CHAN1_PIN_MODE);
     palSetLineMode(ENCODER_LEFT_CHAN2_LINE, ENCODER_LEFT_CHAN2_PIN_MODE);
     qeiStart(&LEFT_ENCODER_DRIVER, &leftEncoderConf);
@@ -70,6 +73,17 @@ void Board::IO::initEncoders() {
     palSetLineMode(ENCODER_RIGHT_CHAN2_LINE, ENCODER_RIGHT_CHAN2_PIN_MODE);
     qeiStart(&RIGHT_ENCODER_DRIVER, &rightEncoderConf);
     qeiEnable(&RIGHT_ENCODER_DRIVER);
+
+    //Left Tachp
+//    palSetLineMode(TACHO_LEFT_LINE, TACHO_LEFT_PIN_MODE);
+//    icuStart(&TACHO_DRIVER_LEFT, &leftTachoConfig);
+//    icuStartCapture(&TACHO_DRIVER_LEFT);
+//
+//    //Right Tachp
+//    palSetLineMode(TACHO_RIGHT_LINE, TACHO_RIGHT_PIN_MODE);
+//    icuStart(&TACHO_DRIVER_RIGHT, &rightTachoConfig);
+//    icuStartCapture(&TACHO_DRIVER_RIGHT);
+//    uint32_t width = icu_lld_get_width(&TACHO_DRIVER_RIGHT);
 }
 
 void Board::IO::initTimers() {
@@ -77,28 +91,27 @@ void Board::IO::initTimers() {
 }
 
 void Board::IO::initGPIO() {
-    palSetLineMode(LED_LINE, LED_LINE_MODE);
+//    palSetLineMode(LED_LINE, LED_LINE_MODE);
 
     //TODO: This causes an assert in _pal_lld_enablepadevent, find out why
     palSetLineMode(EMGCY_STOP_PIN, EMGCY_STOP_PIN_MODE);
     palEnableLineEvent(EMGCY_STOP_PIN, PAL_EVENT_MODE_BOTH_EDGES);
     palSetLineCallback(EMGCY_STOP_PIN, gpioEmergencyStopCb, NULL);
 
-    palSetLineMode(BRAKE_PIN, BRAKE_PIN_MODE);
-    palSetLine(BRAKE_PIN);
+    palSetLineMode(BRAKE_LEFT_PIN, BRAKE_LEFT_PIN_MODE);
+    palSetLine(BRAKE_LEFT_PIN);
+    palSetLineMode(BRAKE_RIGHT_PIN, BRAKE_LEFT_PIN_MODE);
+    palSetLine(BRAKE_RIGHT_PIN);
 }
 
 void Board::IO::setBrake(Peripherals::Motor motor, bool brake){
-    static bool leftBrake = false;
-    static bool rightBrake = false;
+    uint32_t palState = brake ? PAL_LOW : PAL_HIGH;
+
     if(motor == Peripherals::LEFT_MOTOR) {
-        leftBrake = brake;
+        palWriteLine(BRAKE_LEFT_PIN, palState);
     } else {
-        rightBrake = brake;
+        palWriteLine(BRAKE_RIGHT_PIN, palState);
     }
-
-
-    palWriteLine(BRAKE_PIN, (leftBrake || rightBrake) ? PAL_LOW : PAL_HIGH);
 }
 
 void Board::IO::deinitPWM() {
@@ -113,18 +126,39 @@ int16_t Board::IO::getEncoderCount(Peripherals::Encoder encoder) {
     switch (encoder) {
         case Peripherals::LEFT_ENCODER:
             encoderCount = qeiGetCount(&LEFT_ENCODER_DRIVER);
+//            Logging::println("LEFT   %i", encoderCount);
             qeiSetCount(&LEFT_ENCODER_DRIVER, 0);
             break;
         case Peripherals::RIGHT_ENCODER:
             encoderCount = qeiGetCount(&RIGHT_ENCODER_DRIVER);
+//            Logging::println("RIGHT %i", encoderCount);
             qeiSetCount(&RIGHT_ENCODER_DRIVER, 0);
             break;
     }
+//    Logging::println("enc %i cnt: %i", encoder, encoderCount);
     return encoderCount;
 }
 
+float Board::IO::getMotorSpeed(Peripherals::Motor motor) {
+//    uint32_t icuWidth = 0;
+    uint32_t icuPeriod = 0;
+    switch (motor) {
+        case Peripherals::LEFT_MOTOR:
+            icuPeriod = icu_lld_get_period(&TACHO_DRIVER_LEFT);
+//            icuWidth = icu_lld_get_width(&TACHO_DRIVER_LEFT);
+            break;
+        case Peripherals::RIGHT_MOTOR:
+            icuPeriod = icu_lld_get_period(&TACHO_DRIVER_RIGHT);
+//            icuWidth = icu_lld_get_width(&TACHO_DRIVER_RIGHT);
+            break;
+    }
+//    Logging::println("period %u width %u", icuPeriod, icuWidth);
+    float motorSpeedRevPerSec = (float)icuPeriod / ICU_FREQUENCY;
+    return 2 * M_PI * motorSpeedRevPerSec;
+}
+
 void Board::IO::toggleLED() {
-    palToggleLine(LED_LINE);
+//    palToggleLine(LED_LINE);
 }
 
 void Board::Com::initDrivers() {

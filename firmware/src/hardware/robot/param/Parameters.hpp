@@ -14,7 +14,6 @@ constexpr float ENCODER_TICK_PER_TURN = 4096.;
 constexpr float DEFAULT_MAX_PID_OUTPUT      = 1.;
 constexpr float DEFAULT_MAX_PID_INTEGRAL    = 1.;
 
-constexpr uint16_t PWM_MAX_DUTY_CYCLE_VALUE = 10000;
 constexpr uint16_t PWM_DUTY_CYCLE_PRECISION = 100000;
 
 constexpr float GEAR_RATIO     = 1.;

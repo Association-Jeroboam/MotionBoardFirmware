@@ -10,13 +10,13 @@ Motor::Motor(Peripherals::Encoder encoder,
              Peripherals::Motor   motor,
              float                wheelRadius) :
 m_wheelRadius(wheelRadius),
-m_encoder(encoder),
-m_motor(motor),
 m_speedController((float*)LEFT_MOTOR_KP,
                        (float*)LEFT_MOTOR_KI,
                        (float*)MOTOR_SPEED_RANGE,
                        DEFAULT_MAX_PID_OUTPUT,
-                       MAX_WHEEL_SPEED, MOTOR_CONTROL_LOOP_FREQ)
+                       MAX_WHEEL_SPEED, MOTOR_CONTROL_LOOP_FREQ),
+m_encoder(encoder),
+m_motor(motor)
 {
     m_drivenDistance = 0.;
     m_disabled = false;
@@ -46,6 +46,9 @@ void Motor::updateMeasure() {
     float   drivenAngle  = float(encoderCount) * (1. / ENCODER_TICK_PER_TURN) * GEAR_RATIO * 2. * M_PI;
     m_speed              = drivenAngle * MOTOR_CONTROL_LOOP_FREQ * m_wheelRadius;
     m_drivenDistance += drivenAngle * m_wheelRadius;
+//    float motorSpeed = Board::IO::getMotorSpeed(m_motor);
+//    Logging::println("speed %.4f", motorSpeed);
+
 }
 
 //void Motor::setPID(float p, float i, float d, float bias, float frequency) {
@@ -68,6 +71,10 @@ void Motor::setSpeed(float speed) {
     }
 //    m_speedSetpoint = speed;
     m_speedController.setSpeedGoal(speed);
+}
+
+void Motor::setPIDThreshold(float threshold, uint8_t range) {
+    m_speedController.setSpeedRange(threshold, range);
 }
 
 void Motor::setWheelRadius(float wheelRadius) {

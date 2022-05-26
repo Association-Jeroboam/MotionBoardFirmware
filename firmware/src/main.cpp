@@ -10,8 +10,11 @@
 #include "canard.h"
 #include "Heartbeat_1_0.h"
 #include "cartesian/Pose_0_1.h"
+#include "EmergencyWatcher.hpp"
 
 static THD_WORKING_AREA(waShellThread, SHELL_WA_SIZE);
+
+EmergencyWatcher emergencyWatcher;
 
 void cyphalHeartBeatRoutine() {
     static CanardTransferID transfer_id = 0;
@@ -60,6 +63,7 @@ int main() {
     Logging::println("[main] Starting up");
     shellInit();
     Board::init();
+    emergencyWatcher.start(NORMALPRIO);
     chThdSleepMilliseconds(10);
     ControlThread::instance()->start(NORMALPRIO + 1);
     chThdSleepMilliseconds(10);
