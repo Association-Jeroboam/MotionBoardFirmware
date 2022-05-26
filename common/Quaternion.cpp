@@ -160,8 +160,6 @@ void Quaternion::ToAngleAxis(float* angle, float* x_axis, float* y_axis,float* z
         *z_axis = z * sinz;
 
         *angle *= 2.0f * 57.2957795f;
-        if (*angle > 180.0f)
-            *angle = 360.0f - *angle;
     } else {
         *angle = 0.0f;
         *x_axis = 1.0f;
