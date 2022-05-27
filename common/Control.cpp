@@ -19,6 +19,7 @@ Control::Control() : m_robotPose(INITIAL_X_POS, INITIAL_Y_POS, INITIAL_ANGLE) {
     m_distanceError        = 0.;
     m_computeDirection     = true;
     m_triggerCounter = 0;
+    m_emergencyStop = Board::IO::getEmgcyState();
 //    0.00030000
 //    0.00060000
     // TODO : change me

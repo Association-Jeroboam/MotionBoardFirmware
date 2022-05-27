@@ -59,7 +59,7 @@ void EmergencyWatcher::sendEmgcyState() {
     const CanardTransferMetadata metadata = {
         .priority = CanardPriorityNominal,
         .transfer_kind = CanardTransferKindMessage,
-        .port_id = EMERGENCY_STOP_ID,
+        .port_id = EMERGENCY_STATE_ID,
         .remote_node_id = CANARD_NODE_ID_UNSET,
         .transfer_id = transfer_id,
     };

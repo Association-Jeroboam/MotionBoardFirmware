@@ -18,6 +18,7 @@ void    initPWM();
 void    initEncoders();
 void    initTimers();
 void    initGPIO();
+bool    getEmgcyState();
 
 void setBrake(Peripherals::Motor motor, bool brake);
 

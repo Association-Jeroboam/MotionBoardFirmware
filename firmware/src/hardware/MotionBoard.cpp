@@ -104,6 +104,10 @@ void Board::IO::initGPIO() {
     palSetLine(BRAKE_RIGHT_PIN);
 }
 
+bool Board::IO::getEmgcyState() {
+    return palReadLine(EMGCY_STOP_PIN) == PAL_LOW;
+}
+
 void Board::IO::setBrake(Peripherals::Motor motor, bool brake){
     uint32_t palState = brake ? PAL_LOW : PAL_HIGH;
 
