@@ -183,6 +183,7 @@ set_speeds:
         m_motorControl.setDisable(true);
     } else {
         m_motorControl.setDisable(false);
+        m_motorControl.motorSetSpeed(Peripherals::LEFT_MOTOR, leftSpeedSetpoint);
         m_motorControl.motorSetSpeed(Peripherals::RIGHT_MOTOR, rightSpeedSetpoint);
     }
     m_motorControl.update();
