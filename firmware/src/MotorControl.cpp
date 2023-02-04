@@ -90,6 +90,19 @@ float MotorControl::getMotorSpeed(Peripherals::Motor motor) {
     return speed;
 }
 
+int32_t MotorControl::getMotorEncoderTicks(Peripherals::Motor motor) {
+    int32_t ticks;
+    switch (motor) {
+        case Peripherals::LEFT_MOTOR:
+            ticks = m_leftMotor.getTickCount();
+            break;
+        case Peripherals::RIGHT_MOTOR:
+            ticks = m_rightMotor.getTickCount();
+            break;
+    }
+    return ticks;
+}
+
 SpeedControllerParameters MotorControl::getMotorControllerParameters(Peripherals::Motor motor){
     SpeedControllerParameters params;
     switch (motor) {

@@ -61,6 +61,7 @@ COMMONINC += $(CYPHALDIR)/includes/uavcan/si/unit/volumetric_flow_rate
 COMMONINC += $(CYPHALDIR)/includes/uavcan/time
 COMMONINC += $(CYPHALDIR)/includes/
 COMMONINC += $(CYPHALDIR)/includes/jeroboam_datatypes/sensors
+COMMONINC += $(CYPHALDIR)/includes/jeroboam_datatypes/sensors/odometry
 COMMONINC += $(CYPHALDIR)/includes/jeroboam_datatypes/actuators/servo
 COMMONINC += $(CYPHALDIR)/includes/jeroboam_datatypes/actuators/pump
 COMMONINC += $(CYPHALDIR)/includes/jeroboam_datatypes/actuators/motion

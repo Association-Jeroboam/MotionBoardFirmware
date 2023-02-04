@@ -16,6 +16,8 @@ class MotorControl {
 
     float getMotorDrivenDistance(Peripherals::Motor motor);
 
+    int32_t getMotorEncoderTicks(Peripherals::Motor motor);
+
     float getMotorSpeed(Peripherals::Motor motor);
 
     void setDisable(bool disable);

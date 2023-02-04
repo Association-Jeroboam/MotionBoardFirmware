@@ -20,6 +20,7 @@ m_motor(motor)
 {
     m_drivenDistance = 0.;
     m_disabled = false;
+    m_tick_count = 0;
 }
 
 void Motor::updateControl() {
@@ -43,6 +44,7 @@ void Motor::updateControl() {
 
 void Motor::updateMeasure() {
     int16_t encoderCount = Board::IO::getEncoderCount(m_encoder);
+    m_tick_count += encoderCount;
     float   drivenAngle  = float(encoderCount) * (1. / ENCODER_TICK_PER_TURN) * GEAR_RATIO * 2. * M_PI;
     m_speed              = drivenAngle * MOTOR_CONTROL_LOOP_FREQ * m_wheelRadius;
     m_drivenDistance += drivenAngle * m_wheelRadius;
@@ -96,6 +98,12 @@ void Motor::reset() {
 //    m_speedSetpoint = 0.;
     m_speedController.resetIntegral();
     m_speedController.setSpeedGoal(0.);
+}
+
+int32_t Motor::getTickCount() {
+    int32_t tick_count = m_tick_count;
+    m_tick_count = 0;
+    return tick_count;
 }
 
 void Motor::setDisable(bool disable) {

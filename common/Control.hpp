@@ -37,6 +37,8 @@ class Control {
 
     RobotPose* getRobotPose();
 
+    void getMotorTicks(int32_t * left, int32_t * right);
+
     void setMotorPID(Peripherals::Motor motor, float p, float i, float d);
 
     void setPID(float kP, float kA, float kB);

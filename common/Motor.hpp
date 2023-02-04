@@ -31,6 +31,8 @@ class Motor {
 
     float getDrivenDistance();
 
+    int32_t getTickCount();
+
     void reset();
 
   private:
@@ -42,6 +44,7 @@ class Motor {
     const Peripherals::Encoder m_encoder;
     const Peripherals::Motor   m_motor;
     bool m_disabled;
+    int32_t                    m_tick_count;
 
     void updateMeasure();
 };

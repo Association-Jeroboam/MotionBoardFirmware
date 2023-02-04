@@ -275,3 +275,8 @@ void Control::setEmergency(bool emergency) {
         m_emergencyStop = emergency;
     }
 }
+
+void Control::getMotorTicks(int32_t * left, int32_t * right) {
+    *left  = m_motorControl.getMotorEncoderTicks(Peripherals::LEFT_MOTOR);
+    *right = m_motorControl.getMotorEncoderTicks(Peripherals::RIGHT_MOTOR);
+}

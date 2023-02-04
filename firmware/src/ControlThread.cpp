@@ -14,6 +14,7 @@
 #include "PIDState_0_1.h"
 #include "MotionConfig_0_1.h"
 #include "SpeedCommand_0_1.h"
+#include "OdometryTicks_0_1.h"
 
 enum ControlThreadEvents {
     BoardEvent      = 1 << 0,
@@ -89,6 +90,7 @@ void ControlThread::main() {
                         moveOkFired = false;
                     }
                 }
+                sendOdomTicks();
                 sendCurrentState();
                 sendPIDStates();
                 updateDataStreamer();
@@ -126,6 +128,31 @@ void ControlThread::updateDataStreamer() {
 
 Control* ControlThread::getControl() {
     return &control;
+}
+
+void ControlThread::sendOdomTicks() {
+    static CanardTransferID transfer_id = 0;
+    int32_t left, right;
+    control.getMotorTicks(&left, &right);
+    const jeroboam_datatypes_sensors_odometry_OdometryTicks_0_1 odom_ticks = {
+        .left = left,
+        .right = right,
+    };
+    size_t buf_size = jeroboam_datatypes_sensors_odometry_OdometryTicks_0_1_SERIALIZATION_BUFFER_SIZE_BYTES_;
+    uint8_t buffer[jeroboam_datatypes_sensors_odometry_OdometryTicks_0_1_SERIALIZATION_BUFFER_SIZE_BYTES_];
+
+    jeroboam_datatypes_sensors_odometry_OdometryTicks_0_1_serialize_(&odom_ticks, buffer, &buf_size);
+
+    const CanardTransferMetadata metadata = {
+        .priority = CanardPriorityImmediate,
+        .transfer_kind = CanardTransferKindMessage,
+        .port_id = MOTION_ODOM_TICKS_ID,
+        .remote_node_id = CANARD_NODE_ID_UNSET,
+        .transfer_id = transfer_id,
+    };
+    transfer_id++;
+    Board::Com::CANBus::send(&metadata, buf_size,  buffer);
+
 }
 
 void ControlThread::sendCurrentState() {
