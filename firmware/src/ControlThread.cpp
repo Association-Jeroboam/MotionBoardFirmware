@@ -13,6 +13,7 @@
 #include "AdaptativePIDConfig_0_1.h"
 #include "PIDState_0_1.h"
 #include "MotionConfig_0_1.h"
+#include "SpeedCommand_0_1.h"
 
 enum ControlThreadEvents {
     BoardEvent      = 1 << 0,
@@ -56,6 +57,11 @@ void ControlThread::main() {
                                        CanardTransferKindMessage,
                                        MOTION_SET_MOTION_CONFIG_ID,
                                        jeroboam_datatypes_actuators_motion_MotionConfig_0_1_EXTENT_BYTES_);
+    Board::Com::CANBus::registerCanMsg(this,
+                                       CanardTransferKindMessage,
+                                       ROBOT_GOAL_SPEEDS_WHEELS_ID,
+                                       jeroboam_datatypes_actuators_motion_SpeedCommand_0_1_EXTENT_BYTES_);
+
     Board::Events::startControlLoop(MOTOR_CONTROL_LOOP_FREQ);
 
     while (!shouldTerminate()) {
@@ -240,6 +246,9 @@ void ControlThread::processCanMsg(CanardRxTransfer * transfer) {
         case MOTION_SET_MOTION_CONFIG_ID:
             processMotionConfigMsg(transfer);
             break;
+        case ROBOT_GOAL_SPEEDS_WHEELS_ID:
+            processSpeedCommandMsg(transfer);
+            break;
         default:
             Logging::println("[Control Thread] CAN transfer dropped");
             break;
@@ -303,9 +312,23 @@ void ControlThread::processAdaptativPIDMsg(CanardRxTransfer * transfer) {
 void ControlThread::processMotionConfigMsg(CanardRxTransfer * transfer) {
     jeroboam_datatypes_actuators_motion_MotionConfig_0_1 motionConf;
     jeroboam_datatypes_actuators_motion_MotionConfig_0_1_deserialize_(&motionConf,
-                                                                                     (uint8_t *)transfer->payload,
-                                                                                     &transfer->payload_size);
+                                                                      (uint8_t *)transfer->payload,
+                                                                      &transfer->payload_size);
     control.getRobotPose()->setWheelBase(motionConf.wheel_base.meter);
     control.getMotorControl()->setWheelRadius(Peripherals::LEFT_MOTOR, motionConf.left_wheel_radius.meter * 1000);
     control.getMotorControl()->setWheelRadius(Peripherals::RIGHT_MOTOR, motionConf.right_wheel_radius.meter * 1000);
+}
+
+void ControlThread::processSpeedCommandMsg(CanardRxTransfer * transfer) {
+    jeroboam_datatypes_actuators_motion_SpeedCommand_0_1 speedCommand;
+    int8_t res = jeroboam_datatypes_actuators_motion_SpeedCommand_0_1_deserialize_(&speedCommand,
+                                                                                   (uint8_t *)transfer->payload,
+                                                                                   &transfer->payload_size);
+    if(res == NUNAVUT_SUCCESS) {
+        Goal goal(speedCommand.left.meter_per_second * 1000, speedCommand.right.meter_per_second * 1000, Goal::SPEED);
+        control.setCurrentGoal(goal);
+    } else {
+        Logging::println("[Control] Failed deserialize speed command");
+    }
+
 }

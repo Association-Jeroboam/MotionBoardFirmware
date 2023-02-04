@@ -218,6 +218,8 @@ static void cmd_control(BaseSequentialStream* chp, int argc, char* argv[]) {
 
 
 static void cmd_reboot(BaseSequentialStream* chp, int argc, char* argv[]) {
+    (void)chp;
+    (void)argv;
     if (argc == 0) {
         NVIC_SystemReset();
     }
