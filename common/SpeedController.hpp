@@ -76,7 +76,7 @@ class SpeedController
     float m_speedKp;
     float m_speedKi;
 
-    const static float MIN_INTEGRATION_SPEED_MM_PER_S = 10;
+    static constexpr float MIN_INTEGRATION_SPEED_MM_PER_S = 10;
     SpeedControllerParameters m_params;
     float m_outputValue;
     float m_speedGoal;
