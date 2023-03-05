@@ -5,5 +5,6 @@ COMMONCPPSRC += $(COMMONDIR)/Control.cpp
 COMMONCPPSRC += $(COMMONDIR)/Quaternion.cpp
 COMMONCPPSRC += $(COMMONDIR)/SpeedController.cpp
 COMMONCPPSRC += $(COMMONDIR)/AdaptativeSpeedController.cpp
+COMMONCPPSRC += $(SOURCEDIR)/Pll.cpp
 
 COMMONINC += $(COMMONDIR)

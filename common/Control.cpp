@@ -33,7 +33,7 @@ void Control::update() {
         m_currentGoal.getType() != Goal::NO_GOAL) {
         Goal noGoal = Goal();
         setCurrentGoal(noGoal);
-        Logging::println("No Goal timeout");
+        Logging::println("Goal timeout");
     }
     m_triggerCounter++;
     updateState();

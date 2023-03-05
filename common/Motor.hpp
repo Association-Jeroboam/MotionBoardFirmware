@@ -3,6 +3,9 @@
 #include "PID.h"
 #include "AdaptativeSpeedController.hpp"
 #include "Peripherals.hpp"
+#include "Pll.h"
+
+constexpr float DEFAULT_PLL_BW = 10; //[Hz]
 
 class Motor {
   public:
@@ -45,6 +48,7 @@ class Motor {
     const Peripherals::Motor   m_motor;
     bool m_disabled;
     int32_t                    m_tick_count;
+    Pll                        m_pll;
 
     void updateMeasure();
 };

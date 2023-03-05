@@ -5,6 +5,5 @@ COMMONCPPSRC += $(SOURCEDIR)/MotionBoardShell.cpp
 COMMONCPPSRC += $(SOURCEDIR)/ControlThread.cpp
 COMMONCPPSRC += $(SOURCEDIR)/Memory.cpp
 COMMONCPPSRC += $(SOURCEDIR)/EmergencyWatcher.cpp
-COMMONCPPSRC += $(SOURCEDIR)/Pll.cpp
 
 include $(SOURCEDIR)/$(TARGET_TYPE)/target.mk
