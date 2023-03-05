@@ -62,6 +62,7 @@ void Motor::updateMeasure() {
 //}
 
 void Motor::setPID(float p, float i, uint8_t range) {
+    Logging::println("set pi range %u", range);
     m_speedController.setGains(p, i, range);
 }
 
@@ -109,7 +110,5 @@ int32_t Motor::getTickCount() {
 void Motor::setDisable(bool disable) {
     m_disabled = disable;
     Board::IO::setBrake(m_motor, disable);
-    if(disable) {
-        reset();
-    }
+    reset();
 }
