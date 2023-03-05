@@ -49,15 +49,16 @@ float SpeedController::update(float actualSpeed)
     else    // .. Sinon, on integre l'erreur
     {
         m_integratedOutput += m_speedKi * m_params.speedError / m_measureFrequency;
-        if (std::fabs(m_params.speedError) < 0.1) // Quand l'erreur de vitesse est proche de zero(ie: consigne à 0 et le robot ne bouge pas..), on désature l'intégrale
+        if (std::fabs(m_params.speedError) < MIN_INTEGRATION_SPEED_MM_PER_S) // Quand l'erreur de vitesse est proche de zero(ie: consigne à 0 et le robot ne bouge pas..), on désature l'intégrale
             m_integratedOutput *= 0.95;
     }
 
-    // Protection antiWindup, surement inutile avec la désaturation au dessus, mais on garde ceinture & bretelles !
-    if (m_integratedOutput > m_outputLimit)
-        m_integratedOutput = m_outputLimit;
-    else if (m_integratedOutput < -m_outputLimit)
-        m_integratedOutput = -m_outputLimit;
+    // Protection antiWindup, le max est un peu empirique mais ça marche bien. Evite mieux les oscillations que m_outputLimit
+    float integrator_max_value = fabs(m_params.speedError * m_speedKp);
+    if (m_integratedOutput > integrator_max_value)
+        m_integratedOutput = integrator_max_value;
+    else if (m_integratedOutput < -integrator_max_value)
+        m_integratedOutput = -integrator_max_value;
 
     return m_params.outputValue;
 }
