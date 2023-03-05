@@ -5,7 +5,7 @@
 #include "Peripherals.hpp"
 #include "Pll.h"
 
-constexpr float DEFAULT_PLL_BW = 10; //[Hz]
+constexpr float DEFAULT_PLL_BW = 60; //[Hz]
 
 class Motor {
   public:
