@@ -33,7 +33,7 @@ void Control::update() {
         m_currentGoal.getType() != Goal::NO_GOAL) {
         Goal noGoal = Goal();
         setCurrentGoal(noGoal);
-        Logging::println("No Goal timeout");
+        Logging::println("Goal timeout");
     }
     m_triggerCounter++;
     updateState();
@@ -180,9 +180,7 @@ set_speeds:
     if(m_currentGoal.isReached()) {
         m_motorControl.motorSetSpeed(Peripherals::LEFT_MOTOR, 0.);
         m_motorControl.motorSetSpeed(Peripherals::RIGHT_MOTOR, 0.);
-        m_motorControl.setDisable(true);
     } else {
-        m_motorControl.setDisable(false);
         m_motorControl.motorSetSpeed(Peripherals::LEFT_MOTOR, leftSpeedSetpoint);
         m_motorControl.motorSetSpeed(Peripherals::RIGHT_MOTOR, rightSpeedSetpoint);
     }

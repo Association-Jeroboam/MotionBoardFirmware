@@ -7,7 +7,7 @@
 
 #include <cstdint>
 
-struct SpeedControllerParameters {
+struct  SpeedControllerParameters {
     float outputValue;
     float speedGoal;
     float speedError;
@@ -51,7 +51,11 @@ class SpeedController
 
     void resetIntegral()
     {
-        m_integratedOutput = 0;
+        //TODO: reset() et resetIntegral()
+        m_params.speedError = 0;
+        m_params.speedGoal  = 0;
+        m_params.outputValue = 0;
+        m_integratedOutput  = 0;
     }
 
     void setMaxOutputLimit(float outputLimit)
@@ -72,10 +76,8 @@ class SpeedController
     float m_speedKp;
     float m_speedKi;
 
-
-  private:
+    static constexpr float MIN_INTEGRATION_SPEED_MM_PER_S = 0.1;
     SpeedControllerParameters m_params;
-    float m_outputValue;
     float m_speedGoal;
     float m_integratedOutput;
     float m_speedError;

@@ -205,7 +205,7 @@ void ControlThread::sendPIDStates() {
     jeroboam_datatypes_actuators_motion_PIDState_0_1 pidState;
     pidState.ID = CAN_PROTOCOL_LEFT_SPEED_PID_ID;
     pidState._error = params.speedError / 1000.;
-    pidState.output = params.outputValue / 1000.;
+    pidState.output = params.outputValue;
     pidState.setpoint = params.speedGoal / 1000.;
 
     size_t buf_size = jeroboam_datatypes_actuators_motion_PIDState_0_1_SERIALIZATION_BUFFER_SIZE_BYTES_;
@@ -226,7 +226,7 @@ void ControlThread::sendPIDStates() {
     params = control.getMotorControl()->getMotorControllerParameters(Peripherals::RIGHT_MOTOR);
     pidState.ID = CAN_PROTOCOL_RIGHT_SPEED_PID_ID;
     pidState._error = params.speedError / 1000.;
-    pidState.output = params.outputValue / 1000.;
+    pidState.output = params.outputValue;
     pidState.setpoint = params.speedGoal / 1000.;
 
     jeroboam_datatypes_actuators_motion_PIDState_0_1_serialize_(&pidState, buffer, &buf_size);
