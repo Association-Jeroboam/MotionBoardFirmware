@@ -48,7 +48,7 @@ void Motor::updateMeasure() {
     int16_t encoderCount = Board::IO::getEncoderCount(m_encoder);
     m_tick_count += encoderCount;
     m_pll.update(encoderCount, MOTOR_CONTROL_LOOP_DT);
-    m_speed = m_pll.getSpeed() * m_wheelRadius;
+    m_speed = m_pll.getSpeed() * m_wheelRadius * (1. / ENCODER_TICK_PER_TURN) * GEAR_RATIO * 2. * M_PI;;
     float   drivenAngle  = float(encoderCount) * (1. / ENCODER_TICK_PER_TURN) * GEAR_RATIO * 2. * M_PI;
     //m_speed              = drivenAngle * MOTOR_CONTROL_LOOP_FREQ * m_wheelRadius;
     m_drivenDistance += drivenAngle * m_wheelRadius;
