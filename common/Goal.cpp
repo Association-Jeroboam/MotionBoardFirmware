@@ -110,8 +110,10 @@ void Goal::print() {
             break;
         case NO_GOAL:
             Logging::println("No Goal");
+            break;
         case DISTANCE:
             Logging::println("Distance goal");
+            break;
         case ANGLE:
             Logging::println("Angle goal");
             break;
