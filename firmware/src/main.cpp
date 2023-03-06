@@ -15,6 +15,7 @@
 static THD_WORKING_AREA(waShellThread, SHELL_WA_SIZE);
 
 EmergencyWatcher emergencyWatcher;
+uavcan_node_Mode_1_0 node_mode;
 
 void cyphalHeartBeatRoutine() {
     static CanardTransferID transfer_id = 0;
@@ -29,10 +30,8 @@ void cyphalHeartBeatRoutine() {
         .health = {
             .value = uavcan_node_Health_1_0_NOMINAL
         },
-        .mode = {
-            .value = uavcan_node_Mode_1_0_OPERATIONAL,
-        },
-        .vendor_specific_status_code = 42,
+        .mode = node_mode,
+        .vendor_specific_status_code = CAN_PROTOCOL_MOTION_BOARD_ID,
     };
 
     size_t buf_size = uavcan_node_Heartbeat_1_0_SERIALIZATION_BUFFER_SIZE_BYTES_;
@@ -64,8 +63,11 @@ int main() {
     shellInit();
     Board::init();
     emergencyWatcher.start(NORMALPRIO);
+    
     chThdSleepMilliseconds(10);
     ControlThread::instance()->start(NORMALPRIO + 1);
+    node_mode.value = uavcan_node_Mode_1_0_INITIALIZATION;
+    cyphalHeartBeatRoutine();
     chThdSleepMilliseconds(10);
     DataStreamer::instance()->start(NORMALPRIO);
     chThdSleepMilliseconds(10);
@@ -74,7 +76,7 @@ int main() {
 
     chThdCreateStatic(waShellThread, sizeof(waShellThread), NORMALPRIO,
                       shellThread, (void*)&shell_cfg);
-
+    node_mode.value = uavcan_node_Mode_1_0_OPERATIONAL;
     while (!chThdShouldTerminateX()) {
         Board::IO::toggleLED();
         cyphalHeartBeatRoutine();
