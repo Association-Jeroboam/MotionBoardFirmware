@@ -12,13 +12,6 @@
 #define LOGGING_RX_PIN PAL_LINE(GPIOA, 15U)
 #define LOGGING_RX_PIN_MODE PAL_MODE_ALTERNATE(7)
 
-#define LIDAR_SD_DRIVER SD1
-
-#define LIDAR_SD_TX_PIN PAL_LINE(GPIOA, 9U)
-#define LIDAR_SD_TX_PIN_MODE PAL_MODE_ALTERNATE(7)
-#define LIDAR_SD_RX_PIN PAL_LINE(GPIOA, 10U)
-#define LIDAR_SD_RX_PIN_MODE PAL_MODE_ALTERNATE(7)
-
 __extension__ const SerialConfig lidarSDConfig{
     .speed = 115200,
     .cr1   = 0,

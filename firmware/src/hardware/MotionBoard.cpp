@@ -101,6 +101,7 @@ void Board::IO::initGPIO() {
     palSetLineMode(BRAKE_LEFT_PIN, BRAKE_LEFT_PIN_MODE);
     palSetLine(BRAKE_LEFT_PIN);
     palSetLineMode(BRAKE_RIGHT_PIN, BRAKE_LEFT_PIN_MODE);
+    palSetLineMode(BRAKE_RIGHT_PIN, BRAKE_RIGHT_PIN_MODE);
     palSetLine(BRAKE_RIGHT_PIN);
 }
 
