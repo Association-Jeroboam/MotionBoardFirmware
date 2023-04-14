@@ -206,6 +206,10 @@ static void cmd_control(BaseSequentialStream* chp, int argc, char* argv[]) {
             float kB = atof(argv[3]);
             ControlThread::instance()->getControl()->setPID(kP, kA, kB);
             return;
+        } else if (!strcmp(argv[0], "publish_ticks") && argc == 2) {
+            uint8_t enable = atoi(argv[1]);
+            ControlThread::instance()->setPublishTicksState(enable != 0);
+            return;
         }
     }
 
