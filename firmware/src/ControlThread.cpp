@@ -30,7 +30,8 @@ ControlThread::ControlThread() : BaseStaticThread<CONTROL_THREAD_WA>(),
                                  EventSource(),
                                  m_boardListener(),
                                  m_avoidanceListener(),
-                                 moveOkFired(true) {
+                                 moveOkFired(true),
+                                 m_sendOdomTicks(false) {
 }
 
 void ControlThread::main() {
@@ -65,6 +66,8 @@ void ControlThread::main() {
 
     Board::Events::startControlLoop(MOTOR_CONTROL_LOOP_FREQ);
 
+    uint8_t canPublishCounter = 0;
+
     while (!shouldTerminate()) {
         eventmask_t event = waitOneEvent(BoardEvent);
         if( event & BoardEvent) {
@@ -90,9 +93,14 @@ void ControlThread::main() {
                         moveOkFired = false;
                     }
                 }
-                sendOdomTicks();
-                sendCurrentState();
-                sendPIDStates();
+                canPublishCounter++;
+                if( canPublishCounter >= CAN_PUBLISH_DIVIDER) {
+                    if(m_sendOdomTicks) sendOdomTicks();
+                    sendCurrentState();
+                    sendPIDStates();
+                    canPublishCounter = 0;
+                }
+                
                 updateDataStreamer();
 
             }
@@ -359,3 +367,7 @@ void ControlThread::processSpeedCommandMsg(CanardRxTransfer * transfer) {
     }
 
 }
+
+void ControlThread::setPublishTicksState(bool publish) {
+    m_sendOdomTicks = publish;
+    }

@@ -4,6 +4,7 @@
 #include "CanListener.hpp"
 
 constexpr uint16_t CONTROL_THREAD_WA = 0x800;
+constexpr uint8_t  CAN_PUBLISH_DIVIDER = 2;
 
 enum ControlThreadFlags {
     GoalReached = 1 << 0,
@@ -18,6 +19,7 @@ class ControlThread : public chibios_rt::BaseStaticThread<CONTROL_THREAD_WA>,
     Control*              getControl();
 
     void processCanMsg(CanardRxTransfer * transfer);
+    void setPublishTicksState(bool publish);
 
   private:
     ControlThread();
@@ -35,5 +37,6 @@ class ControlThread : public chibios_rt::BaseStaticThread<CONTROL_THREAD_WA>,
     void    sendPIDStates();
     void    updateDataStreamer();
     bool    moveOkFired;
+    bool    m_sendOdomTicks;
     Control control;
 };
