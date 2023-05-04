@@ -20,7 +20,7 @@ m_emgcy_state(false)
 
 void EmergencyWatcher::main() {
     setName("Emgcy Watcher");
-
+    m_emgcy_state = Board::IO::getEmgcyState();
     Board::Events::eventRegister(&m_listener, BoardEvent);
 
     while (!shouldTerminate()) {
@@ -35,7 +35,7 @@ void EmergencyWatcher::main() {
                 Logging::println("Emergency stop!");
                 m_emgcy_state = true;
             }
-
+    
             if(flags & EMERGENCY_CLEARED){
                 Logging::println("Emergency cleared!");
                 m_emgcy_state = false;
