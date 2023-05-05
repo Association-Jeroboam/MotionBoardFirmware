@@ -3,6 +3,8 @@
 #include "Logging.hpp"
 #include "EmergencyState_0_1.h"
 
+constexpr uint8_t CONTROL_FREQ_DIV = 10;
+
 using namespace Board::Events;
 
 enum EmgcyWatcherEvents {
@@ -28,7 +30,12 @@ void EmergencyWatcher::main() {
         if(event & BoardEvent) {
             eventflags_t flags = m_listener.getAndClearFlags();
             if(flags & RUN_MOTOR_CONTROL) {
-                sendEmgcyState();
+                static uint16_t counter = 0;
+                counter ++;
+                if(counter >= CONTROL_FREQ_DIV) {
+                    counter = 0;
+                    sendEmgcyState();
+                }
             }
 
             if (flags & EMERGENCY_STOP) {
