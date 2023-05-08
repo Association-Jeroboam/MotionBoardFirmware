@@ -289,6 +289,7 @@ void ControlThread::processCanMsg(CanardRxTransfer * transfer) {
             processSpeedCommandMsg(transfer);
             break;
         case ROBOT_SET_PWM_WHEELS_ID:
+            Logging::println("Process ROBOT_SET_PWM_WHEELS_ID");
             processPwmCommandMsg(transfer);
         default:
             Logging::println("[Control Thread] CAN transfer dropped");
