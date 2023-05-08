@@ -63,6 +63,10 @@ void ControlThread::main() {
                                        CanardTransferKindMessage,
                                        ROBOT_GOAL_SPEEDS_WHEELS_ID,
                                        jeroboam_datatypes_actuators_motion_SpeedCommand_0_1_EXTENT_BYTES_);
+    Board::Com::CANBus::registerCanMsg(this,
+                                       CanardTransferKindMessage,
+                                       ROBOT_SET_PWM_WHEELS_ID,
+                                       jeroboam_datatypes_actuators_motion_SpeedCommand_0_1_EXTENT_BYTES_);
 
     Board::Events::startControlLoop(MOTOR_CONTROL_LOOP_FREQ);
 
@@ -284,6 +288,8 @@ void ControlThread::processCanMsg(CanardRxTransfer * transfer) {
         case ROBOT_GOAL_SPEEDS_WHEELS_ID:
             processSpeedCommandMsg(transfer);
             break;
+        case ROBOT_SET_PWM_WHEELS_ID:
+            processPwmCommandMsg(transfer);
         default:
             Logging::println("[Control Thread] CAN transfer dropped");
             break;
@@ -360,12 +366,25 @@ void ControlThread::processSpeedCommandMsg(CanardRxTransfer * transfer) {
                                                                                    (uint8_t *)transfer->payload,
                                                                                    &transfer->payload_size);
     if(res == NUNAVUT_SUCCESS) {
-        Goal goal(speedCommand.left.meter_per_second * 1000, speedCommand.right.meter_per_second * 1000, Goal::SPEED);
+        Goal goal(speedCommand.left.meter_per_second * 1000, speedCommand.right.meter_per_second * 1000, Goal::GoalType::SPEED);
         control.setCurrentGoal(goal);
     } else {
         Logging::println("[Control] Failed deserialize speed command");
     }
 
+}
+
+void ControlThread::processPwmCommandMsg(CanardRxTransfer * transfer) {
+    jeroboam_datatypes_actuators_motion_SpeedCommand_0_1 pwmCommand;
+    int8_t res = jeroboam_datatypes_actuators_motion_SpeedCommand_0_1_deserialize_(&pwmCommand,
+                                                                                   (uint8_t *)transfer->payload,
+                                                                                   &transfer->payload_size);
+    if(res == NUNAVUT_SUCCESS) {
+        Goal goal(pwmCommand.left.meter_per_second, pwmCommand.right.meter_per_second, Goal::GoalType::PWM);
+        control.setCurrentGoal(goal);
+    } else {
+        Logging::println("[Control] Failed deserialize speed command");
+    }
 }
 
 void ControlThread::setPublishTicksState(bool publish) {

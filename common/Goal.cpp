@@ -1,5 +1,6 @@
 #include "Goal.hpp"
 #include "Logging.hpp"
+#include <algorithm>
 
 uint32_t Goal::s_goalCount = 0;
 
@@ -33,8 +34,9 @@ Goal::Goal(float input0, float input1, enum GoalType type){
             break;
         case PWM:
             m_type = type;
-            m_data.pwmData.leftPWM = input0;
-            m_data.pwmData.rightPWM = input1;
+            // cap between -1 and 1
+            m_data.pwmData.leftPWM  = std::max(std::min(input0, 1.f), -1.f );
+            m_data.pwmData.rightPWM = std::max(std::min(input1, 1.f), -1.f );
             m_ID = s_goalCount;
             s_goalCount++;
             break;
