@@ -146,7 +146,7 @@ void ControlThread::sendOdomTicks() {
     size_t buf_size = jeroboam_datatypes_sensors_odometry_OdometryTicks_0_1_SERIALIZATION_BUFFER_SIZE_BYTES_;
     uint8_t buffer[jeroboam_datatypes_sensors_odometry_OdometryTicks_0_1_SERIALIZATION_BUFFER_SIZE_BYTES_];
 
-    jeroboam_datatypes_sensors_odometry_OdometryTicks_0_1_serialize_(&odom_ticks, buffer, &buf_size);
+    int8_t res = jeroboam_datatypes_sensors_odometry_OdometryTicks_0_1_serialize_(&odom_ticks, buffer, &buf_size);
 
     const CanardTransferMetadata metadata = {
         .priority = CanardPriorityImmediate,
@@ -155,9 +155,12 @@ void ControlThread::sendOdomTicks() {
         .remote_node_id = CANARD_NODE_ID_UNSET,
         .transfer_id = transfer_id,
     };
-    transfer_id++;
-    Board::Com::CANBus::send(&metadata, buf_size,  buffer);
-
+    if( res == NUNAVUT_SUCCESS) {
+        transfer_id++;
+        Board::Com::CANBus::send(&metadata, buf_size,  buffer);
+    } else {
+        Logging::println(" Could not serialize OdomTicks");
+    }
 }
 
 void ControlThread::sendCurrentState() {
@@ -180,8 +183,7 @@ void ControlThread::sendCurrentState() {
     size_t buf_size = jeroboam_datatypes_sensors_odometry_State2D_1_0_SERIALIZATION_BUFFER_SIZE_BYTES_;
     uint8_t buffer[jeroboam_datatypes_sensors_odometry_State2D_1_0_SERIALIZATION_BUFFER_SIZE_BYTES_];
 
-    jeroboam_datatypes_sensors_odometry_State2D_1_0_serialize_(&state2D, buffer, &buf_size);
-
+    int8_t res = jeroboam_datatypes_sensors_odometry_State2D_1_0_serialize_(&state2D, buffer, &buf_size);
 
     const CanardTransferMetadata metadata = {
         .priority = CanardPriorityImmediate,
@@ -190,8 +192,13 @@ void ControlThread::sendCurrentState() {
         .remote_node_id = CANARD_NODE_ID_UNSET,
         .transfer_id = transfer_id,
     };
-    transfer_id++;
-    Board::Com::CANBus::send(&metadata, buf_size,  buffer);
+    if( res == NUNAVUT_SUCCESS) {
+        transfer_id++;
+        Board::Com::CANBus::send(&metadata, buf_size,  buffer);
+    }  else {
+        Logging::println(" Could not serialize State");
+    }
+    
 
 }
 
@@ -208,7 +215,7 @@ void ControlThread::sendPIDStates() {
     size_t buf_size = jeroboam_datatypes_actuators_motion_PIDState_0_1_SERIALIZATION_BUFFER_SIZE_BYTES_;
     uint8_t buffer[jeroboam_datatypes_actuators_motion_PIDState_0_1_SERIALIZATION_BUFFER_SIZE_BYTES_];
 
-    jeroboam_datatypes_actuators_motion_PIDState_0_1_serialize_(&pidState, buffer, &buf_size);
+    int8_t res = jeroboam_datatypes_actuators_motion_PIDState_0_1_serialize_(&pidState, buffer, &buf_size);
 
     CanardTransferMetadata metadata = {
         .priority = CanardPriorityNominal,
@@ -217,8 +224,12 @@ void ControlThread::sendPIDStates() {
         .remote_node_id = CANARD_NODE_ID_UNSET,
         .transfer_id = transfer_id,
     };
-    transfer_id++;
-    Board::Com::CANBus::send(&metadata, buf_size,  buffer);
+    if( res == NUNAVUT_SUCCESS) {
+        transfer_id++;
+        Board::Com::CANBus::send(&metadata, buf_size,  buffer);
+    } else {
+        Logging::println(" Could not serialize PID left");
+    }
 
     params = control.getMotorControl()->getMotorControllerParameters(Peripherals::RIGHT_MOTOR);
     pidState.ID = CAN_PROTOCOL_RIGHT_SPEED_PID_ID;
@@ -226,7 +237,7 @@ void ControlThread::sendPIDStates() {
     pidState.output = params.outputValue;
     pidState.setpoint = params.speedGoal / 1000.;
 
-    jeroboam_datatypes_actuators_motion_PIDState_0_1_serialize_(&pidState, buffer, &buf_size);
+    res = jeroboam_datatypes_actuators_motion_PIDState_0_1_serialize_(&pidState, buffer, &buf_size);
 
     metadata = {
         .priority = CanardPriorityNominal,
@@ -235,9 +246,12 @@ void ControlThread::sendPIDStates() {
         .remote_node_id = CANARD_NODE_ID_UNSET,
         .transfer_id = transfer_id,
     };
-    transfer_id++;
-    Board::Com::CANBus::send(&metadata, buf_size,  buffer);
-
+    if( res == NUNAVUT_SUCCESS) {
+        transfer_id++;
+        Board::Com::CANBus::send(&metadata, buf_size,  buffer);
+    } else {
+        Logging::println(" Could not serialize PID right");
+    }
 
 }
 
@@ -326,12 +340,16 @@ void ControlThread::processAdaptativPIDMsg(CanardRxTransfer * transfer) {
 
 void ControlThread::processMotionConfigMsg(CanardRxTransfer * transfer) {
     jeroboam_datatypes_actuators_motion_MotionConfig_0_1 motionConf;
-    jeroboam_datatypes_actuators_motion_MotionConfig_0_1_deserialize_(&motionConf,
+    int8_t res = jeroboam_datatypes_actuators_motion_MotionConfig_0_1_deserialize_(&motionConf,
                                                                       (uint8_t *)transfer->payload,
                                                                       &transfer->payload_size);
-    control.getRobotPose()->setWheelBase(motionConf.wheel_base.meter);
-    control.getMotorControl()->setWheelRadius(Peripherals::LEFT_MOTOR, motionConf.left_wheel_radius.meter * 1000);
-    control.getMotorControl()->setWheelRadius(Peripherals::RIGHT_MOTOR, motionConf.right_wheel_radius.meter * 1000);
+    if(res == NUNAVUT_SUCCESS) {
+        control.getRobotPose()->setWheelBase(motionConf.wheel_base.meter * 1000);
+        control.getMotorControl()->setWheelRadius(Peripherals::LEFT_MOTOR, motionConf.left_wheel_radius.meter * 1000);
+        control.getMotorControl()->setWheelRadius(Peripherals::RIGHT_MOTOR, motionConf.right_wheel_radius.meter * 1000);
+    } else {
+        Logging::println("[Control] Failed deserialize speed command");
+    }
 }
 
 void ControlThread::processSpeedCommandMsg(CanardRxTransfer * transfer) {
