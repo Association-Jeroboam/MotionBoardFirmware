@@ -65,7 +65,6 @@ void Motor::updateMeasure() {
 //}
 
 void Motor::setPID(float p, float i, uint8_t range) {
-    Logging::println("set pi range %u", range);
     m_speedController.setGains(p, i, range);
 }
 
