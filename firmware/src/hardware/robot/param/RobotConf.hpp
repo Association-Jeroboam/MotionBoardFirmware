@@ -6,12 +6,12 @@
 
 #ifdef WHITE_ROBOT
 
-constexpr float WHEEL_RADIUS_FACTOR = 1.008926272;
-constexpr float WHEEL_DISTANCE_FACTOR = 0.9879532858233885;
+constexpr float WHEEL_RADIUS_FACTOR = 1.0;
+constexpr float WHEEL_DISTANCE_FACTOR = 1.0;
 
 constexpr float WHEEL_LEFT_RADIUS  = 28.25 * WHEEL_DISTANCE_FACTOR;  //[mm] Theorical 28.25
 constexpr float WHEEL_RIGHT_RADIUS = 28.25 / WHEEL_RADIUS_FACTOR * WHEEL_DISTANCE_FACTOR;  //[mm] Theorical 28.25
-constexpr float WHEEL_BASE         = 258.; //[mm] Theorical 266
+constexpr float WHEEL_BASE         = 261.2; //[mm] Theorical 266
 
 constexpr float LEFT_MOTOR_KP[3]      = {0.001,0.001,0.001};
 constexpr float LEFT_MOTOR_KI[3]      = {0.0001,0.0001,0.0001};
@@ -90,8 +90,8 @@ constexpr uint8_t MOTOR_RIGHT_CHANNEL = 1;
 
 #elif defined(BRUT_ROBOT)
 
-constexpr float WHEEL_RADIUS_FACTOR = 1.008926272;
-constexpr float WHEEL_DISTANCE_FACTOR = 0.9879532858233885;
+constexpr float WHEEL_RADIUS_FACTOR = 1.0;
+constexpr float WHEEL_DISTANCE_FACTOR = 1.0;
 
 constexpr float WHEEL_LEFT_RADIUS  = 28.25 * WHEEL_DISTANCE_FACTOR;  //[mm] Theorical 28.25
 constexpr float WHEEL_RIGHT_RADIUS = 28.25 / WHEEL_RADIUS_FACTOR * WHEEL_DISTANCE_FACTOR;  //[mm] Theorical 28.25
