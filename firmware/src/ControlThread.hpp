@@ -4,7 +4,7 @@
 #include "CanListener.hpp"
 
 constexpr uint16_t CONTROL_THREAD_WA = 0x800;
-constexpr uint8_t  CAN_PUBLISH_DIVIDER = 2;
+constexpr uint8_t  CAN_PUBLISH_DIVIDER = 1;
 
 enum ControlThreadFlags {
     GoalReached = 1 << 0,

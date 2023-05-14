@@ -23,6 +23,7 @@ m_pll(DEFAULT_PLL_BW)
     m_drivenDistance = 0.;
     m_disabled = false;
     m_tick_count = 0;
+    m_tick_integral = 0;
 }
 
 void Motor::updateControl() {
@@ -47,6 +48,7 @@ void Motor::updateControl() {
 void Motor::updateMeasure() {
     int16_t encoderCount = Board::IO::getEncoderCount(m_encoder);
     m_tick_count += encoderCount;
+    m_tick_integral += encoderCount;
     m_pll.update(encoderCount, MOTOR_CONTROL_LOOP_DT);
     m_speed = m_pll.getSpeed() * m_wheelRadius * (1. / ENCODER_TICK_PER_TURN) * GEAR_RATIO * 2. * M_PI;;
     float   drivenAngle  = float(encoderCount) * (1. / ENCODER_TICK_PER_TURN) * GEAR_RATIO * 2. * M_PI;
@@ -65,7 +67,6 @@ void Motor::updateMeasure() {
 //}
 
 void Motor::setPID(float p, float i, uint8_t range) {
-    Logging::println("set pi range %u", range);
     m_speedController.setGains(p, i, range);
 }
 
@@ -102,11 +103,18 @@ void Motor::reset() {
 //    m_speedSetpoint = 0.;
     m_speedController.resetIntegral();
     m_speedController.setSpeedGoal(0.);
+    Board::IO::setMotorDutyCycle(m_motor, 0);
 }
 
 int32_t Motor::getTickCount() {
     int32_t tick_count = m_tick_count;
     m_tick_count = 0;
+    // Logging::print("%ld", m_tick_integral);
+    // if(m_motor == Peripherals::RIGHT_MOTOR) {
+    //     Logging::println("");
+    // } else {
+    //     Logging::print(" : ");
+    // }
     return tick_count;
 }
 

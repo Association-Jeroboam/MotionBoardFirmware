@@ -126,20 +126,21 @@ void Board::IO::deinitPWM() {
 }
 
 int16_t Board::IO::getEncoderCount(Peripherals::Encoder encoder) {
-    int16_t encoderCount;
-
+    int16_t encoderCount;       
+    chSysLock();
     switch (encoder) {
         case Peripherals::LEFT_ENCODER:
-            encoderCount = qeiGetCount(&LEFT_ENCODER_DRIVER);
+            encoderCount = qeiGetCountI(&LEFT_ENCODER_DRIVER);
 //            Logging::println("LEFT   %i", encoderCount);
-            qeiSetCount(&LEFT_ENCODER_DRIVER, 0);
+            qei_lld_set_count(&LEFT_ENCODER_DRIVER, 0);
             break;
         case Peripherals::RIGHT_ENCODER:
-            encoderCount = qeiGetCount(&RIGHT_ENCODER_DRIVER);
+            encoderCount = qeiGetCountI(&RIGHT_ENCODER_DRIVER);
 //            Logging::println("RIGHT %i", encoderCount);
-            qeiSetCount(&RIGHT_ENCODER_DRIVER, 0);
+            qei_lld_set_count(&RIGHT_ENCODER_DRIVER, 0);
             break;
     }
+    chSysUnlock();
 //    Logging::println("enc %i cnt: %i", encoder, encoderCount);
     return encoderCount;
 }

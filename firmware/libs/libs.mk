@@ -3,8 +3,9 @@ COMMONINC += $(LIBDIR)/CanProtocol/ChibiOS
 COMMONCPPSRC += $(LIBDIR)/CanProtocol/ChibiOS/CanRxThread.cpp
 COMMONCPPSRC += $(LIBDIR)/CanProtocol/ChibiOS/CanTxThread.cpp
 CYPHALDIR = $(LIBDIR)/CanProtocol/Cyphal
+DATATYPES += $(CYPHALDIR)/public_regulated_data_types
 CYPHALLOOKUPDIRS += $(CYPHALDIR)/public_regulated_data_types/uavcan
-CYPHALREGULAR += $(CYPHALDIR)/public_regulated_data_types/reg
+CYPHALREGULAR +=    $(CYPHALDIR)/public_regulated_data_types/reg
 CYPHALPRIVATE += $(CYPHALDIR)/jeroboam_datatypes
 COMMONINC += $(CYPHALDIR)/libcanard/libcanard/
 COMMONCSRC += $(CYPHALDIR)/libcanard/libcanard/canard.c
@@ -69,7 +70,7 @@ COMMONINC += $(CYPHALDIR)/includes/jeroboam_datatypes/actuators/common
 
 #$(shell nnvg --target-language c -v --target-endianness=little $(CYPHALREGULAR) --lookup-dir $(CYPHALLOOKUPDIRS) --outdir $(CYPHALDIR)/includes)
 #$(shell nnvg --target-language c -v --target-endianness=little $(CYPHALLOOKUPDIRS) --outdir $(CYPHALDIR)/includes)
-#$(shell nnvg --target-language c -v --target-endianness=little $(CYPHALPRIVATE) --lookup-dir $(CYPHALLOOKUPDIRS) --outdir $(CYPHALDIR)/includes)
+#$(shell nnvg --target-language c -v --target-endianness=little $(CYPHALPRIVATE) --lookup-dir $(CYPHALREGULAR) --lookup-dir $(CYPHALLOOKUPDIRS) --outdir $(CYPHALDIR)/includes)
 #To enable asserts use this line instead
 #$(shell nnvg --target-language c --target-endianness=little --enable-serialization-asserts $(CYPHALREGULAR) --lookup-dir $(CYPHALLOOKUPDIRS) --outdir $(CYPHALDIR)/includes)
 

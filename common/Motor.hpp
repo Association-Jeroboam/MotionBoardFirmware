@@ -48,6 +48,7 @@ class Motor {
     const Peripherals::Motor   m_motor;
     bool m_disabled;
     int32_t                    m_tick_count;
+    int32_t                    m_tick_integral;
     Pll                        m_pll;
 
     void updateMeasure();
