@@ -5,6 +5,7 @@
 #include "MotorControl.hpp"
 #include "PID.h"
 #include "RobotPose.hpp"
+#include "SpeedController.hpp"
 
 struct ControlData {
     float angularSpeed;
@@ -60,6 +61,8 @@ class Control {
 
     MotorControl m_motorControl;
     Goal         m_currentGoal;
+    SpeedController m_linearController;
+    SpeedController m_angularController;
 
     float goalPos;
     bool m_emergencyStop;
