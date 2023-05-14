@@ -10,8 +10,8 @@
 constexpr float circularTimeout = 2.;
 
 Control::Control() : m_robotPose(INITIAL_X_POS, INITIAL_Y_POS, INITIAL_ANGLE),
-m_linearController(1.f, 0.f, MAX_WHEEL_SPEED, MAX_WHEEL_SPEED, MOTOR_CONTROL_LOOP_FREQ),
-m_angularController(1.f, 0.f, MAX_ANGULAR_SPEED, MAX_ANGULAR_SPEED, MOTOR_CONTROL_LOOP_FREQ) {
+m_linearController(0.1f, 0.f, MAX_WHEEL_SPEED, MAX_WHEEL_SPEED, MOTOR_CONTROL_LOOP_FREQ),
+m_angularController(0.1f, 0.f, MAX_ANGULAR_SPEED, MAX_ANGULAR_SPEED, MOTOR_CONTROL_LOOP_FREQ) {
     m_linearSpeed          = 0.;
     m_linearSpeedSetpoint  = 0.;
     m_angularSpeed         = 0.;
@@ -136,10 +136,10 @@ void Control::applyControl() {
             m_linearSpeedSetpoint  = m_currentGoal.getCircularData().linearSpeed;
 
             m_linearController.setSpeedGoal(m_linearSpeedSetpoint);
-            m_linearSpeedSetpoint = m_linearController.update(m_linearSpeed);
+            m_linearSpeedSetpoint += m_linearController.update(m_linearSpeed);
 
             m_angularController.setSpeedGoal(m_angularSpeedSetpoint);
-            m_angularSpeedSetpoint = m_angularController.update(m_angularSpeed);
+            m_angularSpeedSetpoint += m_angularController.update(m_angularSpeed);
 
             m_motorControl.setDisable(false);
             break;
