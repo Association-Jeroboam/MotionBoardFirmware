@@ -295,3 +295,11 @@ void Control::getMotorTicks(int32_t * left, int32_t * right) {
     *left  = m_motorControl.getMotorEncoderTicks(Peripherals::LEFT_MOTOR);
     *right = m_motorControl.getMotorEncoderTicks(Peripherals::RIGHT_MOTOR);
 }
+
+SpeedControllerParameters Control::getLinearControllerParams() {
+    return m_linearController.getParameters();
+}
+
+SpeedControllerParameters Control::getAngularControllerParams() {
+    return m_angularController.getParameters();
+}

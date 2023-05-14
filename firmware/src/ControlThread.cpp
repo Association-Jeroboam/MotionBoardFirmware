@@ -253,6 +253,49 @@ void ControlThread::sendPIDStates() {
         Logging::println(" Could not serialize PID right");
     }
 
+    params = control.getLinearControllerParams();
+    pidState.ID = CAN_PROTOCOL_LINEAR_SPEED_PID_ID;
+    pidState._error = params.speedError / 1000.;
+    pidState.output = params.outputValue;
+    pidState.setpoint = params.speedGoal / 1000.;
+
+    res = jeroboam_datatypes_actuators_motion_PIDState_0_1_serialize_(&pidState, buffer, &buf_size);
+
+    metadata = {
+        .priority = CanardPriorityNominal,
+        .transfer_kind = CanardTransferKindMessage,
+        .port_id = MOTION_PID_STATE_ID,
+        .remote_node_id = CANARD_NODE_ID_UNSET,
+        .transfer_id = transfer_id,
+    };
+    if( res == NUNAVUT_SUCCESS) {
+        transfer_id++;
+        Board::Com::CANBus::send(&metadata, buf_size,  buffer);
+    } else {
+        Logging::println(" Could not serialize PID linear");
+    }
+
+    params = control.getAngularControllerParams();
+    pidState.ID = CAN_PROTOCOL_ANGULAR_SPEED_PID_ID;
+    pidState._error = params.speedError;
+    pidState.output = params.outputValue;
+    pidState.setpoint = params.speedGoal;
+
+    res = jeroboam_datatypes_actuators_motion_PIDState_0_1_serialize_(&pidState, buffer, &buf_size);
+
+    metadata = {
+        .priority = CanardPriorityNominal,
+        .transfer_kind = CanardTransferKindMessage,
+        .port_id = MOTION_PID_STATE_ID,
+        .remote_node_id = CANARD_NODE_ID_UNSET,
+        .transfer_id = transfer_id,
+    };
+    if( res == NUNAVUT_SUCCESS) {
+        transfer_id++;
+        Board::Com::CANBus::send(&metadata, buf_size,  buffer);
+    } else {
+        Logging::println(" Could not serialize PID angular");
+    }
 }
 
 void ControlThread::processCanMsg(CanardRxTransfer * transfer) {

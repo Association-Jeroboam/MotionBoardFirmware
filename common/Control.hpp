@@ -54,6 +54,9 @@ class Control {
 
     inline MotorControl* getMotorControl(){return &m_motorControl;};
 
+    SpeedControllerParameters getLinearControllerParams();
+    SpeedControllerParameters getAngularControllerParams();
+
     RobotPose    m_robotPose;
 
   private:
