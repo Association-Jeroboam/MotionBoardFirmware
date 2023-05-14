@@ -124,6 +124,7 @@ void Control::applyControl() {
 
     switch (m_currentGoal.getType()) {
         case Goal::COORD: {
+            m_motorControl.setDisable(false);
             goToPose();
             break;
         }
@@ -131,16 +132,19 @@ void Control::applyControl() {
             t += MOTOR_CONTROL_LOOP_DT;
             m_angularSpeedSetpoint = m_currentGoal.getCircularData().angularSpeed;
             m_linearSpeedSetpoint  = m_currentGoal.getCircularData().linearSpeed;
+            m_motorControl.setDisable(false);
             break;
         }
         case Goal::SPEED: {
             leftSpeedSetpoint  = m_currentGoal.getSpeedData().leftSpeed;
             rightSpeedSetpoint = m_currentGoal.getSpeedData().rightSpeed;
+            m_motorControl.setDisable(false);
             goto set_speeds;
         }
         case Goal::PWM: {
             Board::IO::setMotorDutyCycle(Peripherals::Motor::LEFT_MOTOR, m_currentGoal.getPWMData().leftPWM);
             Board::IO::setMotorDutyCycle(Peripherals::Motor::RIGHT_MOTOR, m_currentGoal.getPWMData().rightPWM);
+            m_motorControl.setDisable(false);
             return;
         }
         case Goal::NO_GOAL: {
@@ -151,7 +155,8 @@ void Control::applyControl() {
             m_currentGoal.setReached(true);
             m_motorControl.resetMotor(Peripherals::LEFT_MOTOR);
             m_motorControl.resetMotor(Peripherals::RIGHT_MOTOR);
-            break;
+            m_motorControl.setDisable(true);
+            goto update;
         }
         case Goal::DISTANCE:
             break;
@@ -178,12 +183,15 @@ void Control::applyControl() {
 
 set_speeds:
     if(m_currentGoal.isReached()) {
-        m_motorControl.motorSetSpeed(Peripherals::LEFT_MOTOR, 0.);
-        m_motorControl.motorSetSpeed(Peripherals::RIGHT_MOTOR, 0.);
+        // m_motorControl.motorSetSpeed(Peripherals::LEFT_MOTOR, 0.);
+        // m_motorControl.motorSetSpeed(Peripherals::RIGHT_MOTOR, 0.);
+        m_motorControl.resetMotor(Peripherals::LEFT_MOTOR);
+        m_motorControl.resetMotor(Peripherals::RIGHT_MOTOR);
     } else {
         m_motorControl.motorSetSpeed(Peripherals::LEFT_MOTOR, leftSpeedSetpoint);
         m_motorControl.motorSetSpeed(Peripherals::RIGHT_MOTOR, rightSpeedSetpoint);
     }
+update:
     m_motorControl.update();
 }
 

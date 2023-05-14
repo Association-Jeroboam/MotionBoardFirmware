@@ -102,6 +102,7 @@ void Motor::reset() {
 //    m_speedSetpoint = 0.;
     m_speedController.resetIntegral();
     m_speedController.setSpeedGoal(0.);
+    Board::IO::setMotorDutyCycle(m_motor, 0);
 }
 
 int32_t Motor::getTickCount() {
