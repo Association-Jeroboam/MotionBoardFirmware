@@ -32,7 +32,8 @@ m_angularController(0.1f, 0.f, MAX_ANGULAR_SPEED, MAX_ANGULAR_SPEED, MOTOR_CONTR
 
 void Control::update() {
     if(m_triggerCounter * MOTOR_CONTROL_LOOP_DT > CONTROL_COMMAND_TIMEOUT_S &&
-        m_currentGoal.getType() != Goal::NO_GOAL) {
+        m_currentGoal.getType() != Goal::NO_GOAL && 
+        m_currentGoal.getType() != Goal::PWM) {
         Goal noGoal = Goal();
         setCurrentGoal(noGoal);
         Logging::println("Goal timeout");
@@ -154,6 +155,7 @@ void Control::applyControl() {
             Board::IO::setMotorDutyCycle(Peripherals::Motor::LEFT_MOTOR, m_currentGoal.getPWMData().leftPWM);
             Board::IO::setMotorDutyCycle(Peripherals::Motor::RIGHT_MOTOR, m_currentGoal.getPWMData().rightPWM);
             m_motorControl.setDisable(false);
+            m_motorControl.updateMeasure();
             return;
         }
         case Goal::NO_GOAL: {

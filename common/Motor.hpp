@@ -8,7 +8,7 @@
 constexpr float DEFAULT_PLL_BW = 60; //[Hz]
 
 class Motor {
-  public:
+  public:     
     Motor(Peripherals::Encoder encoder,
           Peripherals::Motor   motor,
           float                wheelRadius);
@@ -38,6 +38,8 @@ class Motor {
 
     void reset();
 
+    void updateMeasure();
+
   private:
     float                      m_speed;         // [mm/s]
     float                      m_drivenDistance;
@@ -50,6 +52,4 @@ class Motor {
     int32_t                    m_tick_count;
     int32_t                    m_tick_integral;
     Pll                        m_pll;
-
-    void updateMeasure();
 };

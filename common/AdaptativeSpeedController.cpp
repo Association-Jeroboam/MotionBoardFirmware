@@ -20,7 +20,7 @@ AdaptativeSpeedController::AdaptativeSpeedController(
         m_GainsSpeedRange[i] = speedRange[i];
         m_speedKpSet[i] = KpGains[i];
         m_speedKiSet[i] = KiGains[i];
-    }
+    }   
 }
 
 float AdaptativeSpeedController::update(float actualSpeed)

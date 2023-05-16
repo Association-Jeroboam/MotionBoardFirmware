@@ -18,6 +18,11 @@ void MotorControl::update() {
     DataStreamer::instance()->setEntry(rightWheelSpeedEnum, m_rightMotor.getSpeed());
 }
 
+void MotorControl::updateMeasure() {
+    m_leftMotor.updateMeasure();
+    m_rightMotor.updateMeasure();
+}
+
 void MotorControl::motorSetSpeed(Peripherals::Motor motor, float speed) {
     switch (motor) {
         case Peripherals::LEFT_MOTOR:
