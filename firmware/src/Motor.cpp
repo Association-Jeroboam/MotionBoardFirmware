@@ -35,6 +35,9 @@ void Motor::updateControl() {
     } else {
 //        command = m_speedPID.compute(m_speedSetpoint, m_speed);
         command = m_speedController.update(m_speed);
+        if(m_motor == Peripherals::RIGHT_MOTOR) {
+            Logging::println("");
+        }
     }
     Board::IO::setMotorDutyCycle(m_motor, command);
     if (m_encoder == Peripherals::LEFT_ENCODER) {
@@ -112,7 +115,10 @@ int32_t Motor::getTickCount() {
 }
 
 void Motor::setDisable(bool disable) {
-    m_disabled = disable;
     Board::IO::setBrake(m_motor, disable);
-    reset();
+
+    if(m_disable && !disable) {
+        reset();
+    }
+    m_disabled = disable;
 }
