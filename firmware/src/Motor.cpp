@@ -117,7 +117,7 @@ int32_t Motor::getTickCount() {
 void Motor::setDisable(bool disable) {
     Board::IO::setBrake(m_motor, disable);
 
-    if(m_disable && !disable) {
+    if(m_disabled && !disable) {
         reset();
     }
     m_disabled = disable;
