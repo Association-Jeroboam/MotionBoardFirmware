@@ -54,11 +54,11 @@ float SpeedController::update(float actualSpeed)
     }
 
     // Protection antiWindup, le max est un peu empirique mais ça marche bien. Evite mieux les oscillations que m_outputLimit
-    float integrator_max_value = fabs(2 * m_params.speedError * m_speedKp);
-    if (m_integratedOutput > integrator_max_value)
-        m_integratedOutput = integrator_max_value;
-    else if (m_integratedOutput < -integrator_max_value)
-        m_integratedOutput = -integrator_max_value;
+    // float integrator_max_value = fabs(2 * m_params.speedError * m_speedKp);
+    if (m_integratedOutput > m_outputLimit)
+        m_integratedOutput = m_outputLimit;
+    else if (m_integratedOutput < -m_outputLimit)
+        m_integratedOutput = -m_outputLimit;
 
     return m_params.outputValue;
 }

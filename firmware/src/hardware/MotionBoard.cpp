@@ -210,15 +210,21 @@ void Board::Events::startControlLoop(uint16_t frequency) {
 
 static void controlLoopTimerCallback(GPTDriver* gptp) {
     (void)gptp;
+    chSysLockFromISR();
     eventSource.broadcastFlagsI(Board::Events::RUN_MOTOR_CONTROL);
+    chSysUnlockFromISR();
 }
 
 static void gpioEmergencyStopCb(void* arg) {
+    enum Board::Events::eventFlags flag;
     if (palReadLine(EMGCY_STOP_PIN) == PAL_LOW) {
-        eventSource.broadcastFlagsI(Board::Events::EMERGENCY_STOP);
+        flag = Board::Events::EMERGENCY_STOP;
     } else {
-        eventSource.broadcastFlagsI(Board::Events::EMERGENCY_CLEARED);
+        flag = Board::Events::EMERGENCY_CLEARED;
     }
+    chSysLockFromISR();
+    eventSource.broadcastFlagsI(flag);
+    chSysUnlockFromISR();
 }
 
 void Board::Events::eventRegister(chibios_rt::EventListener* elp, eventmask_t event) {

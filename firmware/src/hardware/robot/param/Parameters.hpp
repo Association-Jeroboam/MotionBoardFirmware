@@ -19,8 +19,8 @@ constexpr uint16_t PWM_DUTY_CYCLE_PRECISION = 100000;
 constexpr float GEAR_RATIO     = 1.;
 constexpr float GEAR_RATIO_INV = 1.;
 
-constexpr float MAX_WHEEL_SPEED    = 1000.; //[mm/s] //TODO: Change me!
-constexpr float MAX_ANGULAR_SPEED  = 3/2*M_PI; //TODO: Change me!
+constexpr float MAX_WHEEL_SPEED    = 1500.; //[mm/s] 
+constexpr float MAX_ANGULAR_SPEED  = 11.5; //Theoretically  11.58 if our wheel base is 259mm
 constexpr float MAX_LINEAR_ACCL    = 1000.; //[mm/s^2]
 constexpr float MAX_ANGULAR_ACCL    = 2*M_PI; //[mm/s^2]
 constexpr float MAX_WHEEL_ACCL     = 10000.; // [mm/s]œ
