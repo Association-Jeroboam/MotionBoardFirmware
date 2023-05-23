@@ -30,14 +30,9 @@ void Motor::updateControl() {
     float command;
     if(m_disabled) {
         command = 0.;
-//        m_speedPID.reset();
         m_speedController.resetIntegral();
     } else {
-//        command = m_speedPID.compute(m_speedSetpoint, m_speed);
         command = m_speedController.update(m_speed);
-        if(m_motor == Peripherals::RIGHT_MOTOR) {
-            Logging::println("");
-        }
     }
     Board::IO::setMotorDutyCycle(m_motor, command);
     if (m_encoder == Peripherals::LEFT_ENCODER) {
@@ -53,19 +48,8 @@ void Motor::updateMeasure() {
     m_pll.update(encoderCount, MOTOR_CONTROL_LOOP_DT);
     m_speed = m_pll.getSpeed() * m_wheelRadius * (1. / ENCODER_TICK_PER_TURN) * GEAR_RATIO * 2. * M_PI;;
     float   drivenAngle  = float(encoderCount) * (1. / ENCODER_TICK_PER_TURN) * GEAR_RATIO * 2. * M_PI;
-    //m_speed              = drivenAngle * MOTOR_CONTROL_LOOP_FREQ * m_wheelRadius;
     m_drivenDistance += drivenAngle * m_wheelRadius;
-
-
 }
-
-//void Motor::setPID(float p, float i, float d, float bias, float frequency) {
-//    m_speedPID.set(p, i, d, bias, frequency);
-//}
-
-//void Motor::setPID(float p, float i, float d) {
-//    m_speedPID.set(p, i, d);
-//}
 
 void Motor::setPID(float p, float i, uint8_t range) {
     Logging::println("set pi range %u", range);
@@ -78,7 +62,6 @@ void Motor::setSpeed(float speed) {
     } else if (speed < -MAX_WHEEL_SPEED) {
         speed = -MAX_WHEEL_SPEED;
     }
-//    m_speedSetpoint = speed;
     m_speedController.setSpeedGoal(speed);
 }
 
@@ -101,8 +84,6 @@ float Motor::getDrivenDistance() {
 }
 
 void Motor::reset() {
-//    m_speedPID.reset();
-//    m_speedSetpoint = 0.;
     m_speedController.resetIntegral();
     m_speedController.setSpeedGoal(0.);
     Board::IO::setMotorDutyCycle(m_motor, 0);
