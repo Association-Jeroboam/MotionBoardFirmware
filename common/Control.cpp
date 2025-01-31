@@ -30,7 +30,7 @@ Control::Control() : m_robotPose(INITIAL_X_POS, INITIAL_Y_POS, INITIAL_ANGLE) {
 
 void Control::update() {
     if(m_triggerCounter * MOTOR_CONTROL_LOOP_DT > CONTROL_COMMAND_TIMEOUT_S &&
-        m_currentGoal.getType() != Goal::NO_GOAL) {
+        m_currentGoal.getType() != Goal::NO_GOAL && m_currentGoal.getType() != Goal::PWM) {
         Goal noGoal = Goal();
         setCurrentGoal(noGoal);
         Logging::println("Goal timeout");
