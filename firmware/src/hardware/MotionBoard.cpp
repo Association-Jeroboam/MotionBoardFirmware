@@ -146,6 +146,7 @@ int16_t Board::IO::getEncoderCount(Peripherals::Encoder encoder) {
 }
 
 float Board::IO::getMotorSpeed(Peripherals::Motor motor) {
+#if HAL_USE_ICU == TRUE
 //    uint32_t icuWidth = 0;
     uint32_t icuPeriod = 0;
     switch (motor) {
@@ -161,6 +162,10 @@ float Board::IO::getMotorSpeed(Peripherals::Motor motor) {
 //    Logging::println("period %u width %u", icuPeriod, icuWidth);
     float motorSpeedRevPerSec = (float)icuPeriod / ICU_FREQUENCY;
     return 2 * M_PI * motorSpeedRevPerSec;
+#else
+    Logging::println("ICU not enabled");
+    return 0.;
+#endif
 }
 
 void Board::IO::toggleLED() {
@@ -168,28 +173,28 @@ void Board::IO::toggleLED() {
 }
 
 void Board::Com::initDrivers() {
-    Logging::println("Com drivers init");
-    CANBus::init();
+    // Logging::println("Com drivers init");
+    // CANBus::init();
 }
 
 void Board::Com::CANBus::init() {
-    palSetLineMode(CAN_TX_PIN, CAN_TX_PIN_MODE);
-    palSetLineMode(CAN_RX_PIN, CAN_RX_PIN_MODE);
-    canStart(&CAN_DRIVER, &canConfig);
-    canardInstance = canardInit(canardSpecificHeapAlloc, canardSpecificHeapFree);
-    canardInstance.node_id = CAN_PROTOCOL_MOTION_BOARD_ID;
-    canTxThread.start(NORMALPRIO);
-    chThdSleep(TIME_MS2I(10));
-    canRxThread.start(NORMALPRIO + 1);
-    chThdSleep(TIME_MS2I(10));
-    // let Threads finish initialization
-    chThdYield();
+    // palSetLineMode(CAN_TX_PIN, CAN_TX_PIN_MODE);
+    // palSetLineMode(CAN_RX_PIN, CAN_RX_PIN_MODE);
+    // canStart(&CAN_DRIVER, &canConfig);
+    // canardInstance = canardInit(canardSpecificHeapAlloc, canardSpecificHeapFree);
+    // canardInstance.node_id = CAN_PROTOCOL_MOTION_BOARD_ID;
+    // canTxThread.start(NORMALPRIO);
+    // chThdSleep(TIME_MS2I(10));
+    // canRxThread.start(NORMALPRIO + 1);
+    // chThdSleep(TIME_MS2I(10));
+    // // let Threads finish initialization
+    // chThdYield();
 }
 
 bool Board::Com::CANBus::send(const CanardTransferMetadata* const metadata,
                               const size_t                        payload_size,
                               const void* const                   payload) {
-    return canTxThread.send(metadata, payload_size, payload);
+    return 0;//canTxThread.send(metadata, payload_size, payload);
 }
 
 void Board::Com::CANBus::registerCanMsg(CanListener *listener,

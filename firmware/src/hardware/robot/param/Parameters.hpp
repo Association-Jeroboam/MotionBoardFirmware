@@ -27,7 +27,7 @@ constexpr float MAX_WHEEL_ACCL     = 10000.; // [mm/s]œ
 
 constexpr float COMPUTE_DIRECTION_THRESHOLD = 10.; //[mm] //TODO: Change me!
 
-constexpr float ANGLE_PRECISION = 0.05; //[rad]
-constexpr float DISTANCE_PRECISION = 5;  //[mm]
+constexpr float ANGLE_PRECISION = 0.5; //[rad]
+constexpr float DISTANCE_PRECISION = 100;  //[mm]
 
-constexpr float CONTROL_COMMAND_TIMEOUT_S = 0.25; //[s]
+constexpr float CONTROL_COMMAND_TIMEOUT_S = 60; //[s]

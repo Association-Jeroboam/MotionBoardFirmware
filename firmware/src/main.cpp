@@ -77,7 +77,21 @@ int main() {
     chThdCreateStatic(waShellThread, sizeof(waShellThread), NORMALPRIO,
                       shellThread, (void*)&shell_cfg);
     node_mode.value = uavcan_node_Mode_1_0_OPERATIONAL;
+    Goal goal1(1000, 0, 1.5, false);
+    Goal goal2(1000, 1000, 3.13, false);
+    Goal goal3(0, 1000, -1.5, false);
+    Goal goal4(0, 0, 0, false);
+    Goal goals[4] = {goal1, goal2, goal3, goal4};
+    uint8_t goal_count = 0;
+    chThdSleepMilliseconds(2000);
     while (!chThdShouldTerminateX()) {
+        if(ControlThread::instance()->getControl()->getCurrentGoal().isReached())
+        {
+            Logging::println("NEX GOOOOOOOAAAAAL");
+            ControlThread::instance()->getControl()->setCurrentGoal(goals[goal_count]);
+            goal_count++;
+            if(goal_count >= 4) goal_count = 0;
+        }
         Board::IO::toggleLED();
         cyphalHeartBeatRoutine();
         chThdSleepMilliseconds(1000);

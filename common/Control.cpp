@@ -29,12 +29,12 @@ Control::Control() : m_robotPose(INITIAL_X_POS, INITIAL_Y_POS, INITIAL_ANGLE) {
 }
 
 void Control::update() {
-    if(m_triggerCounter * MOTOR_CONTROL_LOOP_DT > CONTROL_COMMAND_TIMEOUT_S &&
-        m_currentGoal.getType() != Goal::NO_GOAL && m_currentGoal.getType() != Goal::PWM) {
-        Goal noGoal = Goal();
-        setCurrentGoal(noGoal);
-        Logging::println("Goal timeout");
-    }
+    // if(m_triggerCounter * MOTOR_CONTROL_LOOP_DT > CONTROL_COMMAND_TIMEOUT_S &&
+    //     m_currentGoal.getType() != Goal::NO_GOAL && m_currentGoal.getType() != Goal::PWM) {
+    //     Goal noGoal = Goal();
+    //     setCurrentGoal(noGoal);
+    //     Logging::println("Goal timeout");
+    // }
     m_triggerCounter++;
     updateState();
     applyControl();
@@ -48,6 +48,7 @@ void Control::updateState() {
     float right_speed = m_motorControl.getMotorSpeed(Peripherals::RIGHT_MOTOR);
 
     m_robotPose.update(m_dl, m_dr);
+    // Logging::println("X: %f, Y: %f, Theta: %f", m_robotPose.getX(), m_robotPose.getY(), m_robotPose.getModuloAngle());
     m_linearSpeed  = (right_speed + left_speed) * 0.5;
     m_angularSpeed = (right_speed - left_speed) / m_robotPose.getWheelBase();
 }
@@ -67,6 +68,7 @@ void Control::goToPose() {
 
 
     // End condition
+    // Logging::println("dist %f > %f, angle %f > %f", m_distanceError, DISTANCE_PRECISION, m_angularError,);
     if (m_distanceError < DISTANCE_PRECISION && fabs(m_angularError) < ANGLE_PRECISION) {
         m_currentGoal.setReached(true);
         return;
@@ -142,6 +144,7 @@ void Control::applyControl() {
             goto set_speeds;
         }
         case Goal::PWM: {
+            // Logging::println("PWM, left: %f, right: %f", m_currentGoal.getPWMData().leftPWM, m_currentGoal.getPWMData().rightPWM);  
             Board::IO::setMotorDutyCycle(Peripherals::Motor::LEFT_MOTOR, m_currentGoal.getPWMData().leftPWM);
             Board::IO::setMotorDutyCycle(Peripherals::Motor::RIGHT_MOTOR, m_currentGoal.getPWMData().rightPWM);
             m_motorControl.setDisable(false);
